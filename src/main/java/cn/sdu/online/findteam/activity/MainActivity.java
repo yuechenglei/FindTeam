@@ -1,11 +1,16 @@
 package cn.sdu.online.findteam.activity;
+
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -13,12 +18,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+
+import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.adapter.ListViewAdapter;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
-import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.view.XListView;
 
-
-public class SampleActivity extends Activity {
+public class MainActivity extends Activity implements XListView.IXListViewListener {
+    XListView listView;
+    private List<HashMap<String, String>> list;
+    private ListViewAdapter adapter;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -32,6 +46,35 @@ public class SampleActivity extends Activity {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
 
+        listView = (XListView) findViewById(R.id.listview);
+        listView.setXListViewListener(this);
+        listView.setPullLoadEnable(true);
+        list = getListDate();
+        adapter = new ListViewAdapter(this, list);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                Log.v("listview", "我被长安点击");
+
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+                // TODO Auto-generated method stub
+                Log.v("listview", "我被duanan点击");
+            }
+        });
+
+        /**
+         * 侧边栏的初始化
+         */
         ActionBar ab = this.getActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
@@ -154,4 +197,100 @@ public class SampleActivity extends Activity {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+    private List<HashMap<String, String>> getListDate() {
+        list = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i < 15; i++) {
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("name", "第" + i + "item");
+            list.add(map);
+        }
+        return list;
+
+    }
+
+
+    @Override
+    public void onRefresh() {
+        myThread(0);
+    }
+
+    @Override
+    public void onLoadMore() {
+        myThread(1);
+    }
+
+    /**
+     * @param msg 0为下拉刷新 1为加载更多
+     */
+    private void myThread(final int msg) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    handler.sendEmptyMessage(msg);
+                } catch (InterruptedException e) {
+                    // TODO 自动生成的 catch 块
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
+    }
+
+    @SuppressLint("HandlerLeak")
+    public Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    listView.stopRefresh();
+                    listView.stopLoadMore();
+                    listView.setRefreshTime(getDate());
+
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("name", "刷新得到的item");
+//				list.add(map);
+                    list.add(0, map);
+                    adapter.notifyDataSetChanged();
+                    break;
+                case 1:
+                    listView.stopRefresh();
+                    listView.stopLoadMore();
+                    listView.setRefreshTime(getDate());
+
+                    HashMap<String, String> map1 = new HashMap<String, String>();
+                    map1.put("name", "加载更多得到的item");
+                    list.add(map1);
+
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+
+        ;
+    };
+
+    /**
+     * 得到刷新时间
+     *
+     * @return
+     */
+    public static String getDate() {
+        Calendar c = Calendar.getInstance();
+
+        String year = String.valueOf(c.get(Calendar.YEAR));
+        String month = String.valueOf(c.get(Calendar.MONTH) + 1);
+        String day = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+        String hour = String.valueOf(c.get(Calendar.HOUR_OF_DAY));
+        String mins = String.valueOf(c.get(Calendar.MINUTE));
+
+        StringBuffer sbBuffer = new StringBuffer();
+        sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":"
+                + mins);
+
+        return sbBuffer.toString();
+    }
 }
+
+
