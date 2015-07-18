@@ -108,6 +108,6 @@ public abstract class DrawerArrowDrawable extends Drawable {
     }
 
     public void setColor(int resourceId) {
-        this.mPaint.setColor(resourceId);
+        this.mPaint.setColor(context.getResources().getColor(resourceId));
     }
 }

@@ -11,13 +11,18 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.SearchView;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -67,15 +72,19 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                // TODO Auto-generated method stub
-                Log.v("listview", "我被duanan点击");
-            }
-        });
+         // TODO Auto-generated method stub
+         Log.v("listview", "我被duanan点击");
+         }
+         });
 
-        /**
+         /**
          * 侧边栏的初始化
          */
         ActionBar ab = this.getActionBar();
+
+        /**
+         *左上角设置一个按钮，并设置可点击
+         */
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
 
@@ -92,7 +101,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 drawerArrow, R.string.drawer_open,
                 R.string.drawer_close) {
-
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
@@ -139,10 +147,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                     case 3:
                         if (drawerArrowColor) {
                             drawerArrowColor = false;
-                            drawerArrow.setColor(getResources().getColor(R.color.ldrawer_color));
+                            drawerArrow.setColor(R.color.ldrawer_color);
                         } else {
                             drawerArrowColor = true;
-                            drawerArrow.setColor(getResources().getColor(R.color.drawer_arrow_second_color));
+                            drawerArrow.setColor(R.color.drawer_arrow_second_color);
                         }
                         mDrawerToggle.syncState();
                         break;
@@ -175,6 +183,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
@@ -198,6 +213,11 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+
+    /**
+     * 下拉刷新实现
+     * @return
+     */
     private List<HashMap<String, String>> getListDate() {
         list = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 15; i++) {
