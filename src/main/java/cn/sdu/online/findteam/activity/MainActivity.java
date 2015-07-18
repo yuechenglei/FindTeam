@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -38,14 +40,12 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerArrowDrawable drawerArrow;
-    private boolean drawerArrowColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
-
         listView = (XListView) findViewById(R.id.listview);
         listView.setXListViewListener(this);
         listView.setPullLoadEnable(true);
@@ -76,6 +76,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
          * 侧边栏的初始化
          */
         ActionBar ab = this.getActionBar();
+
+        /**
+         *左上角设置一个按钮，并设置可点击
+         */
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
 
@@ -92,7 +96,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 drawerArrow, R.string.drawer_open,
                 R.string.drawer_close) {
-
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
@@ -125,26 +128,12 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                                     int position, long id) {
                 switch (position) {
                     case 0:
-                        mDrawerToggle.setAnimateEnabled(false);
-                        drawerArrow.setProgress(1f);
                         break;
                     case 1:
-                        mDrawerToggle.setAnimateEnabled(false);
-                        drawerArrow.setProgress(0f);
                         break;
                     case 2:
-                        mDrawerToggle.setAnimateEnabled(true);
-                        mDrawerToggle.syncState();
                         break;
                     case 3:
-                        if (drawerArrowColor) {
-                            drawerArrowColor = false;
-                            drawerArrow.setColor(getResources().getColor(R.color.ldrawer_color));
-                        } else {
-                            drawerArrowColor = true;
-                            drawerArrow.setColor(getResources().getColor(R.color.drawer_arrow_second_color));
-                        }
-                        mDrawerToggle.syncState();
                         break;
                     case 4:
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IkiMuhendis/LDrawer"));
@@ -164,14 +153,18 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                                 getString(R.string.app_name)));
                         break;
                     case 6:
-                        String appUrl = "https://play.google.com/store/apps/details?id=" + getPackageName();
-                        Intent rateIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(appUrl));
-                        startActivity(rateIntent);
                         break;
                 }
 
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -186,6 +179,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -198,6 +192,12 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+
+    /**
+     * 下拉刷新实现
+     *
+     * @return
+     */
     private List<HashMap<String, String>> getListDate() {
         list = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 15; i++) {
@@ -291,6 +291,8 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
         return sbBuffer.toString();
     }
+
+
 }
 
 
