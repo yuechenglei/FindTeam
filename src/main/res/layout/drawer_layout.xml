@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@+id/navdrawer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:background="@color/blue_color"
+    >
+
+    <LinearLayout
+        android:id="@+id/linear_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/ib_head"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/headphoto"/>
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:text="学线二傻"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_top"
+        android:layout_marginEnd="-40dp"
+        android:layout_marginRight="-40dp"
+        android:layout_toLeftOf="@+id/linear_top"
+        android:layout_toStartOf="@+id/linear_top"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/bt_my"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/team_my"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bt_my"
+            android:layout_gravity="center_horizontal"
+            android:text="我的队伍"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/team_news"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="我的消息"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/team_set"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="设置"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear_top"
+        android:layout_marginLeft="-40dp"
+        android:layout_marginStart="-40dp"
+        android:layout_toEndOf="@+id/linear_top"
+        android:layout_toRightOf="@+id/linear_top"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/bt_games"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/team_games"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/bt_games"
+            android:layout_gravity="center_horizontal"
+            android:text="所有比赛"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/team_games"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="学线二傻"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"/>
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/team_make"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="创建队伍"
+            android:textColor="@color/white_color"
+            android:textSize="@dimen/size16"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>
