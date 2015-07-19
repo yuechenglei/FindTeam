@@ -1,6 +1,4 @@
 package cn.sdu.online.findteam.fragment;
-
-
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;

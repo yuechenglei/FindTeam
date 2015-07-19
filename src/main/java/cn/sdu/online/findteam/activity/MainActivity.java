@@ -14,12 +14,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -73,17 +73,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-                Log.v("listview", "我被长安点击");
-
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                Log.v("listview", "我被duanan点击");
+                Toast.makeText(MainActivity.this, "又点我！", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -105,8 +95,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         acState = true;
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        // mDrawerList = (ListView) findViewById(R.id.navdrawer);
-        mDrawerRelative=(RelativeLayout)findViewById(R.id.navdrawer);
+        mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
 
         drawerArrow = new DrawerArrowDrawable(this) {
@@ -132,41 +121,23 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle.syncState();
     }
 
-    /** @param layoutId 布局Id
-    *
-            * */
-    public void setActionBarLayout( int layoutId ){
+    /**
+     * @param layoutId 布局Id
+     */
+    public void setActionBarLayout(int layoutId) {
         ActionBar actionBar = getActionBar();
-        if( null != actionBar ){
+        if (null != actionBar) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflator.inflate(layoutId, null);
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v,layout);
+            actionBar.setCustomView(v, layout);
         }
     }
 
-
-/*    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        startSearchbt = MenuItemCompat.getActionView(searchItem);
-        startSearchbt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchLayout.setVisibility(View.VISIBLE);
-                xlistTranslate = AnimationUtils.loadAnimation(MainActivity.this,
-                        R.anim.xlistviewtranslate);
-                listView.startAnimation(xlistTranslate);
-            }
-        });
-        return super.onCreateOptionsMenu(menu);
-    }*/
 
 //        MenuItem searchItem = menu.findItem(R.id.ab_search);
 //        SearchView searchView = (SearchView) MenuItemCompat
@@ -190,22 +161,22 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 //        return true;
 
 
-    private class ActionSearchListener implements View.OnClickListener{
+    private class ActionSearchListener implements View.OnClickListener {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
+
         @Override
         public void onClick(View v) {
-            if(acState == true) {
+            if (acState == true) {
                 searchLayout.setVisibility(View.VISIBLE);
                 params.setMargins(0, 110, 0, 0);
                 listView.setLayoutParams(params);
                 acState = false;
-            }
-            else {
+            } else {
                 searchLayout.setVisibility(View.GONE);
-                params.setMargins(0,0,0,0);
+                params.setMargins(0, 0, 0, 0);
                 listView.setLayoutParams(params);
                 acState = true;
             }
