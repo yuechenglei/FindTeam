@@ -15,6 +15,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:listSelector="@android:color/transparent"
+            android:divider="@null"
             android:scrollbars="none"
             >
         </cn.sdu.online.findteam.view.XListView>
@@ -22,16 +23,17 @@
     </RelativeLayout>
 
     <!-- The navigation drawer -->
-    <ListView
-        android:id="@+id/navdrawer"
-        android:layout_width="@dimen/navdrawer_width"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@android:color/white"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="false">
-    </ListView>
+    <!--<ListView-->
+        <!--android:id="@+id/navdrawer"-->
+        <!--android:layout_width="@dimen/navdrawer_width"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_gravity="start"-->
+        <!--android:background="@android:color/white"-->
+        <!--android:choiceMode="singleChoice"-->
+        <!--android:divider="@android:color/transparent"-->
+        <!--android:dividerHeight="0dp"-->
+        <!--android:drawSelectorOnTop="false">-->
+    <!--</ListView>-->
+    <include layout="@layout/drawer_layout"/>
 
 </android.support.v4.widget.DrawerLayout>

@@ -3,9 +3,7 @@ package cn.sdu.online.findteam.activity;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,8 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +36,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerArrowDrawable drawerArrow;
 
@@ -82,9 +81,11 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
          */
         ab.setDisplayHomeAsUpEnabled(true);
         ab.setHomeButtonEnabled(true);
+        ab.setDisplayShowTitleEnabled(true);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.navdrawer);
+       // mDrawerList = (ListView) findViewById(R.id.navdrawer);
+        mDrawerRelative=(RelativeLayout)findViewById(R.id.navdrawer);
 
 
         drawerArrow = new DrawerArrowDrawable(this) {
@@ -119,61 +120,81 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 "Share",
                 "Rate"
         };
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-        mDrawerList.setAdapter(adapter);
-        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IkiMuhendis/LDrawer"));
-                        startActivity(browserIntent);
-                        break;
-                    case 5:
-                        Intent share = new Intent(Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        share.putExtra(Intent.EXTRA_SUBJECT,
-                                getString(R.string.app_name));
-                        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
-                                "GitHub Page :  https://github.com/IkiMuhendis/LDrawer\n" +
-                                "Sample App : https://play.google.com/store/apps/details?id=" +
-                                getPackageName());
-                        startActivity(Intent.createChooser(share,
-                                getString(R.string.app_name)));
-                        break;
-                    case 6:
-                        break;
-                }
-
-            }
-        });
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//                android.R.layout.simple_list_item_1, android.R.id.text1, values);
+//        mDrawerList.setAdapter(adapter);
+//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view,
+//                                    int position, long id) {
+//                switch (position) {
+//                    case 0:
+//                        break;
+//                    case 1:
+//                        break;
+//                    case 2:
+//                        break;
+//                    case 3:
+//                        break;
+//                    case 4:
+//                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IkiMuhendis/LDrawer"));
+//                        startActivity(browserIntent);
+//                        break;
+//                    case 5:
+//                        Intent share = new Intent(Intent.ACTION_SEND);
+//                        share.setType("text/plain");
+//                        share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        share.putExtra(Intent.EXTRA_SUBJECT,
+//                                getString(R.string.app_name));
+//                        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
+//                                "GitHub Page :  https://github.com/IkiMuhendis/LDrawer\n" +
+//                                "Sample App : https://play.google.com/store/apps/details?id=" +
+//                                getPackageName());
+//                        startActivity(Intent.createChooser(share,
+//                                getString(R.string.app_name)));
+//                        break;
+//                    case 6:
+//                        break;
+//                }
+//
+//            }
+//        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
+//        MenuItem searchItem = menu.findItem(R.id.ab_search);
+//        SearchView searchView = (SearchView) MenuItemCompat
+//                .getActionView(searchItem);
+//        if(searchView==null)
+//            return true;
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextChange(String arg0) {
+//                // TODO Auto-generated method stub
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextSubmit(String arg0) {
+//                // TODO Auto-generated method stub
+//                return false;
+//            }
+//
+//        });
+//        return true;
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                mDrawerLayout.closeDrawer(mDrawerList);
+            if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
+                mDrawerLayout.closeDrawer(mDrawerRelative);
             } else {
-                mDrawerLayout.openDrawer(mDrawerList);
+                mDrawerLayout.openDrawer(mDrawerRelative);
             }
         }
         return super.onOptionsItemSelected(item);
