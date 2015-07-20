@@ -17,6 +17,7 @@
             android:layout_alignParentRight="true"
             android:background="@color/blue_color"
             android:orientation="horizontal"
+            android:visibility="gone"
             >
 
             <EditText
