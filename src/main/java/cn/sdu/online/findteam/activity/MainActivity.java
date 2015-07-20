@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -29,16 +29,15 @@ import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 import cn.sdu.online.findteam.view.XListView;
 
-public class MainActivity extends Activity implements XListView.IXListViewListener {
+public class MainActivity extends Activity implements XListView.IXListViewListener, View.OnClickListener {
     XListView listView;
     private List<HashMap<String, String>> list;
     private ListViewAdapter adapter;
-
+    private Button bt_game, bt_set, bt_news, bt_my, bt_make, bt_person, bt_head;
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerArrowDrawable drawerArrow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,16 +60,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                Log.v("listview", "我被duanan点击");
-            }
-        });
-
+        init_button();
         /**
          * 侧边栏的初始化
          */
@@ -84,11 +74,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         ab.setDisplayShowTitleEnabled(true);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-       // mDrawerList = (ListView) findViewById(R.id.navdrawer);
-        mDrawerRelative=(RelativeLayout)findViewById(R.id.navdrawer);
+        mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
 
-        drawerArrow = new DrawerArrowDrawable(this) {
+        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this) {
             @Override
             public boolean isLayoutRtl() {
                 return false;
@@ -109,56 +98,25 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+    }
 
+    //初始化侧滑的按钮
+    void init_button() {
+        bt_game = (Button) this.findViewById(R.id.bt_games);
+        bt_set = (Button) this.findViewById(R.id.bt_set);
+        bt_news = (Button) this.findViewById(R.id.bt_news);
+        bt_my = (Button) this.findViewById(R.id.bt_my);
+        bt_make = (Button) this.findViewById(R.id.bt_make);
+        bt_person = (Button) this.findViewById(R.id.bt_person);
+        bt_head = (Button) this.findViewById(R.id.bt_head);
+        bt_game.setOnClickListener(this);
+        bt_set.setOnClickListener(this);
+        bt_news.setOnClickListener(this);
+        bt_my.setOnClickListener(this);
+        bt_make.setOnClickListener(this);
+        bt_person.setOnClickListener(this);
+        bt_head.setOnClickListener(this);
 
-        String[] values = new String[]{
-                "Stop Animation (Back icon)",
-                "Stop Animation (Home icon)",
-                "Start Animation",
-                "Change Color",
-                "GitHub Page",
-                "Share",
-                "Rate"
-        };
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-//        mDrawerList.setAdapter(adapter);
-//        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view,
-//                                    int position, long id) {
-//                switch (position) {
-//                    case 0:
-//                        break;
-//                    case 1:
-//                        break;
-//                    case 2:
-//                        break;
-//                    case 3:
-//                        break;
-//                    case 4:
-//                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/IkiMuhendis/LDrawer"));
-//                        startActivity(browserIntent);
-//                        break;
-//                    case 5:
-//                        Intent share = new Intent(Intent.ACTION_SEND);
-//                        share.setType("text/plain");
-//                        share.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        share.putExtra(Intent.EXTRA_SUBJECT,
-//                                getString(R.string.app_name));
-//                        share.putExtra(Intent.EXTRA_TEXT, getString(R.string.app_description) + "\n" +
-//                                "GitHub Page :  https://github.com/IkiMuhendis/LDrawer\n" +
-//                                "Sample App : https://play.google.com/store/apps/details?id=" +
-//                                getPackageName());
-//                        startActivity(Intent.createChooser(share,
-//                                getString(R.string.app_name)));
-//                        break;
-//                    case 6:
-//                        break;
-//                }
-//
-//            }
-//        });
     }
 
     @Override
@@ -314,6 +272,29 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     }
 
 
+    @Override
+    public void onClick(View v) {
+        int tag = v.getId();
+        switch (tag) {
+            case R.id.bt_head:
+                break;
+            case R.id.bt_set:
+                break;
+            case R.id.bt_make:
+                break;
+            case R.id.bt_my:
+                break;
+            case R.id.bt_news:
+                break;
+            case R.id.bt_games:
+                break;
+            case R.id.bt_person:
+                break;
+
+
+        }
+
+    }
 }
 
 

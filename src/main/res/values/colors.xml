@@ -4,4 +4,25 @@
     <color name="blue_color">#509aff</color>
     <color name="drawer_arrow_second_color">#303f9f</color>
     <color name="grey_color">#F5F5F5</color>
+    <color name="clr_pressed11">#d7605c</color>
+    <color name="clr_pressed12">#ffc0a5</color>
+    <color name="clr_pressed13">#c4e2e4</color>
+    <color name="clr_pressed14">#b1a7b2</color>
+    <color name="clr_pressed15">#8470b5</color>
+    <color name="clr_pressed16">#519aff</color>
+    <color name="clr_pressed17">#92d7f8</color>
+    <color name="clr_pressed18">#596690</color>
+    <color name="clr_pressed19">#ffffff</color>
+    <color name="clr_pressed21">#ecdc88</color>
+    <color name="clr_pressed22">#d38a65</color>
+    <color name="clr_pressed23">#a14b4d</color>
+    <color name="clr_pressed24">#d6b298</color>
+    <color name="clr_pressed31">#ef7d8a</color>
+    <color name="clr_pressed32">#00b0c8</color>
+    <color name="clr_pressed33">#7f853f</color>
+    <color name="clr_pressed34">#888689</color>
+    <color name="clr_pressed41">#67ccb7</color>
+    <color name="clr_pressed42">#00b0c8</color>
+    <color name="clr_pressed43">#f88f55</color>
+    <color name="clr_pressed44">#b989ad</color>
 </resources>

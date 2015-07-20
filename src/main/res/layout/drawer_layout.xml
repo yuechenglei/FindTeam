@@ -18,7 +18,7 @@
         >
 
         <Button
-            android:id="@+id/ib_head"
+            android:id="@+id/bt_head"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_gravity="center_horizontal"
@@ -65,6 +65,7 @@
 
 
         <Button
+            android:id="@+id/bt_news"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
@@ -80,6 +81,7 @@
             android:textSize="@dimen/size16"/>
 
         <Button
+            android:id="@+id/bt_set"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
@@ -129,7 +131,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:background="@drawable/team_games"/>
+            android:background="@drawable/team_games"
+            android:id="@+id/bt_person"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -144,7 +147,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:background="@drawable/team_make"/>
+            android:background="@drawable/team_make"
+            android:id="@+id/bt_make"/>
 
         <TextView
             android:layout_width="wrap_content"
