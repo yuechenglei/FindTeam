@@ -1,5 +1,4 @@
 package cn.sdu.online.findteam.fragment;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,7 +10,7 @@ import cn.sdu.online.findteam.R;
 public class MessageFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_message, null);
     }
 }
