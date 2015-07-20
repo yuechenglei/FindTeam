@@ -4,4 +4,7 @@
     <color name="blue_color">#509aff</color>
     <color name="drawer_arrow_second_color">#303f9f</color>
     <color name="grey_color">#F5F5F5</color>
+    <color name="blanking_grey">#cccccc</color>
+    <color name="underline1_gray">#B7B7B7</color>
+    <color name="textcolor_gray">#555555</color>
 </resources>

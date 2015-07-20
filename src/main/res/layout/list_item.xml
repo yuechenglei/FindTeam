@@ -39,8 +39,6 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:padding="3dp"
-        android:text="dkjlkfsjdfkdsjklfjsldjfsdjklfjds
-        lkjflsddsfsdfsdfsdfdsdsfsdsdjlkf"
         android:textColor="#8B8989"
         android:textSize="7.5pt"/>
 
