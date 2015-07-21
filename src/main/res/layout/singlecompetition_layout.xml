@@ -14,7 +14,7 @@
             android:id="@+id/competition_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
+            android:layout_margin="15dp"
             android:text="优衣库设计大赛"
             android:textSize="10pt" />
 
@@ -27,8 +27,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/item_notouch">
+            android:orientation="vertical">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,9 +44,9 @@
                 android:ellipsize="end"
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -55,8 +54,8 @@
                 android:text="比赛的详细介绍"
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -64,8 +63,8 @@
                 android:text="奖品："
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -73,8 +72,8 @@
                 android:text="主办方："
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,8 +81,8 @@
                 android:text="截至时间："
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -91,9 +90,9 @@
                 android:text="开始时间："
                 android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"/>
         </LinearLayout>
 
         <View
@@ -111,12 +110,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="10pt"
                 android:text="可以加入的队伍"
-                android:layout_margin="20dp"/>
+                android:layout_margin="15dp"/>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1sp"
-                android:background="@color/textcolor_gray"/>
+                android:background="@color/underline1_gray"/>
 
             <ListView
                 android:id="@+id/singlecplist"

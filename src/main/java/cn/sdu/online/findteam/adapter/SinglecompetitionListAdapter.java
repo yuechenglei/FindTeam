@@ -14,12 +14,12 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
 
-public class SinglecompetitionListAdapter extends BaseAdapter{
+public class SingleCompetitionListAdapter extends BaseAdapter{
 
     LayoutInflater inflater;;
     List<SingleCompetitionListItem> listItems;
 
-    public SinglecompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
+    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
         inflater = LayoutInflater.from(mContext);
         this.listItems = listItems;
     }
@@ -58,9 +58,9 @@ public class SinglecompetitionListAdapter extends BaseAdapter{
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        /*viewHolder.teamname.setText(listItems.get(position).teamname);
+        viewHolder.teamname.setText(listItems.get(position).teamname);
         viewHolder.personnum.setText(listItems.get(position).personnum);
-        viewHolder.content.setText(listItems.get(position).content);*/
+        viewHolder.content.setText(listItems.get(position).content);
         return convertView;
     }
 

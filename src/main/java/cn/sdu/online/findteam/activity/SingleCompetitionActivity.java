@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.adapter.SinglecompetitionListAdapter;
+import cn.sdu.online.findteam.adapter.SingleCompetitionListAdapter;
 import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
 
 /**
@@ -89,7 +89,7 @@ public class SingleCompetitionActivity extends Activity {
                     R.id.singlecp_item_look, R.id.singlecp_item_join));
         }
 
-        SinglecompetitionListAdapter singlecompetitionListAdapter = new SinglecompetitionListAdapter(SingleCompetitionActivity.this,
+        SingleCompetitionListAdapter singlecompetitionListAdapter = new SingleCompetitionListAdapter(SingleCompetitionActivity.this,
                 listItems);
         singlelistView.setAdapter(singlecompetitionListAdapter);
     }

@@ -37,16 +37,15 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     XListView listView;
     private List<HashMap<String, String>> list;
     private ListViewAdapter adapter;
-
+    private Button bt_game, bt_set, bt_news, bt_my, bt_make, bt_person, bt_head;
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerArrowDrawable drawerArrow;
-
     /**
      * 记录actionsearch按钮的点击状态，true为不搜索状态，false为搜索栏弹出状态
      */
     private boolean acState;
+    private int search_width;//搜索框的宽度
     /**
      * 主界面搜索按钮
      */
@@ -56,6 +55,12 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
      * 主界面的搜索框布局
      */
     private LinearLayout searchLayout;
+
+    /**
+     *
+     * searchLayout的宽度
+     */
+    private int searchLayout_height;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +85,19 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             }
         });
 
+        /**
+         *设置ActionBar的自定义布局。
+         */
+        ActionBar ab = this.getActionBar();
+
+        /**
+         * 初始化 acState 为true
+         */
+        acState = true;
+
         searchButton = (Button) findViewById(R.id.search_button);
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
+        searchLayout_height = searchLayout.getLayoutParams().height;
         /**
          *设置ActionBar的自定义布局。
          */
@@ -97,11 +113,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
          */
         acState = true;
 
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        // mDrawerList = (ListView) findViewById(R.id.navdrawer);
         mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
 
-        drawerArrow = new DrawerArrowDrawable(this) {
+        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this) {
             @Override
             public boolean isLayoutRtl() {
                 return false;
@@ -124,6 +142,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         mDrawerToggle.syncState();
     }
 
+
     /**
      * @param layoutId 布局Id
      */
@@ -136,33 +155,23 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             actionBar.setDisplayShowCustomEnabled(true);
             LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflator.inflate(layoutId, null);
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+         /*   search_width = getViewW(v);*/
+
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
             actionBar.setCustomView(v, layout);
         }
     }
+//获取view 的宽和高
 
+/*    int getViewW(View view) {
+        int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 
-//        MenuItem searchItem = menu.findItem(R.id.ab_search);
-//        SearchView searchView = (SearchView) MenuItemCompat
-//                .getActionView(searchItem);
-//        if(searchView==null)
-//            return true;
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextChange(String arg0) {
-//                // TODO Auto-generated method stub
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextSubmit(String arg0) {
-//                // TODO Auto-generated method stub
-//                return false;
-//            }
-//
-//        });
-//        return true;
+        int height = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 
+        view.measure(width, height);
+        return view.getMeasuredWidth();
+    }*/
 
     private class ActionSearchListener implements View.OnClickListener {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
@@ -172,9 +181,11 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
         @Override
         public void onClick(View v) {
-            if (acState == true) {
+            if (acState) {
                 searchLayout.setVisibility(View.VISIBLE);
-                params.setMargins(0, 110, 0, 0);
+                /*Log.v("宽度", search_width + "");*/
+                /*params.setMargins(0, search_width, 0, 0);*/
+                params.setMargins(0, searchLayout_height, 0, 0);
                 listView.setLayoutParams(params);
                 acState = false;
             } else {
@@ -313,5 +324,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
 }
+
 
 

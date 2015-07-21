@@ -50,6 +50,7 @@ public class ListViewAdapter extends BaseAdapter {
             holder.type = (TextView) convertView.findViewById(R.id.item_type_tv);
             holder.title = (TextView) convertView.findViewById(R.id.item_title_tv);
             holder.content = (TextView)convertView.findViewById(R.id.item_content_tv);
+            holder.view = convertView.findViewById(R.id.spacing_view);
 
             convertView.setTag(holder);
         } else {
@@ -74,5 +75,6 @@ public class ListViewAdapter extends BaseAdapter {
         TextView type;
         TextView title;
         TextView content;
+        View view;
     }
 }

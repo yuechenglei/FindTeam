@@ -52,7 +52,7 @@
             android:id="@+id/singlecp_item_line1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/underline1_gray"/>
+            android:background="@color/textcolor_gray"/>
 
         <TextView
             android:id="@+id/singlecp_item_content"

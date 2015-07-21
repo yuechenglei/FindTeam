@@ -14,4 +14,26 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search">搜索</string>
+    <!-- 下拉选择菜单-->
+    <string name="t11">PS</string>
+    <string name="t12">IOS</string>
+    <string name="t13">Android</string>
+    <string name="t14">外包</string>
+    <string name="t15">ACM</string>
+    <string name="t16">视频</string>
+    <string name="t17">APP设计</string>
+    <string name="t18">软件编程</string>
+    <string name="t19">移动终端</string>
+    <string name="t21">A</string>
+    <string name="t22">B</string>
+    <string name="t23">C</string>
+    <string name="t24">D</string>
+    <string name="t31">A</string>
+    <string name="t32">B</string>
+    <string name="t33">C</string>
+    <string name="t34">D</string>
+    <string name="t41">A</string>
+    <string name="t42">B</string>
+    <string name="t43">C</string>
+    <string name="t44">D</string>
 </resources>
