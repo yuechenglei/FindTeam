@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +20,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,7 +50,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
      */
     private boolean acState;
     private boolean dropState;//下拉状态
-    private int search_width;//搜索框的宽度
     /**
      * 主界面搜索按钮
      */
@@ -61,15 +60,16 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
      */
     private LinearLayout searchLayout;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
         contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
-        popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
+        /*popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
-        rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);
+        rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);*/
         init_button();
         listView = (XListView) findViewById(R.id.listview);
         listView.setXListViewListener(this);
@@ -83,15 +83,11 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
                 // TODO Auto-generated method stub
-                Toast.makeText(MainActivity.this, "又点我！", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SingleCompetitionActivity.class);
+                startActivity(intent);
             }
         });
-
-        /**
-         *设置ActionBar的自定义布局。
-         */
-        ActionBar ab = this.getActionBar();
-
         /**
          * 初始化 acState 为true
          */
@@ -116,7 +112,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        // mDrawerList = (ListView) findViewById(R.id.navdrawer);
         mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
 
@@ -139,6 +134,8 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 invalidateOptionsMenu();
             }
         };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
     }
 
 
@@ -171,15 +168,12 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         public void onClick(View v) {
             if (acState) {
                 searchLayout.setVisibility(View.VISIBLE);
-              //  search_width=searchLayout.getWidth();
-//                params.setMargins(0, 110, 0, 0);
-//                listView.setLayoutParams(params);
-                popupWindow.dismiss();
+                /*rela_drop.setLayoutParams(params);
+                popupWindow.dismiss();*/
                 acState = false;
             } else {
                 searchLayout.setVisibility(View.GONE);
-//                params.setMargins(0, 0, 0, 0);
-//                rela_drop.setLayoutParams(params);
+                /*rela_drop.setLayoutParams(params);*/
                 acState = true;
             }
         }
@@ -319,7 +313,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         bt_make = (Button) this.findViewById(R.id.bt_make);
         bt_person = (Button) this.findViewById(R.id.bt_person);
         bt_head = (Button) this.findViewById(R.id.bt_head);
-        bt_dropdown = (Button) this.findViewById(R.id.arrow);
+        /*bt_dropdown = (Button) this.findViewById(R.id.arrow);*/
         bt_game.setOnClickListener(this);
         bt_set.setOnClickListener(this);
         bt_news.setOnClickListener(this);
@@ -327,7 +321,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         bt_make.setOnClickListener(this);
         bt_person.setOnClickListener(this);
         bt_head.setOnClickListener(this);
-        bt_dropdown.setOnClickListener(this);
+        /*bt_dropdown.setOnClickListener(this);*/
 
     }
 
@@ -349,7 +343,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 break;
             case R.id.bt_person:
                 break;
-            case R.id.arrow:
+            /*case R.id.arrow:
                 Toast.makeText(this, "下拉", Toast.LENGTH_LONG).show();
                 if (dropState) {
 //                    popupWindow.showAtLocation(bt_dropdown,
@@ -364,7 +358,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                     bt_dropdown.setBackgroundResource(R.drawable.arrow_down);
                     dropState = true;
                 }
-                break;
+                break;*/
             default:
                 break;
 
@@ -373,7 +367,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
     }
-
-
 }
+
 

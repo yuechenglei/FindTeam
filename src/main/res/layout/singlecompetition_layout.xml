@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/competition_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="优衣库设计大赛"
+            android:textSize="10pt" />
+
+        <ImageView
+            android:id="@+id/underline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/underline1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="　冠军虽然只有一个，
+            但通过本次比赛收获良多的，却不只是盛大众信 +
+            5v5聚力纵、崂山一中，以及蓝村队，凭借严明的纪律，获得 +
+            了赛事组委会颁发的公平竞赛奖。而许多球 +
+            队虽然排名靠后，但通过比赛得到的锻炼，让他们收益 +
+            颇多。在观看完决赛后，蓝村队的姜曙光和 +
+            记者聊了起来，“决赛确实精彩，我们还有 +
+            许多东西向他们学习，来年 +
+            希望能打出更好成绩"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="比赛的详细介绍"
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="奖品："
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="主办方："
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="截至时间："
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="开始时间："
+                android:textSize="7pt"
+                android:textColor="#666666"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:background="@color/blanking_grey"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10pt"
+                android:text="可以加入的队伍"
+                android:layout_margin="15dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1sp"
+                android:background="@color/underline1_gray"/>
+
+            <ListView
+                android:id="@+id/singlecplist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

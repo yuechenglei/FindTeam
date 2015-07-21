@@ -22,6 +22,8 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent">
         </activity>
+
+        <activity android:name=".activity.SingleCompetitionActivity"/>
     </application>
 
 </manifest>

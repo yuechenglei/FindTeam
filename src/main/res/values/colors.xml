@@ -4,6 +4,9 @@
     <color name="blue_color">#509aff</color>
     <color name="drawer_arrow_second_color">#303f9f</color>
     <color name="grey_color">#F5F5F5</color>
+    <color name="textcolor_gray">#666666</color>
+    <color name="underline1_gray">#ccc</color>
+    <color name="blanking_grey">#ccc</color>
     <color name="clr_pressed11">#d7605c</color>
     <color name="clr_pressed12">#ffc0a5</color>
     <color name="clr_pressed13">#c4e2e4</color>
