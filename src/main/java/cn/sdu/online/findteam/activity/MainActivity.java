@@ -183,7 +183,8 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             } else {
                 searchLayout.setVisibility(View.GONE);
                 params.setMargins(0, 0, 0, 0);
-                rela_drop.setLayoutParams(params);
+                listView.setLayoutParams(params);
+                /*rela_drop.setLayoutParams(params);*/
                 acState = true;
             }
         }
