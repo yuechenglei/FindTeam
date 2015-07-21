@@ -1,8 +1,8 @@
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout
     android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/underline1_gray">
+    android:layout_height="match_parent">
 
 
     <RelativeLayout
@@ -31,7 +31,7 @@
                 android:background="@drawable/main_search_shape"
                 android:gravity="center"
                 android:hint="@string/search"
-                android:inputType="text" />
+                android:inputType="text"/>
 
             <Button
                 android:id="@+id/search_button"
@@ -46,22 +46,53 @@
                 android:gravity="center"
                 android:text="@string/search"
                 android:textColor="#ffffff"
-                android:textSize="10pt" />
+                android:textSize="10pt"/>
         </LinearLayout>
 
-        <cn.sdu.online.findteam.view.XListView
-            android:layout_below="@+id/search_layout"
-            android:id="@+id/listview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:listSelector="@android:color/transparent"
-            android:divider="@null"
-            android:scrollbars="none"
+        <!--<RelativeLayout
+            android:id="@+id/rela_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             >
-        </cn.sdu.online.findteam.view.XListView>
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center_vertical"
+                android:text="选择分类"
+                android:textSize="@dimen/size16"/>
 
-    <include layout="@layout/drawer_layout" />
+            <Button
+                android:id="@+id/arrow"
+                android:layout_width="25dp"
+                android:layout_height="12dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/arrow_down"
+                android:gravity="center_vertical"/>
+            <TextView
+                android:layout_height="1dp"
+                android:layout_below="@+id/arrow"
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:id="@+id/tv_line"
+                android:background="@color/grey_color"/>-->
+
+            <cn.sdu.online.findteam.view.XListView
+                android:id="@+id/listview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:listSelector="@android:color/transparent"
+                android:scrollbars="none"
+                >
+                <!--android:layout_below="@+id/tv_line"-->
+            </cn.sdu.online.findteam.view.XListView>
+        </RelativeLayout>
+   <!-- </RelativeLayout>-->
+
+    <include layout="@layout/drawer_layout"/>
 
 </android.support.v4.widget.DrawerLayout>
