@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,13 +17,14 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.adapter.SingleCompetitionListAdapter;
 import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
+import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 /**
  * 具体的单个比赛信息界面
  */
 public class SingleCompetitionActivity extends Activity {
 
-    private ListView singlelistView;
+    private SingleCompetitionListView singlelistView;
 
     /**
      * adapter 中要传入的数据
@@ -55,7 +55,7 @@ public class SingleCompetitionActivity extends Activity {
         setActionBarLayout(R.layout.singlecompetition_actionbar_layout);
         setContentView(R.layout.singlecompetition_layout);
 
-        singlelistView = (ListView) findViewById(R.id.singlecplist);
+        singlelistView = (SingleCompetitionListView) findViewById(R.id.singlecplist);
         /*imageView = (ImageView) findViewById(R.id.singlecp_item_img);
         teamname = (TextView) findViewById(R.id.singlecp_item_teamname);
         personnum = (TextView) findViewById(R.id.singlecp_item_personnum);

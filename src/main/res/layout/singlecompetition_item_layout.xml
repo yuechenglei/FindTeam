@@ -86,8 +86,8 @@
                 android:layout_height="wrap_content"
                 android:text="查看队伍"
                 android:textSize="7pt"
-                android:textColor="@color/blue_color"
-                android:background="@drawable/singlecompetition_buttonshape"/>
+                android:textColor="@color/singlecompetiton_buttontext_bg"
+                android:background="@drawable/simplecompetition_button_bg"/>
 
             <Button
                 android:id="@+id/singlecp_item_join"
@@ -95,8 +95,8 @@
                 android:layout_height="wrap_content"
                 android:text="加入队伍"
                 android:textSize="7pt"
-                android:textColor="@color/blue_color"
-                android:background="@drawable/singlecompetition_buttonshape"/>
+                android:textColor="@color/singlecompetiton_buttontext_bg"
+                android:background="@drawable/simplecompetition_button_bg"/>
         </LinearLayout>
 
     </LinearLayout>

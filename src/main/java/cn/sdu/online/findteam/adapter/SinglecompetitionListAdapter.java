@@ -61,6 +61,23 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
         viewHolder.teamname.setText(listItems.get(position).teamname);
         viewHolder.personnum.setText(listItems.get(position).personnum);
         viewHolder.content.setText(listItems.get(position).content);
+        viewHolder.look.setTag(position);
+        viewHolder.join.setTag(position);
+
+        viewHolder.look.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        viewHolder.join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return convertView;
     }
 
