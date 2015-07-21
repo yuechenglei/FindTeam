@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +39,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     XListView listView;
     private List<HashMap<String, String>> list;
     private ListViewAdapter adapter;
-    private Button bt_game, bt_set, bt_news, bt_my, bt_make, bt_person, bt_head;
     private Button bt_dropdown;//下拉选择菜单按钮
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
@@ -59,7 +61,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
      * 主界面的搜索框布局
      */
     private LinearLayout searchLayout;
-
+    /**
+     * 导航栏
+     */
+    private View view_actionbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +103,9 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         /**
          *设置ActionBar的自定义布局。
          */
-        setActionBarLayout(R.layout.actionbar_layout);
+        LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view_actionbar = inflator.inflate(R.layout.actionbar_layout, null);
+        setActionBarLayout(view_actionbar);
         /**
          * 定义ActionBar上的搜索按钮,并设置监听
          */
@@ -126,11 +133,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                actionsearch.setVisibility(View.VISIBLE);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                actionsearch.setVisibility(View.INVISIBLE);
                 invalidateOptionsMenu();
             }
         };
@@ -140,22 +149,29 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
     /**
-     * @param layoutId 布局Id
+     * 布局Id
      */
-    public void setActionBarLayout(int layoutId) {
+    public void setActionBarLayout(View v) {
         ActionBar actionBar = getActionBar();
         if (null != actionBar) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
+
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
 
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
             actionBar.setCustomView(v, layout);
         }
+    }
+
+    /**
+     * 设置actionbar的标题
+     */
+    void setActionBarTest(String test) {
+        TextView title = (TextView) view_actionbar.findViewById(R.id.title);
+        title.setText(test);
     }
 
     private class ActionSearchListener implements View.OnClickListener {
@@ -184,8 +200,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         if (item.getItemId() == android.R.id.home) {
             if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+
             } else {
                 mDrawerLayout.openDrawer(mDrawerRelative);
+
             }
         }
         return super.onOptionsItemSelected(item);
@@ -306,13 +324,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
     //初始化侧滑的按钮
     void init_button() {
-        bt_game = (Button) this.findViewById(R.id.bt_games);
-        bt_set = (Button) this.findViewById(R.id.bt_set);
-        bt_news = (Button) this.findViewById(R.id.bt_news);
-        bt_my = (Button) this.findViewById(R.id.bt_my);
-        bt_make = (Button) this.findViewById(R.id.bt_make);
-        bt_person = (Button) this.findViewById(R.id.bt_person);
-        bt_head = (Button) this.findViewById(R.id.bt_head);
+        Button bt_game = (Button) this.findViewById(R.id.bt_games);
+        Button bt_set = (Button) this.findViewById(R.id.bt_set);
+        Button bt_news = (Button) this.findViewById(R.id.bt_news);
+        Button bt_my = (Button) this.findViewById(R.id.bt_my);
+        Button bt_make = (Button) this.findViewById(R.id.bt_make);
+        Button bt_person = (Button) this.findViewById(R.id.bt_person);
+        Button bt_head = (Button) this.findViewById(R.id.bt_head);
         /*bt_dropdown = (Button) this.findViewById(R.id.arrow);*/
         bt_game.setOnClickListener(this);
         bt_set.setOnClickListener(this);
@@ -329,36 +347,36 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     public void onClick(View v) {
         int tag = v.getId();
         switch (tag) {
+
             case R.id.bt_head:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("修改头像");
                 break;
             case R.id.bt_set:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("设置");
                 break;
             case R.id.bt_make:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("创建队伍");
                 break;
             case R.id.bt_my:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("我的队伍");
                 break;
             case R.id.bt_news:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("我的消息");
                 break;
             case R.id.bt_games:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("所有比赛");
                 break;
             case R.id.bt_person:
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                setActionBarTest("个人信息");
                 break;
-            /*case R.id.arrow:
-                Toast.makeText(this, "下拉", Toast.LENGTH_LONG).show();
-                if (dropState) {
-//                    popupWindow.showAtLocation(bt_dropdown,
-//                            Gravity.RIGHT,0,0);
-                    popupWindow.showAsDropDown(bt_dropdown);
-                    bt_dropdown.setBackgroundResource(R.drawable.arrow_up);
-                    listView.setVisibility(View.INVISIBLE);
-                    dropState = false;
-                } else {
-                    popupWindow.dismiss();
-                    listView.setVisibility(View.VISIBLE);
-                    bt_dropdown.setBackgroundResource(R.drawable.arrow_down);
-                    dropState = true;
-                }
-                break;*/
+
             default:
                 break;
 
@@ -367,6 +385,41 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
     }
+
+    /**
+     * 双击退出函数
+     */
+    private long exitTime = 0;
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - exitTime > 2000) {
+            Toast.makeText(this, R.string.to_exit, Toast.LENGTH_SHORT).show();
+            exitTime = System.currentTimeMillis();
+        } else {
+            this.finish();
+        }
+        // super.onBackPressed();
+    }
+
+    /**
+     * 菜单、返回键响应
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // TODO Auto-generated method stub
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+            if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+            } else {
+                onBackPressed(); // 调用双击退出函数
+            }
+
+        }
+        return false;
+    }
+
 }
 
 
