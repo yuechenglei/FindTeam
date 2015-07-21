@@ -1,7 +1,6 @@
 package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +46,7 @@ public class ListViewAdapter extends BaseAdapter {
             holder = new Holder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.list_item, null);
-            holder.type = (TextView) convertView.findViewById(R.id.item_type_tv);
+           // holder.type = (TextView) convertView.findViewById(R.id.item_type_tv);
             holder.title = (TextView) convertView.findViewById(R.id.item_title_tv);
             holder.content = (TextView)convertView.findViewById(R.id.item_content_tv);
             holder.view = convertView.findViewById(R.id.spacing_view);
@@ -56,7 +55,7 @@ public class ListViewAdapter extends BaseAdapter {
         } else {
             holder = (Holder) convertView.getTag();
         }
-        holder.type.setText("热门赛事");
+       // holder.type.setText("热门赛事");
         holder.title.setText("优衣库");
         holder.content.setText("　冠军虽然只有一个" +
                 "，但通过本次比赛收获良多的，却不只是盛大众信" +
@@ -72,7 +71,7 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     public class Holder {
-        TextView type;
+       // TextView type;
         TextView title;
         TextView content;
         View view;
