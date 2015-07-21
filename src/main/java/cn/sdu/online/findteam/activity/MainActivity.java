@@ -18,6 +18,7 @@ import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,19 +33,26 @@ import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 import cn.sdu.online.findteam.view.XListView;
 
-public class MainActivity extends Activity implements XListView.IXListViewListener {
+public class MainActivity extends Activity implements XListView.IXListViewListener, View.OnClickListener {
     XListView listView;
     private List<HashMap<String, String>> list;
     private ListViewAdapter adapter;
     private Button bt_game, bt_set, bt_news, bt_my, bt_make, bt_person, bt_head;
+    private Button bt_dropdown;//下拉选择菜单按钮
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
+
+    public View contentView;
+    public PopupWindow popupWindow;//弹出下拉菜单
+    private RelativeLayout rela_drop;//下拉的选择按钮
     /**
      * 记录actionsearch按钮的点击状态，true为不搜索状态，false为搜索栏弹出状态
      */
     private boolean acState;
+    private boolean dropState;//下拉状态
     private int search_width;//搜索框的宽度
+    private int drop_width;//下拉选择的宽度
     /**
      * 主界面搜索按钮
      */
@@ -60,6 +68,11 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
+        contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
+        popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
+                ActionBar.LayoutParams.WRAP_CONTENT);
+        rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);
+        init_button();
         listView = (XListView) findViewById(R.id.listview);
         listView.setXListViewListener(this);
         listView.setPullLoadEnable(true);
@@ -75,15 +88,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 Toast.makeText(MainActivity.this, "又点我！", Toast.LENGTH_SHORT).show();
             }
         });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                Log.v("listview", "我被duanan点击");
-            }
-        });
 
         /**
          *设置ActionBar的自定义布局。
@@ -94,6 +98,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
          * 初始化 acState 为true
          */
         acState = true;
+        dropState = true;
         searchButton = (Button) findViewById(R.id.search_button);
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
         /**
@@ -183,12 +188,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 searchLayout.setVisibility(View.VISIBLE);
                 Log.v("宽度", search_width + "");
                 params.setMargins(0, search_width, 0, 0);
-                listView.setLayoutParams(params);
+                rela_drop.setLayoutParams(params);
+                popupWindow.dismiss();
                 acState = false;
             } else {
                 searchLayout.setVisibility(View.GONE);
                 params.setMargins(0, 0, 0, 0);
-                listView.setLayoutParams(params);
+                rela_drop.setLayoutParams(params);
                 acState = true;
             }
         }
@@ -319,7 +325,68 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         return sbBuffer.toString();
     }
 
+    //初始化侧滑的按钮
+    void init_button() {
+        bt_game = (Button) this.findViewById(R.id.bt_games);
+        bt_set = (Button) this.findViewById(R.id.bt_set);
+        bt_news = (Button) this.findViewById(R.id.bt_news);
+        bt_my = (Button) this.findViewById(R.id.bt_my);
+        bt_make = (Button) this.findViewById(R.id.bt_make);
+        bt_person = (Button) this.findViewById(R.id.bt_person);
+        bt_head = (Button) this.findViewById(R.id.bt_head);
+        bt_dropdown = (Button) this.findViewById(R.id.arrow);
+        bt_game.setOnClickListener(this);
+        bt_set.setOnClickListener(this);
+        bt_news.setOnClickListener(this);
+        bt_my.setOnClickListener(this);
+        bt_make.setOnClickListener(this);
+        bt_person.setOnClickListener(this);
+        bt_head.setOnClickListener(this);
+        bt_dropdown.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int tag = v.getId();
+        switch (tag) {
+            case R.id.bt_head:
+                break;
+            case R.id.bt_set:
+                break;
+            case R.id.bt_make:
+                break;
+            case R.id.bt_my:
+                break;
+            case R.id.bt_news:
+                break;
+            case R.id.bt_games:
+                break;
+            case R.id.bt_person:
+                break;
+            case R.id.arrow:
+                Toast.makeText(this, "下拉", Toast.LENGTH_LONG).show();
+                if (dropState) {
+//                    popupWindow.showAtLocation(bt_dropdown,
+//                            Gravity.RIGHT,0,0);
+                    popupWindow.showAsDropDown(bt_dropdown);
+                    bt_dropdown.setBackgroundResource(R.drawable.arrow_up);
+                    listView.setVisibility(View.INVISIBLE);
+                    dropState = false;
+                } else {
+                    popupWindow.dismiss();
+                    listView.setVisibility(View.VISIBLE);
+                    bt_dropdown.setBackgroundResource(R.drawable.arrow_down);
+                    dropState = true;
+                }
+                break;
+            default:
+                break;
+
+
+        }
+
+
+    }
 }
-
 
