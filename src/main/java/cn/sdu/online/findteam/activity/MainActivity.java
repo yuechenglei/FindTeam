@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,7 +51,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     private boolean acState;
     private boolean dropState;//下拉状态
     private int search_width;//搜索框的宽度
-    private int drop_width;//下拉选择的宽度
     /**
      * 主界面搜索按钮
      */
@@ -141,8 +139,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 invalidateOptionsMenu();
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerToggle.syncState();
     }
 
 
@@ -159,21 +155,10 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View v = inflator.inflate(layoutId, null);
             View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-            search_width = getViewW(v);
 
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
             actionBar.setCustomView(v, layout);
         }
-    }
-//获取view 的宽和高
-
-    int getViewW(View view) {
-        int width = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-
-        int height = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-
-        view.measure(width, height);
-        return view.getMeasuredWidth();
     }
 
     private class ActionSearchListener implements View.OnClickListener {
@@ -186,15 +171,15 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         public void onClick(View v) {
             if (acState) {
                 searchLayout.setVisibility(View.VISIBLE);
-                Log.v("宽度", search_width + "");
-                params.setMargins(0, search_width, 0, 0);
-                rela_drop.setLayoutParams(params);
+              //  search_width=searchLayout.getWidth();
+//                params.setMargins(0, 110, 0, 0);
+//                listView.setLayoutParams(params);
                 popupWindow.dismiss();
                 acState = false;
             } else {
                 searchLayout.setVisibility(View.GONE);
-                params.setMargins(0, 0, 0, 0);
-                rela_drop.setLayoutParams(params);
+//                params.setMargins(0, 0, 0, 0);
+//                rela_drop.setLayoutParams(params);
                 acState = true;
             }
         }
@@ -388,5 +373,7 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
 
 
     }
+
+
 }
 
