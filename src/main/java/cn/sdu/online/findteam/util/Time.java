@@ -7,7 +7,7 @@ import java.util.Calendar;
  */
 public class Time {
     /**
-     * 得到刷新时间
+     * 寰楀埌鍒锋柊鏃堕棿
      *
      * @return
      */

@@ -109,7 +109,7 @@ public class MainFragment extends Fragment implements
                     listView.setRefreshTime(Time.getDate());
 
                     HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("name", "Ë¢ĞÂµÃµ½µÄitem");
+                    map.put("name", "åˆ·æ–°å¾—åˆ°çš„item");
 //				list.add(map);
                     list.add(0, map);
                     adapter.notifyDataSetChanged();
@@ -120,7 +120,7 @@ public class MainFragment extends Fragment implements
                     listView.setRefreshTime(Time.getDate());
 
                     HashMap<String, String> map1 = new HashMap<String, String>();
-                    map1.put("name", "¼ÓÔØ¸ü¶àµÃµ½µÄitem");
+                    map1.put("name", "åŠ è½½æ›´å¤šå¾—åˆ°çš„item");
                     list.add(map1);
 
                     adapter.notifyDataSetChanged();
@@ -132,7 +132,7 @@ public class MainFragment extends Fragment implements
     };
 
     /**
-     * ÏÂÀ­Ë¢ĞÂÊµÏÖ
+     * ä¸‹æ‹‰åˆ·æ–°å®ç°
      *
      * @return
      */
@@ -140,7 +140,7 @@ public class MainFragment extends Fragment implements
         list = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 15; i++) {
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("name", "µÚ" + i + "item");
+            map.put("name", "ç¬¬" + i + "item");
             list.add(map);
         }
         return list;
@@ -159,7 +159,7 @@ public class MainFragment extends Fragment implements
     }
 
     /**
-     * @param msg 0ÎªÏÂÀ­Ë¢ĞÂ 1Îª¼ÓÔØ¸ü¶à
+     * @param msg 0ä¸ºä¸‹æ‹‰åˆ·æ–° 1ä¸ºåŠ è½½æ›´å¤š
      */
     private void myThread(final int msg) {
         new Thread() {
@@ -169,7 +169,7 @@ public class MainFragment extends Fragment implements
                     Thread.sleep(1000);
                     handler.sendEmptyMessage(msg);
                 } catch (InterruptedException e) {
-                    // TODO ×Ô¶¯Éú³ÉµÄ catch ¿é
+                    // TODO è‡ªåŠ¨ç”Ÿæˆçš„ catch å—
                     e.printStackTrace();
                 }
 

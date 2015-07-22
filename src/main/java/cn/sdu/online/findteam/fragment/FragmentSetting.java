@@ -3,7 +3,7 @@
  * @Package com.example.shareseed 
  * @Description: TODO 
  * @author YBZ   
- * @date 2014-5-14 ä¸‹åˆ10:58:59 
+ * @date 2014-5-14 æ¶“å¬ªå´10:58:59 
  * @version V1.0   
  */
 package cn.sdu.online.findteam.fragment;
@@ -19,13 +19,8 @@ import android.widget.LinearLayout;
 
 import cn.sdu.online.findteam.R;
 
-/**
- * @ClassName: FragmentSetting
- * @Description: TODO
- * @author YBZ
- * @date 2014-5-14 ÏÂÎç10:58:59
- *
- */
+
+
 public class FragmentSetting extends Fragment implements OnClickListener {
 	private LinearLayout llModifyPwd;
 	private LinearLayout llCompleteInfo;
@@ -109,7 +104,7 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 
 //	public void onResume() {
 //		super.onResume();
-//		MobclickAgent.onPageStart("Setting"); // Í³¼ÆÒ³Ãæ
+//		MobclickAgent.onPageStart("Setting"); // ç»Ÿè®¡é¡µé¢
 //	}
 //
 //	public void onPause() {
