@@ -17,7 +17,7 @@ import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.adapter.SingleCompetitionListAdapter;
-import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
+import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
 
 /**
  * 具体的单个比赛信息界面

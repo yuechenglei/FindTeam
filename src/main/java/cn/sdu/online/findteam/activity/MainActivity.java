@@ -1,14 +1,11 @@
 package cn.sdu.online.findteam.activity;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,37 +13,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ActionMenuView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.adapter.ListViewAdapter;
+import cn.sdu.online.findteam.fragment.FragmentSetting;
+import cn.sdu.online.findteam.fragment.MainFragment;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
-import cn.sdu.online.findteam.view.XListView;
 
-public class MainActivity extends Activity implements XListView.IXListViewListener, View.OnClickListener {
-    XListView listView;
-    private List<HashMap<String, String>> list;
-    private ListViewAdapter adapter;
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
+
     private Button bt_dropdown;//下拉选择菜单按钮
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    public View contentView;
-    public PopupWindow popupWindow;//弹出下拉菜单
-    private RelativeLayout rela_drop;//下拉的选择按钮
+    private FragmentManager fragmentManager;
+    //  public View contentView;
+//    public PopupWindow popupWindow;//弹出下拉菜单
+//    private RelativeLayout rela_drop;//下拉的选择按钮
     /**
      * 记录actionsearch按钮的点击状态，true为不搜索状态，false为搜索栏弹出状态
      */
@@ -71,53 +59,35 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
-        contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
+        //contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
         /*popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);*/
-        init_button();
-        listView = (XListView) findViewById(R.id.listview);
-        listView.setXListViewListener(this);
-        listView.setPullLoadEnable(true);
-        list = getListDate();
-        adapter = new ListViewAdapter(this, list);
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        fragmentManager = getSupportFragmentManager();
 
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    int position, long id) {
-                // TODO Auto-generated method stub
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, SingleCompetitionActivity.class);
-                startActivity(intent);
-            }
-        });
-        /**
-         * 初始化 acState 为true
-         */
-        acState = true;
-        dropState = true;
-        searchButton = (Button) findViewById(R.id.search_button);
-        searchLayout = (LinearLayout) findViewById(R.id.search_layout);
         /**
          *设置ActionBar的自定义布局。
          */
         LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view_actionbar = inflator.inflate(R.layout.actionbar_layout, null);
         setActionBarLayout(view_actionbar);
-        /**
-         * 定义ActionBar上的搜索按钮,并设置监听
-         */
-        actionsearch = (Button) findViewById(R.id.action_search);
-        actionsearch.setOnClickListener(new ActionSearchListener());
+        init_button();
+        initMDrawer();
 
         /**
          * 初始化 acState 为true
          */
         acState = true;
+        //  dropState = true;
+
+        searchLayout = (LinearLayout) findViewById(R.id.search_layout);
+        fragmentManager.beginTransaction()
+                .add(R.id.container, new MainFragment()).commit();
 
 
+    }
+
+    void initMDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
@@ -133,20 +103,21 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
+                //             listView.setEnabled(true);
                 actionsearch.setVisibility(View.VISIBLE);
                 invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                actionsearch.setVisibility(View.INVISIBLE);
+//                listView.setEnabled(false);//设置不可点击
+                actionsearch.setVisibility(View.INVISIBLE);//搜索按钮消失
                 invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
-
 
     /**
      * 布局Id
@@ -174,26 +145,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         title.setText(test);
     }
 
-    private class ActionSearchListener implements View.OnClickListener {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
-        );
-
-        @Override
-        public void onClick(View v) {
-            if (acState) {
-                searchLayout.setVisibility(View.VISIBLE);
-                /*rela_drop.setLayoutParams(params);
-                popupWindow.dismiss();*/
-                acState = false;
-            } else {
-                searchLayout.setVisibility(View.GONE);
-                /*rela_drop.setLayoutParams(params);*/
-                acState = true;
-            }
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -223,105 +174,6 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
     }
 
 
-    /**
-     * 下拉刷新实现
-     *
-     * @return
-     */
-    private List<HashMap<String, String>> getListDate() {
-        list = new ArrayList<HashMap<String, String>>();
-        for (int i = 0; i < 15; i++) {
-            HashMap<String, String> map = new HashMap<String, String>();
-            map.put("name", "第" + i + "item");
-            list.add(map);
-        }
-        return list;
-
-    }
-
-
-    @Override
-    public void onRefresh() {
-        myThread(0);
-    }
-
-    @Override
-    public void onLoadMore() {
-        myThread(1);
-    }
-
-    /**
-     * @param msg 0为下拉刷新 1为加载更多
-     */
-    private void myThread(final int msg) {
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                    handler.sendEmptyMessage(msg);
-                } catch (InterruptedException e) {
-                    // TODO 自动生成的 catch 块
-                    e.printStackTrace();
-                }
-
-            }
-        }.start();
-    }
-
-    @SuppressLint("HandlerLeak")
-    public Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    listView.setRefreshTime(getDate());
-
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    map.put("name", "刷新得到的item");
-//				list.add(map);
-                    list.add(0, map);
-                    adapter.notifyDataSetChanged();
-                    break;
-                case 1:
-                    listView.stopRefresh();
-                    listView.stopLoadMore();
-                    listView.setRefreshTime(getDate());
-
-                    HashMap<String, String> map1 = new HashMap<String, String>();
-                    map1.put("name", "加载更多得到的item");
-                    list.add(map1);
-
-                    adapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-
-        ;
-    };
-
-    /**
-     * 得到刷新时间
-     *
-     * @return
-     */
-    public static String getDate() {
-        Calendar c = Calendar.getInstance();
-
-        String year = String.valueOf(c.get(Calendar.YEAR));
-        String month = String.valueOf(c.get(Calendar.MONTH) + 1);
-        String day = String.valueOf(c.get(Calendar.DAY_OF_MONTH));
-        String hour = String.valueOf(c.get(Calendar.HOUR_OF_DAY));
-        String mins = String.valueOf(c.get(Calendar.MINUTE));
-
-        StringBuffer sbBuffer = new StringBuffer();
-        sbBuffer.append(year + "-" + month + "-" + day + " " + hour + ":"
-                + mins);
-
-        return sbBuffer.toString();
-    }
-
     //初始化侧滑的按钮
     void init_button() {
         Button bt_game = (Button) this.findViewById(R.id.bt_games);
@@ -331,6 +183,13 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
         Button bt_make = (Button) this.findViewById(R.id.bt_make);
         Button bt_person = (Button) this.findViewById(R.id.bt_person);
         Button bt_head = (Button) this.findViewById(R.id.bt_head);
+        searchButton = (Button) findViewById(R.id.search_button);
+        /**
+         * 定义ActionBar上的搜索按钮,并设置监听
+         */
+        actionsearch = (Button) view_actionbar.findViewById(R.id.action_search);
+        actionsearch.setOnClickListener(this);
+        searchButton.setOnClickListener(this);
         /*bt_dropdown = (Button) this.findViewById(R.id.arrow);*/
         bt_game.setOnClickListener(this);
         bt_set.setOnClickListener(this);
@@ -351,10 +210,14 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
             case R.id.bt_head:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("修改头像");
+
+
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("设置");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new FragmentSetting()).commit();
                 break;
             case R.id.bt_make:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
@@ -376,7 +239,19 @@ public class MainActivity extends Activity implements XListView.IXListViewListen
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("个人信息");
                 break;
+            case R.id.action_search:
 
+                if (acState) {
+                    searchLayout.setVisibility(View.VISIBLE);
+                /*rela_drop.setLayoutParams(params);
+                popupWindow.dismiss();*/
+                    acState = false;
+                } else {
+                    searchLayout.setVisibility(View.GONE);
+                /*rela_drop.setLayoutParams(params);*/
+                    acState = true;
+                }
+                break;
             default:
                 break;
 

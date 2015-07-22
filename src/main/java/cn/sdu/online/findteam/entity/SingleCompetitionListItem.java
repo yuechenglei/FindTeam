@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.resource;
+package cn.sdu.online.findteam.entity;
 
 /**
  * 这个类是 SingCompetitionListAdapter 中的数据类
