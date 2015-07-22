@@ -24,6 +24,8 @@ import cn.sdu.online.findteam.view.SingleCompetitionListView;
  */
 public class SingleCompetitionActivity extends Activity {
 
+    public static Context SINGLECONTEXT;
+
     private SingleCompetitionListView singlelistView;
 
     /**
@@ -54,6 +56,8 @@ public class SingleCompetitionActivity extends Activity {
         super.onCreate(savedInstanceState);
         setActionBarLayout(R.layout.singlecompetition_actionbar_layout);
         setContentView(R.layout.singlecompetition_layout);
+
+        SINGLECONTEXT = SingleCompetitionActivity.this;
 
         singlelistView = (SingleCompetitionListView) findViewById(R.id.singlecplist);
         /*imageView = (ImageView) findViewById(R.id.singlecp_item_img);
@@ -107,6 +111,10 @@ public class SingleCompetitionActivity extends Activity {
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
             actionBar.setCustomView(v, layout);
         }
+    }
+
+    public static Context getContext(){
+        return SINGLECONTEXT;
     }
 
 

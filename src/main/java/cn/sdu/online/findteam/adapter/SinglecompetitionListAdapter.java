@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.OtherTeamActivity;
+import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
 import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
+import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 public class SingleCompetitionListAdapter extends BaseAdapter{
 
@@ -67,14 +71,9 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
         viewHolder.look.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-            }
-        });
-
-        viewHolder.join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
+                Intent intent = new Intent();
+                intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
+                SingleCompetitionActivity.getContext().startActivity(intent);
             }
         });
 
