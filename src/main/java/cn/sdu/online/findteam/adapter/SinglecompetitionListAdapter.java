@@ -15,8 +15,7 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
-import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
-import cn.sdu.online.findteam.view.SingleCompetitionListView;
+import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
 
 public class SingleCompetitionListAdapter extends BaseAdapter{
 
@@ -74,6 +73,13 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
                 Intent intent = new Intent();
                 intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
                 SingleCompetitionActivity.getContext().startActivity(intent);
+            }
+        });
+
+        viewHolder.join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

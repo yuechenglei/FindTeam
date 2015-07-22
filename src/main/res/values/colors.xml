@@ -28,4 +28,6 @@
     <color name="clr_pressed42">#00b0c8</color>
     <color name="clr_pressed43">#f88f55</color>
     <color name="clr_pressed44">#b989ad</color>
+    <color name="divider">#70b8b8b8</color>
+    <color name="bg_gray_deep">#ffeeeeee</color>
 </resources>

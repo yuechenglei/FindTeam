@@ -11,7 +11,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
 import cn.sdu.online.findteam.resource.TeamMemberListItem;
 
 public class TeamMemberListViewAdapter extends BaseAdapter{
