@@ -12,14 +12,14 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.resource.SingleCompetitionListItem;
+import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
 
-public class SingleCompetitionListAdapter extends BaseAdapter{
+public class SinglecompetitionListAdapter extends BaseAdapter{
 
     LayoutInflater inflater;;
     List<SingleCompetitionListItem> listItems;
 
-    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
+    public SinglecompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
         inflater = LayoutInflater.from(mContext);
         this.listItems = listItems;
     }
