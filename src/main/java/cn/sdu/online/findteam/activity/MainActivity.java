@@ -2,8 +2,10 @@ package cn.sdu.online.findteam.activity;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
@@ -32,6 +36,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fragmentManager;
+    private List<Fragment> lists;//存放各个fragment
     //  public View contentView;
 //    public PopupWindow popupWindow;//弹出下拉菜单
 //    private RelativeLayout rela_drop;//下拉的选择按钮
@@ -73,6 +78,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setActionBarLayout(view_actionbar);
         init_button();
         initMDrawer();
+        initFragment();
 
         /**
          * 初始化 acState 为true
@@ -81,10 +87,22 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //  dropState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
+
         fragmentManager.beginTransaction()
                 .add(R.id.container, new MainFragment()).commit();
 
 
+    }
+
+    /**
+     * 初始化各个fragment
+     */
+    private void initFragment() {
+//        lists = new ArrayList<Fragment>();
+//        Fragment fg3 = new FragmentSetting();
+//        lists.add(fg1);
+//        lists.add(fg2);
+//        lists.add(fg3);
     }
 
     void initMDrawer() {
@@ -208,10 +226,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         switch (tag) {
 
             case R.id.bt_head:
-                mDrawerLayout.closeDrawer(mDrawerRelative);
-                setActionBarTest("修改头像");
-
-
+                Intent intent = new Intent(MainActivity.this, InfoPersonActivity.class);
+                startActivity(intent);
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -11,35 +12,38 @@ import android.widget.TextView;
 import cn.sdu.online.findteam.R;
 
 
-public class ChangePersonActivity extends Activity {
+public class InfoPersonActivity extends Activity {
     public Button bt_return;
-    public EditText text_nickname,text_introduction,text_tag1,text_tag2,text_tag3,text_realname,
-                    text_gender,text_dress,text_school,text_phonenumber,text_email;
+    public EditText text_nickname, text_introduction, text_tag1, text_tag2, text_tag3, text_realname,
+            text_gender, text_dress, text_school, text_phonenumber, text_email;
     public TextView text_edit;
     public Boolean bl;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.activity_info_person);
+
         bl = true;
-        bt_return = (Button)findViewById(R.id.bt_return);
-        text_nickname = (EditText)findViewById(R.id.text_nickname);
-        text_introduction = (EditText)findViewById(R.id.text_introduction);
-        text_tag1 = (EditText)findViewById(R.id.text_tag1);
-        text_tag2 = (EditText)findViewById(R.id.text_tag2);
-        text_tag3 = (EditText)findViewById(R.id.text_tag3);
-        text_realname = (EditText)findViewById(R.id.text_realname);
-        text_gender = (EditText)findViewById(R.id.text_gender);
-        text_dress = (EditText)findViewById(R.id.text_dress);
-        text_school = (EditText)findViewById(R.id.text_school);
-        text_phonenumber = (EditText)findViewById(R.id.text_phonenumber);
-        text_email = (EditText)findViewById(R.id.text_email);
+        bt_return = (Button) findViewById(R.id.bt_return);
+        text_nickname = (EditText) findViewById(R.id.text_nickname);
+        text_introduction = (EditText) findViewById(R.id.text_introduction);
+        text_tag1 = (EditText) findViewById(R.id.text_tag1);
+        text_tag2 = (EditText) findViewById(R.id.text_tag2);
+        text_tag3 = (EditText) findViewById(R.id.text_tag3);
+        text_realname = (EditText) findViewById(R.id.text_realname);
+        text_gender = (EditText) findViewById(R.id.text_gender);
+        text_dress = (EditText) findViewById(R.id.text_dress);
+        text_school = (EditText) findViewById(R.id.text_school);
+        text_phonenumber = (EditText) findViewById(R.id.text_phonenumber);
+        text_email = (EditText) findViewById(R.id.text_email);
         text_edit = (TextView) findViewById(R.id.text_edit);
 
         text_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(bl){
+                if (bl) {
                     text_nickname.setFocusableInTouchMode(true);
                     text_nickname.requestFocus();
                     text_introduction.setFocusableInTouchMode(true);
@@ -66,7 +70,7 @@ public class ChangePersonActivity extends Activity {
                     text_edit.setText("保存资料");
                     text_edit.setTextColor(Color.WHITE);
                     bl = false;
-                }else{
+                } else {
                     text_nickname.setFocusableInTouchMode(false);
                     text_nickname.requestFocus();
                     text_nickname.clearFocus();
@@ -105,6 +109,12 @@ public class ChangePersonActivity extends Activity {
                     text_edit.setTextColor(Color.BLACK);
                     bl = true;
                 }
+            }
+        });
+        bt_return.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
