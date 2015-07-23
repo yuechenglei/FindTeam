@@ -12,7 +12,7 @@ import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.adapter.TeamMemberListViewAdapter;
-import cn.sdu.online.findteam.resource.TeamMemberListItem;
+import cn.sdu.online.findteam.entity.TeamMemberListItem;
 
 public class TeamMemberFragment extends Fragment {
 

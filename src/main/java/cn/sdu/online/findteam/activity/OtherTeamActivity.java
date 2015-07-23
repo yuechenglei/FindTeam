@@ -1,6 +1,5 @@
 package cn.sdu.online.findteam.activity;
 
-import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -52,9 +51,17 @@ public class OtherTeamActivity extends FragmentActivity {
      */
     private ImageView mTabLineIv;
 
+    /**
+     *  三个引导fragment的 Layout
+     */
     private LinearLayout teaminfo_ll;
     private LinearLayout teammem_ll;
     private LinearLayout teamlog_ll;
+
+    /**
+     * 返回按钮
+     */
+    private ImageView backimg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +79,7 @@ public class OtherTeamActivity extends FragmentActivity {
         mTeamMemTv = (TextView) this.findViewById(R.id.id_teammem_tv);
         mTabLineIv = (ImageView) this.findViewById(R.id.id_tab_line_iv);
         mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
+        backimg = (ImageView) this.findViewById(R.id.otherteam_back_img);
     }
 
     private void init() {
@@ -162,6 +170,12 @@ public class OtherTeamActivity extends FragmentActivity {
             }
         });
         setTabListener();
+        backimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OtherTeamActivity.this.finish();
+            }
+        });
     }
 
     /**

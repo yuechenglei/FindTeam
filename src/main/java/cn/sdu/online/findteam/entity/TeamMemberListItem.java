@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.resource;
+package cn.sdu.online.findteam.entity;
 
 public class TeamMemberListItem {
     public String name;

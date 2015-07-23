@@ -4,12 +4,11 @@
     android:layout_height="140dp"
     android:orientation="horizontal">
 
-    <ImageView
+    <cn.sdu.online.findteam.resource.RoundImageView
         android:id="@+id/singlecp_item_img"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@drawable/singlecompetition_itemimg"
-        android:background="@drawable/circle"
         android:scaleType="centerCrop"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"

@@ -19,7 +19,7 @@ import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
 
 public class SingleCompetitionListAdapter extends BaseAdapter{
 
-    LayoutInflater inflater;;
+    LayoutInflater inflater;
     List<SingleCompetitionListItem> listItems;
 
     public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
