@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="大师兄"
             android:textColor="#000000"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:layout_marginBottom="13dp"/>
 
         <TextView

@@ -33,6 +33,7 @@
 
         <activity android:name=".activity.OtherTeamActivity"/>
 
+        <activity android:name=".activity.TeamLogActivity"/>
     </application>
 
 </manifest>

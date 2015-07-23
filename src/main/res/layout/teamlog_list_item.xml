@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@drawable/shadow"
+        android:background="@drawable/mainlistview_item_bg"
         android:orientation="vertical">
 
         <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
                 android:layout_marginRight="12dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
@@ -42,7 +42,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="大师兄"
                     android:textColor="#000000"
-                    android:textSize="20sp" />
+                    android:textSize="17sp" />
 
                 <TextView
                     android:id="@+id/teamlog_time"
@@ -50,7 +50,7 @@
                     android:layout_height="wrap_content"
                     android:text="2015年7月23日 11:19"
                     android:textColor="@color/textcolor_gray"
-                    android:textSize="14sp" />
+                    android:textSize="12sp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -59,7 +59,7 @@
             android:id="@+id/teamlog_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="5dp"
@@ -68,7 +68,7 @@
             android:maxLines="4"
             android:text="我是严肃的日志~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
             android:textColor="#000000"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
     </LinearLayout>
 

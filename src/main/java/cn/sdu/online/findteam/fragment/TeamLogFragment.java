@@ -1,15 +1,19 @@
 package cn.sdu.online.findteam.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.OtherTeamActivity;
+import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.adapter.TeamLogListViewAdapter;
 import cn.sdu.online.findteam.entity.TeamLogListViewItem;
 import cn.sdu.online.findteam.view.SingleCompetitionListView;
@@ -45,6 +49,15 @@ public class TeamLogFragment extends Fragment {
 
         teamLogListViewAdapter= new TeamLogListViewAdapter(TeamLogFragment.this.getActivity().getApplicationContext(), listViewItems);
         listView.setAdapter(teamLogListViewAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent();
+                intent.setClass(OtherTeamActivity.getContext(), TeamLogActivity.class);
+                OtherTeamActivity.getContext().startActivity(intent);
+            }
+        });
 
         return view;
     }

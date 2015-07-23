@@ -153,7 +153,7 @@
             android:layout_height="match_parent"
             android:text="加入队伍"
             android:textColor="@color/singlecompetiton_buttontext_bg"
-            android:textSize="22sp"
+            android:textSize="20sp"
             android:background="@drawable/simplecompetition_button_bg"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />

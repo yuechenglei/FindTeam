@@ -1,5 +1,6 @@
 package cn.sdu.online.findteam.activity;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
 
 public class OtherTeamActivity extends FragmentActivity {
+    public static Context mContext;
 
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
     private OtherTeamFragmentAdapter mFragmentAdapter;
@@ -68,6 +70,7 @@ public class OtherTeamActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.otherteam_layout);
+        mContext = OtherTeamActivity.this;
         findById();
         init();
         initTabLineWidth();
@@ -222,5 +225,9 @@ public class OtherTeamActivity extends FragmentActivity {
                 mPageVp.setCurrentItem(2);
             }
         });
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }
