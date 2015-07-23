@@ -24,6 +24,7 @@ import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
  */
 public class SingleCompetitionActivity extends Activity {
 
+    public static Context SingleCompetitionContext;
     private ListView singlelistView;
 
     /**
@@ -55,6 +56,7 @@ public class SingleCompetitionActivity extends Activity {
         setActionBarLayout(R.layout.singlecompetition_actionbar_layout);
         setContentView(R.layout.singlecompetition_layout);
 
+        SingleCompetitionContext = SingleCompetitionActivity.this;
         singlelistView = (ListView) findViewById(R.id.singlecplist);
         /*imageView = (ImageView) findViewById(R.id.singlecp_item_img);
         teamname = (TextView) findViewById(R.id.singlecp_item_teamname);
@@ -109,5 +111,7 @@ public class SingleCompetitionActivity extends Activity {
         }
     }
 
-
+    public static Context getContext(){
+        return SingleCompetitionContext;
+    }
 }
