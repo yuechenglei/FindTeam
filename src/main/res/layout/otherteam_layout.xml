@@ -20,6 +20,8 @@
             android:id="@+id/otherteam_back_img"
             android:layout_width="35dp"
             android:layout_height="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
             android:src="@drawable/singlecompetition_backbt_bg" />
 
         <cn.sdu.online.findteam.resource.RoundImageView

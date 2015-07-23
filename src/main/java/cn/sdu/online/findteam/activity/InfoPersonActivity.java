@@ -106,7 +106,7 @@ public class InfoPersonActivity extends Activity {
                     text_email.clearFocus();
                     text_edit.setBackgroundColor(Color.WHITE);
                     text_edit.setText("编辑资料");
-                    text_edit.setTextColor(Color.BLACK);
+                    text_edit.setTextColor(Color.rgb(80,154,255));
                     bl = true;
                 }
             }
