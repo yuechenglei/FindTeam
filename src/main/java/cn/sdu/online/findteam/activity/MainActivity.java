@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -26,8 +25,6 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
@@ -239,32 +236,46 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.bt_head:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                Timer timer3 = new Timer(true);
-                TimerTask timerTask3 = new TimerTask() {
+                Timer timer1 = new Timer(true);
+                TimerTask timerTask1 = new TimerTask() {
                     @Override
                     public void run() {
                         Intent intent = new Intent(MainActivity.this, InfoPersonActivity.class);
                         startActivity(intent);
                     }
                 };
-                timer3.schedule(timerTask3,200);
+                timer1.schedule(timerTask1,200);
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer2 = new Timer(true);
+                TimerTask timerTask2 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, new FragmentSetting()).commit();
+                    }
+                };
+                timer2.schedule(timerTask2, 200);
                 setActionBarTest("设置");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new FragmentSetting()).commit();
                 break;
             case R.id.bt_make:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer3 = new Timer(true);
+                TimerTask timerTask3 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, new BuildTeamFragment()).commit();
+                    }
+                };
+                timer3.schedule(timerTask3, 200);
                 setActionBarTest("创建队伍");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new BuildTeamFragment()).commit();
                 break;
             case R.id.bt_my:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                Timer timer = new Timer(true);
-                TimerTask timerTask = new TimerTask() {
+                Timer timer4 = new Timer(true);
+                TimerTask timerTask4 = new TimerTask() {
                     @Override
                     public void run() {
                         Intent intent1 = new Intent();
@@ -273,16 +284,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         startActivity(intent1);
                     }
                 };
-                timer.schedule(timerTask,200);
+                timer4.schedule(timerTask4,200);
                 /*setActionBarTest("我的队伍");*/
 
                 break;
             case R.id.bt_news:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                /* setActionBarTest("我的消息");*/
-                //延迟800毫秒，让侧边栏完全收回时再开新的Activity
-                Timer timer1 = new Timer(true);
-                TimerTask timerTask1 = new TimerTask() {
+                //延迟200毫秒，让侧边栏完全收回时再开新的Activity
+                Timer timer5 = new Timer(true);
+                TimerTask timerTask5 = new TimerTask() {
                     @Override
                     public void run() {
                         Intent intent2 = new Intent();
@@ -290,14 +301,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         startActivity(intent2);
                     }
                 };
-                timer1.schedule(timerTask1,200);
+                timer5.schedule(timerTask5,200);
                 break;
             case R.id.bt_games:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer6 = new Timer(true);
+                TimerTask timerTask6 = new TimerTask() {
+                    @Override
+                    public void run() {
+
+                    }
+                };
+                timer6.schedule(timerTask6, 200);
                 setActionBarTest("所有比赛");
                 break;
             case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer7 = new Timer(true);
+                TimerTask timerTask7 = new TimerTask() {
+                    @Override
+                    public void run() {
+                    }
+                };
+                timer7.schedule(timerTask7, 200);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new MainFragment()).commit();

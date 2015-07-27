@@ -47,8 +47,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         bt_changehead.setOnClickListener(this);
         bt_confirm = (TextView) view.findViewById(R.id.bt_confirm);
         bt_confirm.setOnClickListener(this);
-        bt_return = (Button) view.findViewById(R.id.bt_return);
-        bt_return.setOnClickListener(this);
 
         spinner_number = (Spinner) view.findViewById(R.id.spinnernumber);
         adapter_number = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, number);

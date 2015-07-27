@@ -2,9 +2,6 @@ package cn.sdu.online.findteam.util;
 
 import java.util.Calendar;
 
-/**
- * Created by chenglei on 2015/7/22.
- */
 public class Time {
     /**
      * 得到刷新时间
