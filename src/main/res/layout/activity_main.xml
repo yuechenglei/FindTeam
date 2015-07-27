@@ -1,6 +1,6 @@
 <android.support.v4.widget.DrawerLayout
-    android:id="@+id/drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -40,8 +40,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        >
+        android:gravity="center_vertical">
 
         <LinearLayout
             android:id="@+id/search_layout"
@@ -51,8 +50,7 @@
             android:layout_alignParentRight="true"
             android:background="@color/blue_color"
             android:orientation="horizontal"
-            android:visibility="gone"
-            >
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/main_searchtext"
@@ -64,7 +62,7 @@
                 android:background="@drawable/main_search_shape"
                 android:gravity="center"
                 android:hint="@string/search"
-                android:inputType="text"/>
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/search_button"
@@ -79,7 +77,7 @@
                 android:gravity="center"
                 android:text="@string/search"
                 android:textColor="#ffffff"
-                android:textSize="10pt"/>
+                android:textSize="10pt" />
         </LinearLayout>
 
 
@@ -87,9 +85,9 @@
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/search_layout"/>
+            android:layout_below="@+id/search_layout" />
     </RelativeLayout>
 
-    <include layout="@layout/drawer_layout"/>
+    <include layout="@layout/drawer_layout" />
 
 </android.support.v4.widget.DrawerLayout>

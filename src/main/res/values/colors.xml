@@ -30,4 +30,21 @@
     <color name="clr_pressed44">#b989ad</color>
     <color name="divider">#70b8b8b8</color>
     <color name="bg_gray_deep">#ffeeeeee</color>
+
+
+
+    <color name="background_app">#dedede</color>
+
+    <color name="background_list_back">#e3e3e3</color>
+    <color name="background_list_front">#ffffff</color>
+    <color name="text_title">#444444</color>
+    <color name="text_description">#7e7e7e</color>
+
+    <color name="line">#ffbcbcbc</color>
+
+    <color name="background_new_tag">#ff0000</color>
+    <color name="text_new_tag">#ffffff</color>
+
+    <color name="blue_changehead">#519aff</color>
+
 </resources>

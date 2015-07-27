@@ -140,7 +140,7 @@ public class MainFragment extends Fragment implements
         list = new ArrayList<HashMap<String, String>>();
         for (int i = 0; i < 15; i++) {
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("name", "第" + i + "item");
+            map.put("name", "第" + i + "项");
             list.add(map);
         }
         return list;

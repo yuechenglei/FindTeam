@@ -142,18 +142,18 @@
 
 
         <Button
-            android:id="@+id/bt_person"
+            android:id="@+id/bt_hot"
             android:layout_width="@dimen/draw_button_h"
             android:layout_height="@dimen/draw_button_h"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp"
-            android:background="@drawable/team_games"/>
+            android:background="@drawable/hot_competition_icon"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="学线二傻"
+            android:text="热门赛事"
             android:textColor="@color/white_color"
             android:textSize="@dimen/size16"/>
 

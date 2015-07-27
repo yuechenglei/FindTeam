@@ -37,4 +37,9 @@
     <string name="t43">C</string>
     <string name="t44">D</string>
     <string name="to_exit">再按一次返回键退出</string>
+
+    <string name="string_number">请选择</string>
+    <string name="string_year">年</string>
+    <string name="string_month">月</string>
+    <string name="string_day">日</string>
 </resources>

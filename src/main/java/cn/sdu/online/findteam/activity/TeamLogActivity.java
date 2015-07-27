@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ActionMenuView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import cn.sdu.online.findteam.R;
@@ -16,6 +17,7 @@ public class TeamLogActivity extends Activity implements View.OnClickListener{
 
     private Button back/*addview,*/;
     private LinearLayout discuss_item;
+    private EditText editText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,9 +28,11 @@ public class TeamLogActivity extends Activity implements View.OnClickListener{
         /*addview = (Button) findViewById(R.id.add_view);*/
         back = (Button) findViewById(R.id.teamlog_back_bt);
         discuss_item = (LinearLayout) findViewById(R.id.discuss_item_linearlayout);
+        editText = (EditText) findViewById(R.id.write_discuss);
 
        /* addview.setOnClickListener(this);*/
         back.setOnClickListener(this);
+        editText.setOnClickListener(this);
     }
 
     /**
@@ -58,6 +62,10 @@ public class TeamLogActivity extends Activity implements View.OnClickListener{
 
             case R.id.teamlog_back_bt:
                 TeamLogActivity.this.finish();
+                break;
+            case R.id.write_discuss:
+                editText.setFocusableInTouchMode(true);
+                editText.requestFocus();
                 break;
             default:
                 break;

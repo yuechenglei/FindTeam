@@ -24,6 +24,17 @@
             android:layout_marginLeft="15dp"
             android:src="@drawable/singlecompetition_backbt_bg" />
 
+        <Button
+            android:id="@+id/team_setting_bt"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/team_setting_bt"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="15dp"
+            android:visibility="gone"/>
+
         <cn.sdu.online.findteam.resource.RoundImageView
             android:layout_width="105dp"
             android:layout_height="105dp"
@@ -142,6 +153,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/join_otherteam_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="0dp"

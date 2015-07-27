@@ -7,5 +7,17 @@
     <ListView
         android:id="@+id/teammem_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/invite_new_member"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:text="邀请新成员"
+        android:textColor="@color/singlecompetiton_buttontext_bg"
+        android:textSize="20sp"
+        android:background="@drawable/simplecompetition_button_bg"
+        android:visibility="gone"/>
 </LinearLayout>

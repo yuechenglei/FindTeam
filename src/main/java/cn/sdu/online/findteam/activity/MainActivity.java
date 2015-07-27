@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -16,14 +17,20 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ActionMenuView;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
@@ -110,7 +117,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
 
 
-        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this) {
+        final DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this) {
             @Override
             public boolean isLayoutRtl() {
                 return false;
@@ -128,6 +135,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+
+                FrameLayout frameLayout = (FrameLayout) findViewById(R.id.container);
+                View view = frameLayout.getChildAt(0);
+                view.setClickable(false);
+
 //                listView.setEnabled(false);//设置不可点击
                 actionsearch.setVisibility(View.INVISIBLE);//搜索按钮消失
                 invalidateOptionsMenu();
@@ -199,7 +211,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Button bt_news = (Button) this.findViewById(R.id.bt_news);
         Button bt_my = (Button) this.findViewById(R.id.bt_my);
         Button bt_make = (Button) this.findViewById(R.id.bt_make);
-        Button bt_person = (Button) this.findViewById(R.id.bt_person);
+        Button bt_hot = (Button) this.findViewById(R.id.bt_hot);
         Button bt_head = (Button) this.findViewById(R.id.bt_head);
         searchButton = (Button) findViewById(R.id.search_button);
         /**
@@ -214,7 +226,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bt_news.setOnClickListener(this);
         bt_my.setOnClickListener(this);
         bt_make.setOnClickListener(this);
-        bt_person.setOnClickListener(this);
+        bt_hot.setOnClickListener(this);
         bt_head.setOnClickListener(this);
         /*bt_dropdown.setOnClickListener(this);*/
 
@@ -226,8 +238,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         switch (tag) {
 
             case R.id.bt_head:
-                Intent intent = new Intent(MainActivity.this, InfoPersonActivity.class);
-                startActivity(intent);
+                mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer3 = new Timer(true);
+                TimerTask timerTask3 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(MainActivity.this, InfoPersonActivity.class);
+                        startActivity(intent);
+                    }
+                };
+                timer3.schedule(timerTask3,200);
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
@@ -238,25 +258,51 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.bt_make:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("创建队伍");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new BuildTeamFragment()).commit();
                 break;
             case R.id.bt_my:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                setActionBarTest("我的队伍");
+                Timer timer = new Timer(true);
+                TimerTask timerTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent1 = new Intent();
+                        intent1.setClass(MainActivity.this,MyTeamActivity.class);
+                        intent1.putExtra("identity","队长");
+                        startActivity(intent1);
+                    }
+                };
+                timer.schedule(timerTask,200);
+                /*setActionBarTest("我的队伍");*/
+
                 break;
             case R.id.bt_news:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                setActionBarTest("我的消息");
+               /* setActionBarTest("我的消息");*/
+                //延迟800毫秒，让侧边栏完全收回时再开新的Activity
+                Timer timer1 = new Timer(true);
+                TimerTask timerTask1 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        Intent intent2 = new Intent();
+                        intent2.setClass(MainActivity.this,MyMessageActivity.class);
+                        startActivity(intent2);
+                    }
+                };
+                timer1.schedule(timerTask1,200);
                 break;
             case R.id.bt_games:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("所有比赛");
                 break;
-            case R.id.bt_person:
+            case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                setActionBarTest("个人信息");
+                setActionBarTest("热门赛事");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new MainFragment()).commit();
                 break;
             case R.id.action_search:
-
                 if (acState) {
                     searchLayout.setVisibility(View.VISIBLE);
                 /*rela_drop.setLayoutParams(params);
@@ -270,11 +316,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             default:
                 break;
-
-
         }
-
-
     }
 
     /**

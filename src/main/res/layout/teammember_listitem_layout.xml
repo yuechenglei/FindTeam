@@ -34,6 +34,7 @@
             android:text="孙悟空是中国最著名的神话角色之一，出自四大古典名著之《西游记》。相传他由开天辟地以来的仙石孕育而生，因带领群猴进入水帘洞而成为众猴之王，号称为 “美猴王”。后来在西牛贺洲拜菩提祖师为师学艺，得名孙悟空，学会地煞七十二变、筋斗云等高超的法术。"
             android:maxLines="2"
             android:ellipsize="end"
+            android:textSize="14sp"
             android:textColor="@color/textcolor_gray"
             android:layout_below="@id/teammember_name"/>
     </RelativeLayout>

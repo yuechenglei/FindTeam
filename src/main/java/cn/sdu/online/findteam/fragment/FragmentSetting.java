@@ -40,7 +40,7 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 		FindViews();
 		AddListeners();
 		return view;
-	}
+}
 
 	private void FindViews() {
 		llModifyPwd = (LinearLayout) view.findViewById(R.id.ll_modify_pwd);
