@@ -198,14 +198,14 @@
                         android:id="@+id/text_introduction"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minLines="6"
-                        android:gravity="start"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/frame_black"
+                        android:gravity="start"
                         android:hint="输入你的队伍简介吧"
+                        android:minLines="6"
                         android:paddingLeft="5dp"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -389,7 +389,7 @@
                     <cn.sdu.online.findteam.resource.WiperSwitch
                         android:id="@+id/switch_test"
                         android:layout_width="60dp"
-                        android:layout_height="45dp"
+                        android:layout_height="35dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="15dp" />
                 </RelativeLayout>
@@ -435,7 +435,7 @@
                         <cn.sdu.online.findteam.resource.WiperSwitch
                             android:id="@+id/switch_see"
                             android:layout_width="60dp"
-                            android:layout_height="45dp"
+                            android:layout_height="35dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="15dp" />
@@ -446,7 +446,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="8dp"
-                android:background="@color/white_color"/>
+                android:background="@color/white_color" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -482,11 +482,11 @@
 
                         <cn.sdu.online.findteam.resource.WiperSwitch
                             android:id="@+id/switch_comment"
-                            android:layout_width="20dp"
-                            android:layout_height="15dp"
+                            android:layout_width="60dp"
+                            android:layout_height="35dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
-                            android:layout_marginRight="15dp"/>
+                            android:layout_marginRight="15dp" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -494,17 +494,17 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="15dp"
-                android:background="@color/white_color"/>
+                android:background="@color/white_color" />
 
             <TextView
                 android:id="@+id/bt_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
                 android:background="@drawable/simplecompetition_button_bg"
                 android:clickable="true"
                 android:gravity="center"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
                 android:text="确定"
                 android:textColor="@color/singlecompetiton_buttontext_bg"
                 android:textSize="18sp" />

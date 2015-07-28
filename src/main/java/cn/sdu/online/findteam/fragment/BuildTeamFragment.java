@@ -11,11 +11,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.resource.WiperSwitch;
+import cn.sdu.online.findteam.resource.WiperSwitch.OnChangedListener;
 
 
-public class BuildTeamFragment extends Fragment implements View.OnClickListener {
+public class BuildTeamFragment extends Fragment implements View.OnClickListener,OnChangedListener {
 
     public TextView bt_confirm;
     public EditText text_teamname, text_introduction;
@@ -28,6 +31,8 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
     private ArrayAdapter<String> adapter_number, adapter_year, adapter_month, adapter_day;
 
     private View view;
+
+    private WiperSwitch wiperSwitch1,wiperSwitch2,wiperSwitch3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -75,8 +80,29 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         spinner_day.setAdapter(adapter_day);
         spinner_day.setOnItemSelectedListener(new SpinnerSelectedListener_day());
         spinner_day.setVisibility(View.VISIBLE);
+
+        wiperSwitch1 = (WiperSwitch) view.findViewById(R.id.switch_test);
+        wiperSwitch2 = (WiperSwitch) view.findViewById(R.id.switch_see);
+        wiperSwitch3 = (WiperSwitch) view.findViewById(R.id.switch_comment);
+        wiperSwitch1.setChecked(false);
+        wiperSwitch2.setChecked(false);
+        wiperSwitch3.setChecked(false);
+        wiperSwitch1.setOnChangedListener(this);
+        wiperSwitch2.setOnChangedListener(this);
+        wiperSwitch3.setOnChangedListener(this);
     }
 
+    @Override
+    public void OnChanged(WiperSwitch wiperSwitch, boolean checkState) {
+        if (checkState == false) {
+            Toast.makeText(BuildTeamFragment.this.getActivity(),
+                    "您关闭了我",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(BuildTeamFragment.this.getActivity(),
+                    "您打开了我",Toast.LENGTH_SHORT).show();
+        }
+    }
 
     class SpinnerSelectedListener_number implements AdapterView.OnItemSelectedListener {
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
