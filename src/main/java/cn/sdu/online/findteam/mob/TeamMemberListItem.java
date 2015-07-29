@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.entity;
+package cn.sdu.online.findteam.mob;
 
 public class TeamMemberListItem {
     public String name;

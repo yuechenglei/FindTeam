@@ -9,10 +9,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.Window;
 import android.widget.ActionMenuView;
 import android.widget.Button;
@@ -54,14 +56,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
      */
     private Button actionsearch;
     private Button searchButton;
-    /**
-     * 主界面的搜索框布局
-     */
+    // 主界面的搜索框布局
     private LinearLayout searchLayout;
-    /**
-     * 导航栏
-     */
+    // 导航栏
     private View view_actionbar;
+
+    private LinearLayout mVisitorDrawerLayout;
+    // 获取intent传入的字符串和Id号
+    private String intentString;
+    private int Id;
+    // 侧边栏用户名
+    private TextView tv_text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,47 +77,48 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         /*popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
         rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);*/
-        fragmentManager = getSupportFragmentManager();
 
-        /**
-         *设置ActionBar的自定义布局。
-         */
+        intentString = getIntent().getExtras().getString("loginIdentity");
+
+        fragmentManager = getSupportFragmentManager();
+        // 设置ActionBar的自定义布局。
         LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view_actionbar = inflator.inflate(R.layout.actionbar_layout, null);
         setActionBarLayout(view_actionbar);
-        init_button();
-        initMDrawer();
-        initFragment();
 
-        /**
-         * 初始化 acState 为true
-         */
+        if (intentString.startsWith("<##用户##>")) {
+            Log.v("用户", intentString);
+            ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
+            viewStub.setLayoutResource(R.layout.drawer_layout);
+            viewStub.inflate();
+            mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
+            initMDrawer();
+            init_button();
+            tv_text = (TextView) findViewById(R.id.tv_name);
+            int intentInt = getIntent().getExtras().getInt("loginID");
+            tv_text.setText(intentString.substring(8) + "(ID:" + intentInt + ")");
+        } else {
+            Log.v("游客",intentString);
+            ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
+            viewStub.setLayoutResource(R.layout.visitor_drawer_layout);
+            viewStub.inflate();
+            mVisitorDrawerLayout = (LinearLayout) findViewById(R.id.visitor_drawer_layout);
+            initMDrawer();
+            init_Visitor_Btn();
+        }
+        // 初始化 acState 为true
         acState = true;
-        //  dropState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
 
         fragmentManager.beginTransaction()
                 .add(R.id.container, new MainFragment()).commit();
 
-
-    }
-
-    /**
-     * 初始化各个fragment
-     */
-    private void initFragment() {
-//        lists = new ArrayList<Fragment>();
-//        Fragment fg3 = new FragmentSetting();
-//        lists.add(fg1);
-//        lists.add(fg2);
-//        lists.add(fg3);
     }
 
     void initMDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerRelative = (RelativeLayout) findViewById(R.id.navdrawer);
-
+        mVisitorDrawerLayout = (LinearLayout) findViewById(R.id.visitor_drawer_layout);
 
         final DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(this) {
             @Override
@@ -176,12 +182,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
-                mDrawerLayout.closeDrawer(mDrawerRelative);
+            if (mDrawerRelative != null) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
+                    mDrawerLayout.closeDrawer(mDrawerRelative);
 
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerRelative);
+
+                }
             } else {
-                mDrawerLayout.openDrawer(mDrawerRelative);
-
+                if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)) {
+                    mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                } else {
+                    mDrawerLayout.openDrawer(mVisitorDrawerLayout);
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -200,8 +214,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
-
-    //初始化侧滑的按钮
+    //初始化用户的侧滑的按钮
     void init_button() {
         Button bt_game = (Button) this.findViewById(R.id.bt_games);
         Button bt_set = (Button) this.findViewById(R.id.bt_set);
@@ -210,13 +223,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Button bt_make = (Button) this.findViewById(R.id.bt_make);
         Button bt_hot = (Button) this.findViewById(R.id.bt_hot);
         Button bt_head = (Button) this.findViewById(R.id.bt_head);
+        bt_head.setBackgroundResource(R.drawable.head_moren);
+
         searchButton = (Button) findViewById(R.id.search_button);
-        /**
-         * 定义ActionBar上的搜索按钮,并设置监听
-         */
         actionsearch = (Button) view_actionbar.findViewById(R.id.action_search);
         actionsearch.setOnClickListener(this);
         searchButton.setOnClickListener(this);
+
         /*bt_dropdown = (Button) this.findViewById(R.id.arrow);*/
         bt_game.setOnClickListener(this);
         bt_set.setOnClickListener(this);
@@ -226,14 +239,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bt_hot.setOnClickListener(this);
         bt_head.setOnClickListener(this);
         /*bt_dropdown.setOnClickListener(this);*/
+    }
 
+    private void init_Visitor_Btn() {
+        Button visitorLogin = (Button) findViewById(R.id.visitor_login_btn);
+        LinearLayout visitorAllGame = (LinearLayout) findViewById(R.id.visitor_allgame_btn);
+        LinearLayout visitorHotGame = (LinearLayout) findViewById(R.id.visitor_hotgame_btn);
+        LinearLayout visitorSetting = (LinearLayout) findViewById(R.id.visitor_setting_btn);
+
+        searchButton = (Button) findViewById(R.id.search_button);
+        actionsearch = (Button) view_actionbar.findViewById(R.id.action_search);
+        actionsearch.setOnClickListener(this);
+        searchButton.setOnClickListener(this);
+
+        visitorAllGame.setOnClickListener(this);
+        visitorHotGame.setOnClickListener(this);
+        visitorLogin.setOnClickListener(this);
+        visitorSetting.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         int tag = v.getId();
         switch (tag) {
-
             case R.id.bt_head:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 Timer timer1 = new Timer(true);
@@ -244,7 +272,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         startActivity(intent);
                     }
                 };
-                timer1.schedule(timerTask1,200);
+                timer1.schedule(timerTask1, 200);
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
@@ -279,12 +307,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void run() {
                         Intent intent1 = new Intent();
-                        intent1.setClass(MainActivity.this,MyTeamActivity.class);
-                        intent1.putExtra("identity","队长");
+                        intent1.setClass(MainActivity.this, MyTeamActivity.class);
+                        intent1.putExtra("identity", "队长");
                         startActivity(intent1);
                     }
                 };
-                timer4.schedule(timerTask4,200);
+                timer4.schedule(timerTask4, 200);
                 /*setActionBarTest("我的队伍");*/
 
                 break;
@@ -297,11 +325,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void run() {
                         Intent intent2 = new Intent();
-                        intent2.setClass(MainActivity.this,MyMessageActivity.class);
+                        intent2.setClass(MainActivity.this, MyMessageActivity.class);
                         startActivity(intent2);
                     }
                 };
-                timer5.schedule(timerTask5,200);
+                timer5.schedule(timerTask5, 200);
                 break;
             case R.id.bt_games:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
@@ -317,13 +345,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                Timer timer7 = new Timer(true);
-                TimerTask timerTask7 = new TimerTask() {
-                    @Override
-                    public void run() {
-                    }
-                };
-                timer7.schedule(timerTask7, 200);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, new MainFragment()).commit();
@@ -340,6 +361,39 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     acState = true;
                 }
                 break;
+
+            case R.id.visitor_allgame_btn:
+                mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                setActionBarTest("所有比赛");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new MainFragment()).commit();
+                break;
+
+            case R.id.visitor_hotgame_btn:
+                mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                setActionBarTest("热门赛事");
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, new MainFragment()).commit();
+                break;
+
+            case R.id.visitor_setting_btn:
+                mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                Timer timer7 = new Timer(true);
+                TimerTask timerTask7 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, new FragmentSetting()).commit();
+                    }
+                };
+                timer7.schedule(timerTask7, 200);
+                setActionBarTest("设置");
+                break;
+
+            case R.id.visitor_login_btn:
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
             default:
                 break;
         }
@@ -369,10 +423,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // TODO Auto-generated method stub
         if (keyCode == KeyEvent.KEYCODE_BACK) {
 
-            if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
-                mDrawerLayout.closeDrawer(mDrawerRelative);
-            } else {
-                onBackPressed(); // 调用双击退出函数
+            if (mDrawerRelative != null) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
+                    mDrawerLayout.closeDrawer(mDrawerRelative);
+                } else {
+                    onBackPressed(); // 调用双击退出函数
+                }
+            }
+            else {
+                if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)){
+                    mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                }
+                else {
+                    onBackPressed();
+                }
             }
 
         }

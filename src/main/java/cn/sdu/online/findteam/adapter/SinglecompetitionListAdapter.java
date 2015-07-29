@@ -15,7 +15,7 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
-import cn.sdu.online.findteam.entity.SingleCompetitionListItem;
+import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 
 public class SingleCompetitionListAdapter extends BaseAdapter{
 

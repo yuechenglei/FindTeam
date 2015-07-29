@@ -24,7 +24,7 @@ import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 import cn.sdu.online.findteam.adapter.TeamLogListViewAdapter;
-import cn.sdu.online.findteam.entity.TeamLogListViewItem;
+import cn.sdu.online.findteam.mob.TeamLogListViewItem;
 import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 public class TeamLogFragment extends Fragment implements View.OnClickListener {

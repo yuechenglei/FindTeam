@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.entity.TeamMemberListItem;
+import cn.sdu.online.findteam.mob.TeamMemberListItem;
 
 public class TeamMemberListViewAdapter extends BaseAdapter{
 

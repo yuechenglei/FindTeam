@@ -14,7 +14,7 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.adapter.TeamMemberListViewAdapter;
-import cn.sdu.online.findteam.entity.TeamMemberListItem;
+import cn.sdu.online.findteam.mob.TeamMemberListItem;
 
 public class TeamMemberFragment extends Fragment {
 

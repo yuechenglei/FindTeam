@@ -6,13 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.entity.TeamLogListViewItem;
+import cn.sdu.online.findteam.mob.TeamLogListViewItem;
 
 /**
  * Created by wn on 2015/7/23.

@@ -31,6 +31,7 @@
     <color name="divider">#70b8b8b8</color>
     <color name="bg_gray_deep">#ffeeeeee</color>
 
+    <color name="transparent">#00000000</color>
 
 
     <color name="background_app">#dedede</color>
