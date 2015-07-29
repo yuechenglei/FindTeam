@@ -87,7 +87,7 @@ public class NetCore {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         String jsonData = "";
-/*        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
             CookieStore store = httpClient.getCookieStore();
             List<Cookie> cookies = store.getCookies();
             // Log.v("LoginActivity", cookies.toString());
@@ -95,7 +95,7 @@ public class NetCore {
             for (int i = 0; i < cookies.size(); i++) {
                 if ("JSESSIONID".equals(cookies.get(i).getName())) {
                     jsessionid = cookies.get(i).getValue();
-                  *//*  Log.v("LoginActivity", jsessionid);*//*
+                    Log.v("LoginActivity", jsessionid);
                     break;
                 }
             }
@@ -106,10 +106,7 @@ public class NetCore {
             while ((line = br.readLine()) != null) {
                 jsonData += line + "\r\n";
             }
-        }*/
-        HttpEntity entity = httpResponse.getEntity();
-        if (entity != null) {
-            jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+            Log.v("LoginActivity",jsonData+"");
         }
         return jsonData;
     }
@@ -156,7 +153,6 @@ public class NetCore {
         HttpEntity entity = httpResponse.getEntity();
         if (entity != null) {
             jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
-            Log.v("后台的数据",jsonData);
         }
         return jsonData;
     }

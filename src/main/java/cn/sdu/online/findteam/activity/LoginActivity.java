@@ -148,24 +148,10 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                         intent.putExtra("loginID", bundle.getInt("code"));
                         startActivity(intent);
                         LoginActivity.this.finish();
+                        StartActivity.startActivity.finish();
                     }
                 };
                 timer.schedule(timerTask, 100);
-          /*      saveSharePreferences(checkRemember.isChecked());
-                // 保存sessionID
-                saveSession(NetCore.jsessionid);
-                // 登录标识设为已登录
-                setLoginAlready();
-
-                Toast.makeText(LoginActivity.this,
-                        getString(R.string.loginSuccess), Toast.LENGTH_SHORT)
-                        .show();
-                // 得出用户信息并跳转
-                // 开启线程
-                Intent intent1 = new Intent();
-                intent1.setClass(LoginActivity.this, FragmentTabsPager.class);
-                startActivity(intent1);
-                LoginActivity.this.finish();*/
             }
             else {
             }

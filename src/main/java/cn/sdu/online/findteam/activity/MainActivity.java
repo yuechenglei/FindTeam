@@ -37,6 +37,8 @@ import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
+    public static MainActivity mainActivity;
+
     private Button bt_dropdown;//下拉选择菜单按钮
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
@@ -73,6 +75,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
+        mainActivity = MainActivity.this;
         //contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
         /*popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
                 ActionBar.LayoutParams.WRAP_CONTENT);
@@ -327,6 +330,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         Intent intent2 = new Intent();
                         intent2.setClass(MainActivity.this, MyMessageActivity.class);
                         startActivity(intent2);
+                       /* overridePendingTransition(R.anim.in_from_right,
+                                R.anim.out_to_left);*/
                     }
                 };
                 timer5.schedule(timerTask5, 200);
