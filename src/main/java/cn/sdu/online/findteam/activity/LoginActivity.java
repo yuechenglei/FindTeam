@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +24,7 @@ import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 
 
-public class LoginActivity extends Activity implements View.OnClickListener{
+public class LoginActivity extends Activity implements View.OnClickListener {
 
     private EditText loginname;
     private EditText loginpassword;
@@ -42,7 +43,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         loginname = (EditText) findViewById(R.id.login_name);
         loginpassword = (EditText) findViewById(R.id.login_password);
         login = (Button) findViewById(R.id.loginac_login_btn);
@@ -56,7 +57,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.loginac_login_btn:
                 String name = loginname.getText().toString();
                 String password = loginpassword.getText().toString();
@@ -65,13 +66,13 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                 dialog = DialogDefine.createLoadingDialog(LoginActivity.this,
                         "登陆中......");
                 dialog.show();
-                Thread loginThread = new Thread(new LoginThread(name,password));
+                Thread loginThread = new Thread(new LoginThread(name, password));
                 loginThread.start();
                 break;
 
             case R.id.loginac_register_btn:
                 Intent intent = new Intent();
-                intent.setClass(LoginActivity.this,RegisterActivity.class);
+                intent.setClass(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
                 break;
         }
@@ -111,37 +112,36 @@ public class LoginActivity extends Activity implements View.OnClickListener{
             e.printStackTrace();
         }
         Bundle bundle = new Bundle();
-        bundle.putInt("code",codeResult);
-        bundle.putString("msg",messageResult);
+        bundle.putInt("code", codeResult);
+        bundle.putString("msg", messageResult);
         return bundle;
     }
 
     Handler loginHandler = new Handler() {
         public void handleMessage(Message message) {
             final Bundle bundle = message.getData();
-            if (bundle.getInt("code") == NetCore.LOGIN_ERROR){
+            if (bundle.getInt("code") == NetCore.LOGIN_ERROR) {
                 // 登录失败
                 if (dialog != null) {
                     dialog.dismiss();
                 }
                 Toast.makeText(LoginActivity.this,
-                        bundle.getString("msg"),Toast.LENGTH_SHORT)
+                        bundle.getString("msg"), Toast.LENGTH_SHORT)
                         .show();
-            }
-
-            else if(bundle.getInt("code") > NetCore.LOGIN_ERROR){
+            } else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
                 // 登录成功
                 if (dialog != null) {
                     dialog.dismiss();
                 }
 
                 Toast.makeText(LoginActivity.this,
-                        bundle.getString("msg"),Toast.LENGTH_SHORT).show();
+                        bundle.getString("msg"), Toast.LENGTH_SHORT).show();
 
                 Timer timer = new Timer();
                 TimerTask timerTask = new TimerTask() {
                     @Override
                     public void run() {
+                        MainActivity.mainActivity.finish();
                         Intent intent = new Intent();
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         intent.putExtra("loginIdentity", "<##用户##>" + loginname.getText().toString());
@@ -152,8 +152,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                     }
                 };
                 timer.schedule(timerTask, 100);
-            }
-            else {
+            } else {
             }
 
         }
