@@ -25,6 +25,7 @@ import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 import cn.sdu.online.findteam.adapter.TeamLogListViewAdapter;
 import cn.sdu.online.findteam.mob.TeamLogListViewItem;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 public class TeamLogFragment extends Fragment implements View.OnClickListener {
@@ -37,8 +38,6 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     String content;
     TeamLogListViewAdapter teamLogListViewAdapter;
     private Button writelog;
-    private Button headerwritelog;
-    SingleCompetitionListView singleCompetitionListView;
     private PopupWindow popupWindow;
 
     @Override
@@ -48,12 +47,18 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (this.getActivity().getIntent().getExtras().getString("identity").equals("队长")) {
-            view = inflater.inflate(R.layout.teamheader_myteam_loglist, null);
-            teamHeaderLog();
-        } else {
-            view = inflater.inflate(R.layout.teamlog_layout, null);
-            teamMemLog();
+        if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+            if (MyApplication.IDENTITY.equals("队长")) {
+                view = inflater.inflate(R.layout.teammem_teamlog_layout, null);
+                teamHeaderLog();
+            } else {
+                view = inflater.inflate(R.layout.teammem_teamlog_layout, null);
+                teamMemLog();
+            }
+        }
+        else {
+            view = inflater.inflate(R.layout.other_teamlog_layout,null);
+            teamOtherLog();
         }
 
         return view;
@@ -79,8 +84,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent();
                 if (TeamLogFragment.this.getActivity().equals(OtherTeamActivity.getContext())) {
                     intent.setClass(OtherTeamActivity.getContext(), TeamLogActivity.class);
-                } else if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.getContext())) {
-                    intent.setClass(MyTeamActivity.getContext(), TeamLogActivity.class);
+                } else if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+                    intent.setClass(MyTeamActivity.mContext, TeamLogActivity.class);
                 }
                 TeamLogFragment.this.getActivity().startActivity(intent);
             }
@@ -90,7 +95,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.teamheader_writelog:
+            case R.id.teammem_writelog:
                 Intent intent = new Intent();
                 intent.setClass(TeamLogFragment.this.getActivity().getApplicationContext(), WriteActivity.class);
                 intent.putExtra("sign", "写日志");
@@ -100,15 +105,20 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * 别人来的时候调用
+     */
+    private void teamOtherLog() {
+        listView = (SingleCompetitionListView) view.findViewById(R.id.teamlog_listview);
+        initListView(listView);
+    }
+
+    /**
      * 队员来的时候调用
      */
     private void teamMemLog() {
-        if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.getContext())) {
-            writelog = (Button) view.findViewById(R.id.write_team_log);
-            writelog.setVisibility(View.VISIBLE);
-            writelog.setOnClickListener(TeamLogFragment.this);
-        }
-        listView = (SingleCompetitionListView) view.findViewById(R.id.teamlog_listview);
+        writelog = (Button) view.findViewById(R.id.teammem_writelog);
+        writelog.setOnClickListener(TeamLogFragment.this);
+        listView = (SingleCompetitionListView) view.findViewById(R.id.teammem_log_list);
         initListView(listView);
     }
 
@@ -116,13 +126,12 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
      * 队长来的时候调用
      */
     private void teamHeaderLog() {
-        headerwritelog = (Button) view.findViewById(R.id.teamheader_writelog);
-        headerwritelog.setVisibility(View.VISIBLE);
-        headerwritelog.setOnClickListener(TeamLogFragment.this);
-        singleCompetitionListView = (SingleCompetitionListView) view.findViewById(R.id.teamheader_log_list);
-        initListView(singleCompetitionListView);
+        writelog = (Button) view.findViewById(R.id.teammem_writelog);
+        writelog.setOnClickListener(TeamLogFragment.this);
+        listView = (SingleCompetitionListView) view.findViewById(R.id.teammem_log_list);
+        initListView(listView);
 
-        singleCompetitionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 showPopupWindow(position, view);
@@ -131,13 +140,13 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void showPopupWindow(final int position,View view) {
+    private void showPopupWindow(final int position, View view) {
 
         // 一个自定义的布局，作为显示的内容
         View contentView = LayoutInflater.from(TeamLogFragment.this.getActivity()).inflate(
                 R.layout.delete_pop_window, null);
         // 设置按钮的点击事件
-        Button delete =(Button) contentView.findViewById(R.id.pop_delete_btn);
+        Button delete = (Button) contentView.findViewById(R.id.pop_delete_btn);
 
         popupWindow = new PopupWindow(contentView,
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
@@ -177,10 +186,10 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 设置添加屏幕的背景透明度
+     *
      * @param bgAlpha
      */
-    public void backgroundAlpha(float bgAlpha)
-    {
+    public void backgroundAlpha(float bgAlpha) {
         WindowManager.LayoutParams lp = TeamLogFragment.this.getActivity().getWindow().getAttributes();
         lp.alpha = bgAlpha; //0.0-1.0
         TeamLogFragment.this.getActivity().getWindow().setAttributes(lp);
@@ -188,10 +197,10 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 添加新笔记时弹出的popWin关闭的事件，主要是为了将背景透明度改回来
-     * @author cg
      *
+     * @author cg
      */
-    class poponDismissListener implements PopupWindow.OnDismissListener{
+    class poponDismissListener implements PopupWindow.OnDismissListener {
 
         @Override
         public void onDismiss() {
@@ -200,6 +209,11 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
             backgroundAlpha(1f);
         }
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }
 

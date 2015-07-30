@@ -83,6 +83,12 @@ public class OtherTeamActivity extends FragmentActivity {
         mTabLineIv = (ImageView) this.findViewById(R.id.id_tab_line_iv);
         mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
         backimg = (ImageView) this.findViewById(R.id.otherteam_back_img);
+        backimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                OtherTeamActivity.this.finish();
+            }
+        });
     }
 
     private void init() {
@@ -160,25 +166,19 @@ public class OtherTeamActivity extends FragmentActivity {
                 resetTextView();
                 switch (position) {
                     case 0:
-                        mTeamInfoTv.setTextColor(Color.rgb(80,154,255));
+                        mTeamInfoTv.setTextColor(Color.rgb(80, 154, 255));
                         break;
                     case 1:
-                        mTeamMemTv.setTextColor(Color.rgb(80,154,255));
+                        mTeamMemTv.setTextColor(Color.rgb(80, 154, 255));
                         break;
                     case 2:
-                        mTeamLogTv.setTextColor(Color.rgb(80,154,255));
+                        mTeamLogTv.setTextColor(Color.rgb(80, 154, 255));
                         break;
                 }
                 currentIndex = position;
             }
         });
         setTabListener();
-        backimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OtherTeamActivity.this.finish();
-            }
-        });
     }
 
     /**

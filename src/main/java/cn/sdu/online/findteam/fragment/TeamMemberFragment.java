@@ -22,6 +22,7 @@ public class TeamMemberFragment extends Fragment {
     private String[] name = new String[]{"大师兄", "二师弟", "沙师弟"};
     private List<TeamMemberListItem> listItems;
     private Button invitemem;
+    private View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,12 +30,12 @@ public class TeamMemberFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.teammember_layout,null);
+        view = inflater.inflate(R.layout.teammember_layout,container,false);
 
-        if (TeamMemberFragment.this.getActivity().equals(MyTeamActivity.getContext())){
+        if (TeamMemberFragment.this.getActivity().equals(MyTeamActivity.mContext)){
             invitemem = (Button) view.findViewById(R.id.invite_new_member);
             invitemem.setVisibility(View.VISIBLE);
         }
@@ -51,5 +52,10 @@ public class TeamMemberFragment extends Fragment {
 
         listView.setAdapter(teamMemberListViewAdapter);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

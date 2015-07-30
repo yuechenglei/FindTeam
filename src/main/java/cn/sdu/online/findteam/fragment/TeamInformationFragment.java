@@ -15,6 +15,7 @@ import cn.sdu.online.findteam.activity.WriteActivity;
 public class TeamInformationFragment extends Fragment implements View.OnClickListener{
 
     private Button changeinfo;
+    View view;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,9 +23,9 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.teaminformation_layout, null);
-        if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.getContext())){
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.teaminformation_layout,container,false);
+        if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.mContext)){
             changeinfo = (Button) view.findViewById(R.id.change_team_info);
             changeinfo.setVisibility(View.VISIBLE);
             changeinfo.setOnClickListener(this);
@@ -38,5 +39,10 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
         intent.setClass(TeamInformationFragment.this.getActivity().getApplicationContext(), WriteActivity.class);
         intent.putExtra("sign", "编辑队伍信息");
         TeamInformationFragment.this.getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

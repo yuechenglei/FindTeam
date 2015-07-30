@@ -164,7 +164,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                             startActivity(intent);
                             RegisterActivity.this.finish();
                             LoginActivity.loginActivity.finish();
-                            StartActivity.startActivity.finish();
+                            if (StartActivity.startActivity != null) {
+                                StartActivity.startActivity.finish();
+                            }
                         }
                     };
                     timer.schedule(timerTask, 200);

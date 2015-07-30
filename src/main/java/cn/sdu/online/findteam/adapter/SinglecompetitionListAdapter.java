@@ -72,7 +72,6 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
-                intent.putExtra("identity","游客");
                 SingleCompetitionActivity.getContext().startActivity(intent);
             }
         });

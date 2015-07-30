@@ -18,7 +18,6 @@ import android.view.ViewStub;
 import android.view.Window;
 import android.widget.ActionMenuView;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +31,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 
@@ -98,10 +98,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             initMDrawer();
             init_button();
             tv_text = (TextView) findViewById(R.id.tv_name);
-            int intentInt = getIntent().getExtras().getInt("loginID");
-            tv_text.setText(intentString.substring(8) + "(ID:" + intentInt + ")");
+            tv_text.setText(intentString.substring(8));
         } else {
-            Log.v("游客",intentString);
+            Log.v("游客", intentString);
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.visitor_drawer_layout);
             viewStub.inflate();
@@ -113,10 +112,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         acState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-
         fragmentManager.beginTransaction()
                 .add(R.id.container, new MainFragment()).commit();
 
+        MyApplication.IDENTITY = "队长";
     }
 
     void initMDrawer() {
@@ -141,12 +140,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-
-                FrameLayout frameLayout = (FrameLayout) findViewById(R.id.container);
-                View view = frameLayout.getChildAt(0);
-                view.setClickable(false);
-
-//                listView.setEnabled(false);//设置不可点击
                 actionsearch.setVisibility(View.INVISIBLE);//搜索按钮消失
                 invalidateOptionsMenu();
             }
@@ -311,14 +304,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     public void run() {
                         Intent intent1 = new Intent();
                         intent1.setClass(MainActivity.this, MyTeamActivity.class);
-                        intent1.putExtra("identity", "队长");
                         startActivity(intent1);
                     }
                 };
                 timer4.schedule(timerTask4, 200);
-                /*setActionBarTest("我的队伍");*/
-
+                setActionBarTest("我的队伍");
                 break;
+
             case R.id.bt_news:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                /* setActionBarTest("我的消息");*/
@@ -352,7 +344,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new MainFragment()).commit();
+                        .add(R.id.container, new MainFragment(), "mainfragment").commit();
                 break;
             case R.id.action_search:
                 if (acState) {
@@ -399,9 +391,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
+
             default:
                 break;
         }
+
     }
 
     /**
@@ -434,12 +428,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     onBackPressed(); // 调用双击退出函数
                 }
-            }
-            else {
-                if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)){
+            } else {
+                if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)) {
                     mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
-                }
-                else {
+                } else {
                     onBackPressed();
                 }
             }
