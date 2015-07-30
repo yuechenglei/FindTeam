@@ -141,7 +141,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 TimerTask timerTask = new TimerTask() {
                     @Override
                     public void run() {
-                        MainActivity.mainActivity.finish();
+                        if (MainActivity.mainActivity != null) {
+                            MainActivity.mainActivity.finish();
+                        }
                         Intent intent = new Intent();
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         intent.putExtra("loginIdentity", "<##用户##>" + loginname.getText().toString());

@@ -36,7 +36,8 @@ public class NetCore {
 
     // 注册的url
     private final String RegisterAddr = ServerAddr + "user/register";
-
+    // 登出的url
+    public final static String LogingOutAddr = ServerAddr + "user/loginout";
 
     /**
      * 后台的返回参数
@@ -50,6 +51,8 @@ public class NetCore {
     public static final int REGISTER_SUCCESS = 0;// 注册成功
     public static final int REGISTER_ERROR = 1; // 数据库异常
 
+    // 登出的返回参数
+    public static final int LOGINOUT_SUCCESS = 0; // 登出成功
     /**
      * 登陆
      * <p/>
@@ -147,6 +150,21 @@ public class NetCore {
             throws ClientProtocolException, IOException {
         HttpPost httpRequest = new HttpPost(url);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        HttpEntity entity = httpResponse.getEntity();
+        if (entity != null) {
+            jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+        }
+        return jsonData;
+    }
+
+    /**
+     * 用户登出
+     */
+    public String loginOut(String url) throws IOException {
+        HttpPost httpRequest = new HttpPost(url);
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
         String jsonData = "";
