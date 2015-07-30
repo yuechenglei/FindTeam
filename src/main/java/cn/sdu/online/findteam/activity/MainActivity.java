@@ -112,8 +112,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         acState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-        fragmentManager.beginTransaction()
-                .add(R.id.container, new MainFragment()).commit();
+        if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+            fragmentManager.beginTransaction()
+                    .add(R.id.container, new MainFragment(),"mainfragment").commit();
+        }
 
         MyApplication.IDENTITY = "队长";
     }
@@ -272,12 +274,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                if (fragmentManager.findFragmentByTag("fragmentsetting") != null){
+                    break;
+                }
                 Timer timer2 = new Timer(true);
                 TimerTask timerTask2 = new TimerTask() {
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, new FragmentSetting()).commit();
+                                .replace(R.id.container, new FragmentSetting(),"fragmentsetting").commit();
                     }
                 };
                 timer2.schedule(timerTask2, 200);
@@ -344,7 +349,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
-                        .add(R.id.container, new MainFragment(), "mainfragment").commit();
+                        .replace(R.id.container, new MainFragment(), "mainfragment").commit();
                 break;
             case R.id.action_search:
                 if (acState) {
