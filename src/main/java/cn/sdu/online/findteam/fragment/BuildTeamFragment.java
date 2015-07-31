@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,13 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     private View view;
 
     private WiperSwitch wiperSwitch1,wiperSwitch2,wiperSwitch3;
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.v("eeeee","buildteamfragment");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

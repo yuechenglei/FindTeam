@@ -50,6 +50,13 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 
     Dialog dialogDefine;
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.v("eeeee","fragmentsetting");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

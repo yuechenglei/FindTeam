@@ -70,6 +70,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     // 侧边栏用户名
     private TextView tv_text;
 
+    MainFragment mainFragment;
+    BuildTeamFragment buildTeamFragment;
+    FragmentSetting fragmentSetting;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,9 +116,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         acState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-        if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+        if (fragmentManager.findFragmentByTag("mainfragment") == null
+                && fragmentManager.findFragmentByTag("fragmentsetting") == null
+                && fragmentManager.findFragmentByTag("buildteamfragment") == null) {
+            mainFragment = new MainFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.container, new MainFragment(),"mainfragment").commit();
+                    .add(R.id.container, mainFragment, "mainfragment").commit();
         }
 
         MyApplication.IDENTITY = "队长";
@@ -274,15 +281,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_set:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                if (fragmentManager.findFragmentByTag("fragmentsetting") != null){
-                    break;
+                if (fragmentSetting == null) {
+                    fragmentSetting = new FragmentSetting();
                 }
                 Timer timer2 = new Timer(true);
                 TimerTask timerTask2 = new TimerTask() {
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, new FragmentSetting(),"fragmentsetting").commit();
+                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
                     }
                 };
                 timer2.schedule(timerTask2, 200);
@@ -290,12 +297,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_make:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                if (buildTeamFragment == null){
+                    buildTeamFragment = new BuildTeamFragment();
+                }
                 Timer timer3 = new Timer(true);
                 TimerTask timerTask3 = new TimerTask() {
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, new BuildTeamFragment()).commit();
+                                .replace(R.id.container, buildTeamFragment, "buildteamfragment").commit();
                     }
                 };
                 timer3.schedule(timerTask3, 200);
@@ -318,7 +328,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.bt_news:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-               /* setActionBarTest("我的消息");*/
                 //延迟200毫秒，让侧边栏完全收回时再开新的Activity
                 Timer timer5 = new Timer(true);
                 TimerTask timerTask5 = new TimerTask() {
@@ -349,7 +358,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 mDrawerLayout.closeDrawer(mDrawerRelative);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new MainFragment(), "mainfragment").commit();
+                        .replace(R.id.container, mainFragment, "mainfragment").commit();
                 break;
             case R.id.action_search:
                 if (acState) {
@@ -367,25 +376,28 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.visitor_allgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
                 setActionBarTest("所有比赛");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, new MainFragment()).commit();
+           /*     fragmentManager.beginTransaction()
+                        .replace(R.id.container, new MainFragment(),"mainfragment").commit();*/
                 break;
 
             case R.id.visitor_hotgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
                 setActionBarTest("热门赛事");
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, new MainFragment()).commit();
+                        .replace(R.id.container, mainFragment, "mainfragment").commit();
                 break;
 
             case R.id.visitor_setting_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                if (fragmentSetting == null){
+                    fragmentSetting = new FragmentSetting();
+                }
                 Timer timer7 = new Timer(true);
                 TimerTask timerTask7 = new TimerTask() {
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, new FragmentSetting()).commit();
+                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
                     }
                 };
                 timer7.schedule(timerTask7, 200);
@@ -431,13 +443,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
                     mDrawerLayout.closeDrawer(mDrawerRelative);
                 } else {
-                    onBackPressed(); // 调用双击退出函数
+                    if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                        fragmentManager.beginTransaction().replace(R.id.container,
+                                mainFragment, "mainfragment").commit();
+                    } else {
+                        onBackPressed(); // 调用双击退出函数
+                    }
                 }
             } else {
                 if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)) {
                     mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
                 } else {
-                    onBackPressed();
+                    if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                        fragmentManager.beginTransaction().replace(R.id.container,
+                                mainFragment, "mainfragment").commit();
+                    } else {
+                        onBackPressed(); // 调用双击退出函数
+                    }
                 }
             }
 
