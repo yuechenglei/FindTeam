@@ -24,6 +24,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
+import cn.sdu.online.findteam.view.BadgeView;
+
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.ChatMainFragment;
 import cn.sdu.online.findteam.fragment.FriendMainFragment;
@@ -48,6 +50,8 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
     private Button actionsearch;
 
     private boolean state;
+
+    private BadgeView badgeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +153,10 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
             }
         });
+        badgeView = new BadgeView(this);
+        badgeView.setBadgeCount(5);
+        badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+        chat.addView(badgeView);
     }
 
     protected void resetTextView() {

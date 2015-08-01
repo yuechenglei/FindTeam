@@ -38,10 +38,14 @@
         <activity
             android:name=".activity.TeamLogActivity"
             android:windowSoftInputMode="adjustPan" />
+
         <activity android:name=".activity.MyTeamActivity" />
+
         <activity android:name=".activity.WriteActivity" />
 
         <activity android:name=".activity.MyMessageActivity" />
+
+        <activity android:name=".activity.FriendActivity"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

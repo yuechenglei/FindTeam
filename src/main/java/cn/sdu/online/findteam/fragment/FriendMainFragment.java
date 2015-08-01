@@ -2,9 +2,7 @@ package cn.sdu.online.findteam.fragment;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 import android.os.Bundle;
@@ -18,12 +16,13 @@ import android.widget.ListView;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.adapter.MyMessageListViewAdapter;
+import cn.sdu.online.findteam.mob.ChatListItem;
 
 public class FriendMainFragment extends ListFragment {
 
     private ListView list ;
     //private SimpleAdapter adapter;
-    private List<Map<String, Object>> data;
+    private List<ChatListItem> data;
     @Override
     public View onCreateView(LayoutInflater inflater,
                              @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,18 +40,13 @@ public class FriendMainFragment extends ListFragment {
         setListAdapter(adapter);
 
     }
-    private List<Map<String, Object>> getData()
+    private List<ChatListItem> getData()
     {
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        Map<String, Object> map;
+        List<ChatListItem> list = new ArrayList<ChatListItem>();
         for(int i=0;i<10;i++)
         {
-            map = new HashMap<String, Object>();
-            map.put("title", "同学甲");
-            map.put("info","我是个人介绍我是个人我是个人我是个人");
-            map.put("img", R.drawable.frienda);
-            list.add(map);
-            list.add(map);
+            list.add(new ChatListItem("同学甲", "我是个人介绍我是个人我是个人我是个人",
+                    R.drawable.frienda, false ,0));
         }
         return list;
     }

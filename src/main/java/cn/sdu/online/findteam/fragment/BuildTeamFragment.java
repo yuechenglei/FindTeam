@@ -39,7 +39,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("eeeee","buildteamfragment");
     }
 
     @Override

@@ -12,12 +12,14 @@ import java.util.List;
 import java.util.Map;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.mob.ChatListItem;
+import cn.sdu.online.findteam.view.BadgeView;
 
 public class MyMessageListViewAdapter extends BaseAdapter {
     private LayoutInflater mInflater = null;
-    private List<Map<String, Object>> data;
+    private List<ChatListItem> data;
 
-    public MyMessageListViewAdapter(Context context, List<Map<String, Object>> data) {
+    public MyMessageListViewAdapter(Context context, List<ChatListItem> data) {
         //根据context上下文加载布局，这里的是Demo17Activity本身，即this
         this.data = data;
         this.mInflater = LayoutInflater.from(context);
@@ -57,15 +59,26 @@ public class MyMessageListViewAdapter extends BaseAdapter {
             holder.title = (TextView) convertView.findViewById(R.id.tv);
             holder.info = (TextView) convertView.findViewById(R.id.info);
             holder.view = convertView.findViewById(R.id.invite_list_spacing);
+            holder.badgeView = (BadgeView) convertView.findViewById(R.id.chat_num);
+
+            if (data.get(position).getSeeornot() == true){
+                holder.badgeView.setVisibility(View.VISIBLE);
+                holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+                holder.badgeView.setBadgeCount(data.get(position).getNum());
+            }
             //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
+            if (data.get(position).getSeeornot() == true){
+                holder.badgeView.setVisibility(View.VISIBLE);
+                holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+                holder.badgeView.setBadgeCount(data.get(position).getNum());
+            }
         }
-        holder.img.setBackgroundResource((Integer) data.get(position).get("img"));
-        holder.title.setText((String) data.get(position).get("title"));
-        holder.info.setText((String) data.get(position).get("info"));
-
+        holder.img.setBackgroundResource(data.get(position).img);
+        holder.title.setText(data.get(position).title);
+        holder.info.setText(data.get(position).info);
         return convertView;
     }
 
@@ -74,5 +87,6 @@ public class MyMessageListViewAdapter extends BaseAdapter {
         public TextView title;
         public TextView info;
         public View view;
+        public BadgeView badgeView;
     }
 }

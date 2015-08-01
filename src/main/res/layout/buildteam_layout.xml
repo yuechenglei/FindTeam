@@ -1,6 +1,9 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<cn.sdu.online.findteam.view.BounceScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:fadingEdge="none"
+    android:requiresFadingEdge="none">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -510,4 +513,4 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
-</ScrollView>
+</cn.sdu.online.findteam.view.BounceScrollView>
