@@ -9,21 +9,21 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.resource.WiperSwitch;
-import cn.sdu.online.findteam.resource.WiperSwitch.OnChangedListener;
+import cn.sdu.online.findteam.resource.SwitchButton;
 
 
-public class BuildTeamFragment extends Fragment implements View.OnClickListener,OnChangedListener {
+public class BuildTeamFragment extends Fragment implements View.OnClickListener,CompoundButton.OnCheckedChangeListener {
 
     public TextView bt_confirm;
     public EditText text_teamname, text_introduction;
-    public Button bt_changehead, bt_return;
+    public Button bt_changehead;
     private Spinner spinner_number, spinner_year, spinner_month, spinner_day;
     private static final String[] number = {"请选择", "3", "4", "5", "6", "7", "8", "9", "10"};
     private static final String[] year = {"年", "2015", "2016", "2017", "2018"};
@@ -33,7 +33,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
 
     private View view;
 
-    private WiperSwitch wiperSwitch1,wiperSwitch2,wiperSwitch3;
+    private SwitchButton switchButton1, switchButton2, switchButton3;
 
 
     @Override
@@ -89,20 +89,20 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         spinner_day.setOnItemSelectedListener(new SpinnerSelectedListener_day());
         spinner_day.setVisibility(View.VISIBLE);
 
-        wiperSwitch1 = (WiperSwitch) view.findViewById(R.id.switch_test);
-        wiperSwitch2 = (WiperSwitch) view.findViewById(R.id.switch_see);
-        wiperSwitch3 = (WiperSwitch) view.findViewById(R.id.switch_comment);
-        wiperSwitch1.setChecked(false);
-        wiperSwitch2.setChecked(false);
-        wiperSwitch3.setChecked(false);
-        wiperSwitch1.setOnChangedListener(this);
-        wiperSwitch2.setOnChangedListener(this);
-        wiperSwitch3.setOnChangedListener(this);
+        switchButton1 = (SwitchButton) view.findViewById(R.id.switch_test);
+        switchButton2 = (SwitchButton) view.findViewById(R.id.switch_see);
+        switchButton3 = (SwitchButton) view.findViewById(R.id.switch_comment);
+        switchButton1.setChecked(false);
+        switchButton2.setChecked(false);
+        switchButton3.setChecked(false);
+        switchButton1.setOnCheckedChangeListener(this);
+        switchButton2.setOnCheckedChangeListener(this);
+        switchButton3.setOnCheckedChangeListener(this);
     }
 
     @Override
-    public void OnChanged(WiperSwitch wiperSwitch, boolean checkState) {
-        if (checkState == false) {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked == false) {
             Toast.makeText(BuildTeamFragment.this.getActivity(),
                     "您关闭了我",Toast.LENGTH_SHORT).show();
         }

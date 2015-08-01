@@ -386,10 +386,10 @@
                         android:textColor="#000000"
                         android:textSize="16sp" />
 
-                    <cn.sdu.online.findteam.resource.WiperSwitch
+                    <cn.sdu.online.findteam.resource.SwitchButton
                         android:id="@+id/switch_test"
-                        android:layout_width="60dp"
-                        android:layout_height="35dp"
+                        android:layout_width="50dp"
+                        android:layout_height="26dp"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="15dp" />
                 </RelativeLayout>
@@ -432,10 +432,10 @@
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
-                        <cn.sdu.online.findteam.resource.WiperSwitch
+                        <cn.sdu.online.findteam.resource.SwitchButton
                             android:id="@+id/switch_see"
-                            android:layout_width="60dp"
-                            android:layout_height="35dp"
+                            android:layout_width="50dp"
+                            android:layout_height="26dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="15dp" />
@@ -480,10 +480,10 @@
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
-                        <cn.sdu.online.findteam.resource.WiperSwitch
+                        <cn.sdu.online.findteam.resource.SwitchButton
                             android:id="@+id/switch_comment"
-                            android:layout_width="60dp"
-                            android:layout_height="35dp"
+                            android:layout_width="50dp"
+                            android:layout_height="26dp"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:layout_marginRight="15dp" />
