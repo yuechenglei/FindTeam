@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -128,10 +129,17 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(LoginActivity.this,
                         bundle.getString("msg"), Toast.LENGTH_SHORT)
                         .show();
-            } else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
+            }
+
+            else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
                 // 登录成功
                 if (dialog != null) {
                     dialog.dismiss();
+                }
+
+                if (bundle.getString("msg").trim().length() == 0){
+                    Toast.makeText(LoginActivity.this, "网络错误！",Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 Toast.makeText(LoginActivity.this,
@@ -154,9 +162,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     }
                 };
                 timer.schedule(timerTask, 100);
-            } else {
             }
-
         }
     };
 }

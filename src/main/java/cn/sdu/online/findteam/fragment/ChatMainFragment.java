@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -15,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.ChatActivity;
+import cn.sdu.online.findteam.activity.MyMessageActivity;
 import cn.sdu.online.findteam.adapter.MyMessageListViewAdapter;
 import cn.sdu.online.findteam.mob.ChatListItem;
 
@@ -24,6 +27,7 @@ public class ChatMainFragment extends ListFragment {
     //private SimpleAdapter adapter1;
     private List<ChatListItem> data;
     private MyMessageListViewAdapter adapter;
+    private int count;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -32,6 +36,7 @@ public class ChatMainFragment extends ListFragment {
         View view = inflater.inflate(R.layout.mymessage_listview, container, false);
         //list1 = (ListView) view.findViewById(android.R.id.list);
         data = getData();
+        count = 0;
         adapter = new MyMessageListViewAdapter(getActivity(), data);
         setListAdapter(adapter);
         return view;
@@ -58,5 +63,13 @@ public class ChatMainFragment extends ListFragment {
         chatListItem.setSeeornot(true);
         chatListItem.setNum(chatListItem.getNum() + 1);
         adapter.notifyDataSetChanged();
+        if (MyMessageActivity.badgeView.getVisibility() == GONE){
+            MyMessageActivity.badgeView.setVisibility(VISIBLE);
+        }
+        count++;
+        MyMessageActivity.badgeView.setBadgeCount(count);
+        Intent intent = new Intent();
+        intent.setClass(ChatMainFragment.this.getActivity(), ChatActivity.class);
+        startActivity(intent);
     }
 }

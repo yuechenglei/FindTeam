@@ -51,34 +51,32 @@ public class MyMessageListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         //如果缓存convertView为空，则需要创建View
-        if (convertView == null) {
-            holder = new ViewHolder();
-            //根据自定义的Item布局加载布局
-            convertView = mInflater.inflate(R.layout.item, null);
-            holder.img = (ImageView) convertView.findViewById(R.id.img);
-            holder.title = (TextView) convertView.findViewById(R.id.tv);
-            holder.info = (TextView) convertView.findViewById(R.id.info);
-            holder.view = convertView.findViewById(R.id.invite_list_spacing);
-            holder.badgeView = (BadgeView) convertView.findViewById(R.id.chat_num);
+        /*if (convertView == null) {*/
+        holder = new ViewHolder();
+        //根据自定义的Item布局加载布局
+        convertView = mInflater.inflate(R.layout.item, null);
+        holder.img = (ImageView) convertView.findViewById(R.id.img);
+        holder.title = (TextView) convertView.findViewById(R.id.tv);
+        holder.info = (TextView) convertView.findViewById(R.id.info);
+        holder.view = convertView.findViewById(R.id.invite_list_spacing);
+        holder.badgeView = (BadgeView) convertView.findViewById(R.id.chat_num);
 
-            if (data.get(position).getSeeornot() == true){
-                holder.badgeView.setVisibility(View.VISIBLE);
-                holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
-                holder.badgeView.setBadgeCount(data.get(position).getNum());
-            }
-            //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
-            convertView.setTag(holder);
-        } else {
+        //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
+        convertView.setTag(holder);
+        /*} else {
             holder = (ViewHolder) convertView.getTag();
-            if (data.get(position).getSeeornot() == true){
-                holder.badgeView.setVisibility(View.VISIBLE);
-                holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
-                holder.badgeView.setBadgeCount(data.get(position).getNum());
-            }
-        }
+        }*/
+
         holder.img.setBackgroundResource(data.get(position).img);
         holder.title.setText(data.get(position).title);
         holder.info.setText(data.get(position).info);
+
+        if (data.get(position).getSeeornot() == true) {
+            holder.badgeView.setVisibility(View.VISIBLE);
+            holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+            holder.badgeView.setBadgeCount(data.get(position).getNum());
+        }
+
         return convertView;
     }
 

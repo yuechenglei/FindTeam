@@ -51,7 +51,7 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     private boolean state;
 
-    private BadgeView badgeView;
+    public static BadgeView badgeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,9 +154,14 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
             }
         });
         badgeView = new BadgeView(this);
-        badgeView.setBadgeCount(5);
+        badgeView.setBadgeCount(0);
         badgeView.setBackgroundResource(R.drawable.badgeview_bg);
         chat.addView(badgeView);
+        badgeView.setVisibility(View.GONE);
+    }
+
+    public static int getCount(){
+        return badgeView.getBadgeCount();
     }
 
     protected void resetTextView() {

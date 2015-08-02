@@ -96,7 +96,8 @@
 
 　　15.一位中国学生问科比：“请问您成功的秘诀是什么?”科比说：“你知道早晨四点的城市是什么样吗?”学生：“知道，一般那时候我还在写作业，怎么了?”科比：“没，没什么…”"
                     android:textColor="#000000"
-                    android:textSize="14.5sp" />
+                    android:textSize="14.5sp"
+                    android:focusable="true"/>
             </LinearLayout>
 
   <!--          <Button
@@ -137,10 +138,10 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:hint="写评论"
-            android:focusable="false"
             android:textSize="14sp"
             android:textColorHint="@color/textcolor_gray"/>
         <Button
+            android:id="@+id/push_discuss"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2.5"
