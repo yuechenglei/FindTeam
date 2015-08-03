@@ -12,10 +12,27 @@
 
     <style name="ActionBar.TitleText" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
-    <!-- popwidnow 显示消失动画 -->
 
+    <!--没有ActionBar的Activity切换-->
+    <style name="NoActionBar_trans" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/activity_trans</item>
+    </style>
+
+    <!--有ActionBar的Activity切换-->
+    <style name="trans_style" parent="AppTheme">
+        <item name="android:windowAnimationStyle">@style/activity_trans</item>
+    </style>
+
+    <style name="activity_trans" parent="@android:style/Animation">
+        <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/out_to_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/out_to_right</item>
+    </style>
+
+    <!-- popwidnow 显示消失动画 -->
     <style name="popwindow_anim">
         <item name="android:windowEnterAnimation">@anim/popupwindow_show</item>
         <!-- 指定显示的动画xml -->

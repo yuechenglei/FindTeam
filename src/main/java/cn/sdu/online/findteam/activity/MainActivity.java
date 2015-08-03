@@ -339,8 +339,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         Intent intent2 = new Intent();
                         intent2.setClass(MainActivity.this, MyMessageActivity.class);
                         startActivity(intent2);
-                       /* overridePendingTransition(R.anim.in_from_right,
-                                R.anim.out_to_left);*/
                     }
                 };
                 timer5.schedule(timerTask5, 200);
@@ -444,6 +442,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
 
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
     }
 
     /**

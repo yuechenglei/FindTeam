@@ -118,5 +118,4 @@ public class InfoPersonActivity extends Activity {
             }
         });
     }
-
 }

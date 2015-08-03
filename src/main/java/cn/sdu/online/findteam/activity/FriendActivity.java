@@ -79,5 +79,4 @@ public class FriendActivity extends FragmentActivity implements OnGestureListene
         // TODO Auto-generated method stub
         return false;
     }
-
 }
