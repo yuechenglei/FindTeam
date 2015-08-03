@@ -2,17 +2,27 @@ package cn.sdu.online.findteam.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,16 +34,19 @@ import cn.sdu.online.findteam.adapter.ListViewAdapter;
 import cn.sdu.online.findteam.util.Time;
 import cn.sdu.online.findteam.view.XListView;
 
-public class MainFragment extends Fragment implements
+public class AllGamesFragment extends Fragment implements
         XListView.IXListViewListener {
 
     XListView listView;
     private List<HashMap<String, String>> list;
     private ListViewAdapter adapter;
     private View view;
-
     private OnFragmentInteractionListener mListener;
 
+    private LinearLayout mButton;
+    private PopupWindow mPopupWindow;
+    private RelativeLayout relativeLayout;
+    private TextView textView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,15 +57,14 @@ public class MainFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_main, container, false);
-        listView = (XListView) view.findViewById(R.id.listview);
-        listView.setXListViewListener(this);
-        listView.setPullLoadEnable(true);
+        view = inflater.inflate(R.layout.allgame_layout, null);
+
+        initView();
+
         list = getListDate();
         adapter = new ListViewAdapter(getActivity(), list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
@@ -62,9 +74,51 @@ public class MainFragment extends Fragment implements
                 startActivity(intent);
             }
         });
-        // Inflate the layout for this fragment
-        Log.v("eeeee","mainfragment");
         return view;
+    }
+
+    public void initView() {
+        listView = (XListView) view.findViewById(R.id.allgame_listview);
+        listView.setXListViewListener(this);
+        listView.setPullLoadEnable(true);
+
+        View popupView = AllGamesFragment.this.getActivity().
+                getLayoutInflater().inflate(R.layout.allgame_popup_layout, null);
+
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.allgame_relayout);
+
+        textView = (TextView) view.findViewById(R.id.allgame_class);
+
+        mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+        mPopupWindow.setTouchable(true);
+        mPopupWindow.setOutsideTouchable(true);
+        mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+        mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                listView.setAlpha(1);
+                textView.setText("分类");
+            }
+        });
+
+        mButton = (LinearLayout) view.findViewById(R.id.allgame_down_btn);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listView.setAlpha(0.4f);
+                mPopupWindow.showAsDropDown(relativeLayout);
+                textView.setText("选择分类");
+            }
+        });
+    }
+
+    /**
+     * 设置添加屏幕的背景透明度
+     */
+    public void backgroundAlpha(float bgAlpha) {
+        WindowManager.LayoutParams lp = AllGamesFragment.this.getActivity().getWindow().getAttributes();
+        lp.alpha = bgAlpha; //0.0-1.0
+        AllGamesFragment.this.getActivity().getWindow().setAttributes(lp);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -72,17 +126,6 @@ public class MainFragment extends Fragment implements
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
-    }
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     /**

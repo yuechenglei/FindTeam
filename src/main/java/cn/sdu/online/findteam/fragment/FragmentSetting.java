@@ -187,6 +187,11 @@ public class FragmentSetting extends Fragment implements OnClickListener {
                 if (dialogDefine != null) {
                     dialogDefine.dismiss();
                 }
+                if (bundle.getString("msg").trim().length() == 0){
+                    Toast.makeText(FragmentSetting.this.getActivity(),
+                            "网络错误！",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Log.v("Fragmentsetting", 0 + "");
                 Toast.makeText(FragmentSetting.this.getActivity(),
                         bundle.getString("msg"), Toast.LENGTH_SHORT).show();
@@ -207,6 +212,11 @@ public class FragmentSetting extends Fragment implements OnClickListener {
             } else {
                 if (dialogDefine != null) {
                     dialogDefine.dismiss();
+                }
+                if (bundle.getString("msg").trim().length() == 0){
+                    Toast.makeText(FragmentSetting.this.getActivity(),
+                            "网络错误！",Toast.LENGTH_SHORT).show();
+                    return;
                 }
                 Toast.makeText(FragmentSetting.this.getActivity(),
                         bundle.getString("msg"), Toast.LENGTH_SHORT).show();

@@ -186,8 +186,6 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     /**
      * 设置添加屏幕的背景透明度
-     *
-     * @param bgAlpha
      */
     public void backgroundAlpha(float bgAlpha) {
         WindowManager.LayoutParams lp = TeamLogFragment.this.getActivity().getWindow().getAttributes();

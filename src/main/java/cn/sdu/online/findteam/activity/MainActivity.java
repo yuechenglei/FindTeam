@@ -28,10 +28,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.fragment.AllGamesFragment;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
 import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.Time;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 
@@ -39,7 +41,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     public static MainActivity mainActivity;
 
-    private Button bt_dropdown;//下拉选择菜单按钮
     private DrawerLayout mDrawerLayout;
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -73,6 +74,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     MainFragment mainFragment;
     BuildTeamFragment buildTeamFragment;
     FragmentSetting fragmentSetting;
+    AllGamesFragment allGamesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +120,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
         if (fragmentManager.findFragmentByTag("mainfragment") == null
                 && fragmentManager.findFragmentByTag("fragmentsetting") == null
-                && fragmentManager.findFragmentByTag("buildteamfragment") == null) {
+                && fragmentManager.findFragmentByTag("buildteamfragment") == null
+                && fragmentManager.findFragmentByTag("allgamefragment") == null) {
             mainFragment = new MainFragment();
             fragmentManager.beginTransaction()
                     .add(R.id.container, mainFragment, "mainfragment").commit();
@@ -344,11 +347,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_games:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                if (allGamesFragment == null){
+                    allGamesFragment = new AllGamesFragment();
+                }
                 Timer timer6 = new Timer(true);
                 TimerTask timerTask6 = new TimerTask() {
                     @Override
                     public void run() {
-
+                        fragmentManager.beginTransaction().
+                                replace(R.id.container, allGamesFragment,"allgamefragment").commit();
                     }
                 };
                 timer6.schedule(timerTask6, 200);
@@ -356,9 +363,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                Timer timer9 = new Timer(true);
+                TimerTask timerTask9 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, mainFragment, "mainfragment").commit();
+                    }
+                };
+                timer9.schedule(timerTask9, 200);
                 setActionBarTest("热门赛事");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, mainFragment, "mainfragment").commit();
                 break;
             case R.id.action_search:
                 if (acState) {
@@ -375,16 +389,33 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.visitor_allgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                if (allGamesFragment == null){
+                    allGamesFragment = new AllGamesFragment();
+                }
+                Timer timer8 = new Timer(true);
+                TimerTask timerTask8 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction().
+                                replace(R.id.container, allGamesFragment,"allgamefragment").commit();
+                    }
+                };
+                timer8.schedule(timerTask8, 200);
                 setActionBarTest("所有比赛");
-           /*     fragmentManager.beginTransaction()
-                        .replace(R.id.container, new MainFragment(),"mainfragment").commit();*/
                 break;
 
             case R.id.visitor_hotgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                Timer timer10 = new Timer(true);
+                TimerTask timerTask10 = new TimerTask() {
+                    @Override
+                    public void run() {
+                        fragmentManager.beginTransaction()
+                                .replace(R.id.container, mainFragment, "mainfragment").commit();
+                    }
+                };
+                timer10.schedule(timerTask10, 200);
                 setActionBarTest("热门赛事");
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, mainFragment, "mainfragment").commit();
                 break;
 
             case R.id.visitor_setting_btn:

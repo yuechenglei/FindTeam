@@ -58,14 +58,6 @@ public class SingleCompetitionActivity extends Activity {
 
         SingleCompetitionContext = SingleCompetitionActivity.this;
         singlelistView = (ListView) findViewById(R.id.singlecplist);
-        /*imageView = (ImageView) findViewById(R.id.singlecp_item_img);
-        teamname = (TextView) findViewById(R.id.singlecp_item_teamname);
-        personnum = (TextView) findViewById(R.id.singlecp_item_personnum);
-        line1 = findViewById(R.id.singlecp_item_line1);
-        content = (TextView) findViewById(R.id.singlecp_item_content);
-        line2 = findViewById(R.id.singlecp_item_line2);
-        look = (Button) findViewById(R.id.singlecp_item_look);
-        join = (Button) findViewById(R.id.singlecp_item_join);*/
 
         initListView();
 
