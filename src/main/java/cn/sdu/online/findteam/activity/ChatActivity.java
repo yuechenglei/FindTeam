@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
@@ -33,7 +36,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
     private MyAdapter adapter;
     private EditText editText;
     private Button button;
-    private LinearLayout linearLayout;
+    private RelativeLayout linearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +54,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         mListView = (ListView) findViewById(R.id.chat_listview);
         editText = (EditText) findViewById(R.id.write_chatmsg);
         button = (Button) findViewById(R.id.push_chatmsg);
-        linearLayout = (LinearLayout) findViewById(R.id.chatactivity_layout);
+        linearLayout = (RelativeLayout) findViewById(R.id.chatactivity_layout);
         editText.setOnClickListener(this);
         button.setOnClickListener(this);
         linearLayout.setOnTouchListener(new View.OnTouchListener() {
@@ -73,7 +76,7 @@ public class ChatActivity extends Activity implements View.OnClickListener {
 
     private void initData() {
         list = new ArrayList<ChatActivityListItem>();
-        for (int i = 0; i < 13; i++) {
+/*        for (int i = 0; i < 13; i++) {
             ChatActivityListItem item = new ChatActivityListItem();
             if (i % 3 == 0) {
                 item.setMessage("呵呵又是你齐天大圣孙悟空，身如玄铁，火眼金睛，长生不老还有七十二变设计从来不需要高大上，更不需要多么复杂，用心表达，就足以。");
@@ -85,17 +88,12 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                 item.setType(1);
             }
             list.add(item);
-        }
+        }*/
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.write_chatmsg:
-                editText.setFocusableInTouchMode(true);
-                editText.requestFocus();
-                break;
-
             case R.id.push_chatmsg:
                 if (editText.getText().toString().trim().length() != 0) {
                     ChatActivityListItem chatActivityListItem1 = new ChatActivityListItem();
@@ -105,8 +103,6 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                     adapter.notifyDataSetChanged();
                 }
                 editText.setText("");
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 break;
 
             default:
