@@ -45,15 +45,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private RelativeLayout mDrawerRelative;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fragmentManager;
-    private List<Fragment> lists;//存放各个fragment
-    //  public View contentView;
-//    public PopupWindow popupWindow;//弹出下拉菜单
-//    private RelativeLayout rela_drop;//下拉的选择按钮
     /**
      * 记录actionsearch按钮的点击状态，true为不搜索状态，false为搜索栏弹出状态
      */
     private boolean acState;
-    private boolean dropState;//下拉状态
     /**
      * 主界面搜索按钮
      */
@@ -82,10 +77,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
-        //contentView = this.getLayoutInflater().inflate(R.layout.classify_layout, null);
-        /*popupWindow = new PopupWindow(contentView, ActionBar.LayoutParams.MATCH_PARENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
-        rela_drop = (RelativeLayout) this.findViewById(R.id.rela_top);*/
 
         intentString = getIntent().getExtras().getString("loginIdentity");
 
@@ -238,7 +229,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         actionsearch.setOnClickListener(this);
         searchButton.setOnClickListener(this);
 
-        /*bt_dropdown = (Button) this.findViewById(R.id.arrow);*/
         bt_game.setOnClickListener(this);
         bt_set.setOnClickListener(this);
         bt_news.setOnClickListener(this);
@@ -246,7 +236,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bt_make.setOnClickListener(this);
         bt_hot.setOnClickListener(this);
         bt_head.setOnClickListener(this);
-        /*bt_dropdown.setOnClickListener(this);*/
     }
 
     private void init_Visitor_Btn() {
@@ -361,6 +350,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
+                if (mainFragment == null){
+                    mainFragment = new MainFragment();
+                }
                 Timer timer9 = new Timer(true);
                 TimerTask timerTask9 = new TimerTask() {
                     @Override
@@ -375,12 +367,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case R.id.action_search:
                 if (acState) {
                     searchLayout.setVisibility(View.VISIBLE);
-                /*rela_drop.setLayoutParams(params);
-                popupWindow.dismiss();*/
                     acState = false;
                 } else {
                     searchLayout.setVisibility(View.GONE);
-                /*rela_drop.setLayoutParams(params);*/
                     acState = true;
                 }
                 break;
@@ -404,6 +393,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.visitor_hotgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
+                if (mainFragment == null){
+                    mainFragment = new MainFragment();
+                }
                 Timer timer10 = new Timer(true);
                 TimerTask timerTask10 = new TimerTask() {
                     @Override

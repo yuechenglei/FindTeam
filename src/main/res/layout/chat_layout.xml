@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:divider="@null"
             android:focusable="true"
-            android:stackFromBottom="true"
             android:transcriptMode="alwaysScroll" />
     </LinearLayout>
 
