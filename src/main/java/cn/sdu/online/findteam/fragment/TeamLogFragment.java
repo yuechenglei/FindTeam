@@ -71,7 +71,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         content = "我是严肃的日志~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 
         for (int i = 0; i < name.length; i++) {
-            listViewItems.add(new TeamLogListViewItem(R.id.teamlog_headbmp,
+            listViewItems.add(new TeamLogListViewItem(R.drawable.teammember_header,
                     name[i], time[i], content));
         }
 
@@ -97,9 +97,9 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.teammem_writelog:
                 Intent intent = new Intent();
-                intent.setClass(TeamLogFragment.this.getActivity().getApplicationContext(), WriteActivity.class);
+                intent.setClass(TeamLogFragment.this.getActivity(), WriteActivity.class);
                 intent.putExtra("sign", "写日志");
-                TeamLogFragment.this.getActivity().startActivity(intent);
+                TeamLogFragment.this.getActivity().startActivityForResult(intent, 1);
                 break;
         }
     }
@@ -206,12 +206,11 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
             //Log.v("List_noteTypeActivity:", "我是关闭事件");
             backgroundAlpha(1f);
         }
-
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void addListItem(int headbmp, String name, String time, String content){
+        listViewItems.add(new TeamLogListViewItem(headbmp, name, time, content));
+        teamLogListViewAdapter.notifyDataSetChanged();
     }
 }
 

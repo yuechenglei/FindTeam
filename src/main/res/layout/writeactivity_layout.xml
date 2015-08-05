@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <EditText
+        android:id="@+id/writeat_edit_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@null"
@@ -13,6 +14,5 @@
         android:hint="请写下想说的话吧......"
         android:textColor="#000000"
         android:textSize="14sp"
-        android:textColorHint="@color/textcolor_gray"
-        />
+        android:textColorHint="@color/textcolor_gray" />
 </LinearLayout>

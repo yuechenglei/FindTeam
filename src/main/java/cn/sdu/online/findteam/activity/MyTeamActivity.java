@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,8 +189,8 @@ public class MyTeamActivity extends FragmentActivity {
                 currentIndex = position;
             }
         });
+        mPageVp.setOffscreenPageLimit(2);
         setTabListener();
-        join.setVisibility(View.GONE);
         backimg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -247,8 +249,34 @@ public class MyTeamActivity extends FragmentActivity {
         return mContext;
     }
 
-    private void setVisible(){
+    private void setVisible() {
         join.setVisibility(View.GONE);
         teamsetting.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode) {
+            case 1:
+                if (data.getExtras() != null) {
+                    mTeamInfoFg.setInfor(data.getExtras().getString("teaminfor"));
+                    Toast.makeText(MyTeamActivity.this, "队伍信息修改成功！", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case 2:
+                if (data.getExtras() != null){
+                    mTeamLogFg.addListItem(R.drawable.teammember_header,
+                            getSharedPreferences("loginmessage",MODE_PRIVATE).getString("loginName", ""),
+                            "2015年8月5日 21:36",
+                            data.getExtras().getString("teamlog"));
+                    Toast.makeText(MyTeamActivity.this, "日志填写成功！", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 }

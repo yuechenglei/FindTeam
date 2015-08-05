@@ -59,6 +59,7 @@ public class TeamLogListViewAdapter extends BaseAdapter {
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.headbmp.setBackgroundResource(listViewItems.get(position).headbmp);
         viewHolder.name.setText(listViewItems.get(position).name);
         viewHolder.time.setText(listViewItems.get(position).time);
         viewHolder.content.setText(listViewItems.get(position).content);

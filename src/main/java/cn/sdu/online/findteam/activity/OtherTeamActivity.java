@@ -178,6 +178,7 @@ public class OtherTeamActivity extends FragmentActivity {
                 currentIndex = position;
             }
         });
+        mPageVp.setOffscreenPageLimit(2);
         setTabListener();
     }
 

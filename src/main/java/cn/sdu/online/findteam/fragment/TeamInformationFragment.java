@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
@@ -15,6 +16,7 @@ import cn.sdu.online.findteam.activity.WriteActivity;
 public class TeamInformationFragment extends Fragment implements View.OnClickListener {
 
     private Button changeinfo;
+    private TextView inforTv;
     View view;
 
     @Override
@@ -27,6 +29,7 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
         if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
             view = inflater.inflate(R.layout.myteam_information_layout, container, false);
             changeinfo = (Button) view.findViewById(R.id.change_team_info);
+            inforTv = (TextView) view.findViewById(R.id.team_infor_tv);
             changeinfo.setOnClickListener(this);
         }
         else {
@@ -38,13 +41,12 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         Intent intent = new Intent();
-        intent.setClass(TeamInformationFragment.this.getActivity().getApplicationContext(), WriteActivity.class);
+        intent.setClass(TeamInformationFragment.this.getActivity(), WriteActivity.class);
         intent.putExtra("sign", "编辑队伍信息");
-        TeamInformationFragment.this.getActivity().startActivity(intent);
+        TeamInformationFragment.this.getActivity().startActivityForResult(intent, 1);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void setInfor(String infor){
+        inforTv.setText(infor);
     }
 }
