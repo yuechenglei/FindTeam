@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.StartActivity"
+            android:name=".activity.OriginActivity"
             android:theme="@style/NoActionBar_trans">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,6 +66,9 @@
             android:name=".activity.ChatActivity"
             android:theme="@style/trans_style"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <activity android:name=".activity.StartActivity"
+            android:theme="@style/NoActionBar_trans"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -70,6 +70,7 @@ public class ChatMainFragment extends ListFragment {
         MyMessageActivity.badgeView.setBadgeCount(count);
         Intent intent = new Intent();
         intent.setClass(ChatMainFragment.this.getActivity(), ChatActivity.class);
+        intent.putExtra("chatperson", chatListItem.getTitle());
         startActivity(intent);
     }
 }

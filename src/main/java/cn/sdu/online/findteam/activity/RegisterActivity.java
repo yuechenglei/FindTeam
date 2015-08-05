@@ -157,14 +157,17 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         @Override
                         public void run() {
                             Intent intent = new Intent();
-                            MainActivity.mainActivity.finish();
+                            if (MainActivity.mainActivity != null){
+                                MainActivity.mainActivity.finish();
+                            }
                             intent.setClass(RegisterActivity.this, MainActivity.class);
                             intent.putExtra("loginIdentity", "<##用户##>" + registername.getText().toString());
                             intent.putExtra("loginID", bundle.getInt("code"));
                             startActivity(intent);
                             RegisterActivity.this.finish();
-                            LoginActivity.loginActivity.finish();
-                            if (StartActivity.startActivity != null) {
+                            if (StartActivity.startActivity != null
+                                    && LoginActivity.loginActivity != null) {
+                                LoginActivity.loginActivity.finish();
                                 StartActivity.startActivity.finish();
                             }
                         }

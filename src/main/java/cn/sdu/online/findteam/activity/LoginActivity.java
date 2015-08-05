@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private Button register;
     private Dialog dialog;
 
+    User user;
+
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
+
     public static LoginActivity loginActivity;
 
     @Override
@@ -46,6 +52,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private void initView() {
         loginname = (EditText) findViewById(R.id.login_name);
         loginpassword = (EditText) findViewById(R.id.login_password);
+        if (getIntent().getExtras() != null) {
+            loginname.setText(getIntent().getExtras().getString("loginName"));
+            loginpassword.setText(getIntent().getExtras().getString("loginPassword"));
+        }
         login = (Button) findViewById(R.id.loginac_login_btn);
         register = (Button) findViewById(R.id.loginac_register_btn);
 
@@ -97,7 +107,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private Bundle startLogin(String name, String password) {
-        User user = new User();
+        user = new User();
         user.setName(name);
         user.setPassword(password);
         String jsonResult = new NetCore().Login(user);
@@ -128,18 +138,21 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 Toast.makeText(LoginActivity.this,
                         bundle.getString("msg"), Toast.LENGTH_SHORT)
                         .show();
-            }
-
-            else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
+            } else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
                 // 登录成功
                 if (dialog != null) {
                     dialog.dismiss();
                 }
 
-                if (bundle.getString("msg").trim().length() == 0){
-                    Toast.makeText(LoginActivity.this, "网络错误！",Toast.LENGTH_SHORT).show();
+                if (bundle.getString("msg").trim().length() == 0) {
+                    Toast.makeText(LoginActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                preferences = getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.putString("loginName", user.getName()).apply();
+                editor.putString("loginPassword", user.getPassword()).apply();
 
                 Toast.makeText(LoginActivity.this,
                         bundle.getString("msg"), Toast.LENGTH_SHORT).show();
@@ -154,10 +167,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                         Intent intent = new Intent();
                         intent.setClass(LoginActivity.this, MainActivity.class);
                         intent.putExtra("loginIdentity", "<##用户##>" + loginname.getText().toString());
-                        intent.putExtra("loginID", bundle.getInt("code"));
                         startActivity(intent);
                         LoginActivity.this.finish();
-                        StartActivity.startActivity.finish();
+                        if (StartActivity.startActivity != null) {
+                            StartActivity.startActivity.finish();
+                        }
                     }
                 };
                 timer.schedule(timerTask, 100);

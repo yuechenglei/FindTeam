@@ -60,9 +60,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private View view_actionbar;
 
     private LinearLayout mVisitorDrawerLayout;
-    // 获取intent传入的字符串和Id号
+    // 获取intent传入的字符串
     private String intentString;
-    private int Id;
     // 侧边栏用户名
     private TextView tv_text;
 
@@ -434,11 +433,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
         }
 
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
     }
 
     /**

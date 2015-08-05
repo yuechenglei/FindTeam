@@ -8,8 +8,10 @@
  */
 package cn.sdu.online.findteam.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -49,12 +51,12 @@ public class FragmentSetting extends Fragment implements OnClickListener {
     View view;
 
     Dialog dialogDefine;
+    SharedPreferences sharedPreferences;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("eeeee","fragmentsetting");
     }
 
     @Override
@@ -192,7 +194,9 @@ public class FragmentSetting extends Fragment implements OnClickListener {
                             "网络错误！",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                Log.v("Fragmentsetting", 0 + "");
+
+                exitSuccess();
+
                 Toast.makeText(FragmentSetting.this.getActivity(),
                         bundle.getString("msg"), Toast.LENGTH_SHORT).show();
 
@@ -232,4 +236,13 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 //		super.onPause();
 //		MobclickAgent.onPageEnd("Setting");
 //	}
+
+    protected void exitSuccess(){
+        sharedPreferences = FragmentSetting.this.
+                getActivity().getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+        sharedPreferences.edit().remove("loginName").apply();
+        sharedPreferences.edit().remove("loginPassword").apply();
+        Log.v("eeeeeeee", sharedPreferences.getString("loginName", "啥也没"));
+        Log.v("eeeeeeee", sharedPreferences.getString("loginPassword", "啥也没"));
+    }
 }

@@ -3,7 +3,9 @@ package cn.sdu.online.findteam.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ActionMenuView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,7 +29,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.ChatActivityListItem;
 import cn.sdu.online.findteam.resource.RoundImageView;
 
-public class ChatActivity extends Activity implements View.OnClickListener {
+public class ChatActivity extends Activity implements View.OnClickListener,View.OnTouchListener {
     private ListView mListView;
     private List<ChatActivityListItem> list;
     private int TYPE_COUNT = 2;
@@ -35,12 +38,16 @@ public class ChatActivity extends Activity implements View.OnClickListener {
     private LayoutInflater mInflater;
     private MyAdapter adapter;
     private EditText editText;
-    private Button button;
+    private Button button,backBtn;
     private RelativeLayout linearLayout;
+    private TextView chatPerson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setActionBarLayout(R.layout.chatactivity_actionbar);
+        chatPerson = (TextView) findViewById(R.id.chat_person);
+        chatPerson.setText(getIntent().getExtras().getString("chatperson"));
         setContentView(R.layout.chat_layout);
         initView();
 
@@ -55,23 +62,11 @@ public class ChatActivity extends Activity implements View.OnClickListener {
         editText = (EditText) findViewById(R.id.write_chatmsg);
         button = (Button) findViewById(R.id.push_chatmsg);
         linearLayout = (RelativeLayout) findViewById(R.id.chatactivity_layout);
-        editText.setOnClickListener(this);
+        backBtn = (Button) findViewById(R.id.chat_back_btn);
+        backBtn.setOnClickListener(this);
         button.setOnClickListener(this);
-        linearLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                return imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            }
-        });
-
-        mListView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                return imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            }
-        });
+        linearLayout.setOnTouchListener(this);
+        mListView.setOnTouchListener(this);
     }
 
     private void initData() {
@@ -105,9 +100,18 @@ public class ChatActivity extends Activity implements View.OnClickListener {
                 editText.setText("");
                 break;
 
+            case R.id.chat_back_btn:
+                finish();
+
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        return imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
     }
 
     private class MyAdapter extends BaseAdapter {
@@ -179,6 +183,21 @@ public class ChatActivity extends Activity implements View.OnClickListener {
             RoundImageView img;
             TextView message;
             ImageView arrow;
+        }
+    }
+
+    /**
+     * @param layoutId 布局Id
+     */
+    public void setActionBarLayout(int layoutId) {
+        ActionBar actionBar = getActionBar();
+        if (null != actionBar) {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflator.inflate(layoutId, null);
+            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
+            actionBar.setCustomView(v, layout);
         }
     }
 }

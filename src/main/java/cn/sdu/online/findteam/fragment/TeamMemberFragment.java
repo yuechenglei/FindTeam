@@ -33,25 +33,43 @@ public class TeamMemberFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.teammember_layout,container,false);
-
-        if (TeamMemberFragment.this.getActivity().equals(MyTeamActivity.mContext)){
-            invitemem = (Button) view.findViewById(R.id.invite_new_member);
-            invitemem.setVisibility(View.VISIBLE);
+        if (TeamMemberFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+            view = inflater.inflate(R.layout.myteam_member_layout, container, false);
+            myTeamMemInit();
+        } else {
+            view = inflater.inflate(R.layout.other_teammem_layout, null);
+            otherTeanMemInit();
         }
 
+        return view;
+    }
+
+    private void myTeamMemInit() {
         listView = (ListView) view.findViewById(R.id.teammem_listview);
         listItems = new ArrayList<>();
         String introduction = "孙悟空是中国最著名的神话角色之一，出自四大古典名著之《西游记》。相传他由开天辟地以来的仙石孕育而生，因带领群猴进入水帘洞而成为众猴之王，号称为 “美猴王”。后来在西牛贺洲拜菩提祖师为师学艺，得名孙悟空，学会地煞七十二变、筋斗云等高超的法术。";
 
-        for (int i = 0;i<name.length;i++){
+        for (int i = 0; i < name.length; i++) {
             listItems.add(new TeamMemberListItem(name[i], introduction, R.id.teammem_listview_headbmp));
         }
 
         TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
 
         listView.setAdapter(teamMemberListViewAdapter);
-        return view;
+    }
+
+    private void otherTeanMemInit() {
+        listView = (ListView) view.findViewById(R.id.other_teammem_listview);
+        listItems = new ArrayList<>();
+        String introduction = "孙悟空是中国最著名的神话角色之一，出自四大古典名著之《西游记》。相传他由开天辟地以来的仙石孕育而生，因带领群猴进入水帘洞而成为众猴之王，号称为 “美猴王”。后来在西牛贺洲拜菩提祖师为师学艺，得名孙悟空，学会地煞七十二变、筋斗云等高超的法术。";
+
+        for (int i = 0; i < name.length; i++) {
+            listItems.add(new TeamMemberListItem(name[i], introduction, R.id.teammem_listview_headbmp));
+        }
+
+        TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
+
+        listView.setAdapter(teamMemberListViewAdapter);
     }
 
     @Override

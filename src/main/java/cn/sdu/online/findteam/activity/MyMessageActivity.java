@@ -159,10 +159,12 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         chat.addView(badgeView);
         badgeView.setVisibility(View.GONE);
     }
+/*
 
     public static int getCount(){
         return badgeView.getBadgeCount();
     }
+*/
 
     protected void resetTextView() {
         mChatTextView.setTextColor(Color.BLACK);

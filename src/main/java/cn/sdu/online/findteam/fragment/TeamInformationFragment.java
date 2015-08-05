@@ -12,7 +12,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 
-public class TeamInformationFragment extends Fragment implements View.OnClickListener{
+public class TeamInformationFragment extends Fragment implements View.OnClickListener {
 
     private Button changeinfo;
     View view;
@@ -24,11 +24,13 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.teaminformation_layout,container,false);
-        if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.mContext)){
+        if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+            view = inflater.inflate(R.layout.myteam_information_layout, container, false);
             changeinfo = (Button) view.findViewById(R.id.change_team_info);
-            changeinfo.setVisibility(View.VISIBLE);
             changeinfo.setOnClickListener(this);
+        }
+        else {
+            view = inflater.inflate(R.layout.other_teaminformation_layout,null);
         }
         return view;
     }

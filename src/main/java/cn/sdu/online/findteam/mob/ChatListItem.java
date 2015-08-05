@@ -19,19 +19,27 @@ public class ChatListItem {
         this.num = num;
     }
 
+    public String getTitle(){
+        return title;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+
     public boolean getSeeornot() {
         return seeornot;
     }
 
-        public void setSeeornot(boolean seeornot) {
-            this.seeornot = seeornot;
-        }
+    public void setSeeornot(boolean seeornot) {
+        this.seeornot = seeornot;
+    }
 
     public void setNum(int num) {
         this.num = num;
     }
 
-    public int getNum(){
+    public int getNum() {
         return num;
     }
 }

@@ -72,11 +72,6 @@ public class MyTeamActivity extends FragmentActivity {
     private Button join;
 
     /**
-     * 包含参加别人队伍按钮的Layout
-     */
-    private RelativeLayout relativeLayout;
-
-    /**
      * 队伍设置按钮
      */
     private Button teamsetting;
@@ -100,7 +95,6 @@ public class MyTeamActivity extends FragmentActivity {
         mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
         backimg = (ImageView) this.findViewById(R.id.otherteam_back_img);
         join = (Button) this.findViewById(R.id.join_otherteam);
-        relativeLayout = (RelativeLayout) this.findViewById(R.id.join_otherteam_layout);
         teamsetting = (Button) this.findViewById(R.id.team_setting_bt);
     }
 
@@ -255,7 +249,6 @@ public class MyTeamActivity extends FragmentActivity {
 
     private void setVisible(){
         join.setVisibility(View.GONE);
-        relativeLayout.setVisibility(View.GONE);
         teamsetting.setVisibility(View.VISIBLE);
     }
 }

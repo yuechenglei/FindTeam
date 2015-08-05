@@ -49,10 +49,10 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
             if (MyApplication.IDENTITY.equals("队长")) {
-                view = inflater.inflate(R.layout.teammem_teamlog_layout, null);
+                view = inflater.inflate(R.layout.myteam_teamlog_layout, null);
                 teamHeaderLog();
             } else {
-                view = inflater.inflate(R.layout.teammem_teamlog_layout, null);
+                view = inflater.inflate(R.layout.myteam_teamlog_layout, null);
                 teamMemLog();
             }
         }
@@ -150,8 +150,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
         popupWindow = new PopupWindow(contentView,
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
-        popupWindow.setWidth(300);
-        popupWindow.setHeight(130);
+        popupWindow.setWidth(400);
+        popupWindow.setHeight(150);
         popupWindow.setAnimationStyle(R.style.popwindow_anim);
         popupWindow.setTouchable(true);
         backgroundAlpha(0.5f);
