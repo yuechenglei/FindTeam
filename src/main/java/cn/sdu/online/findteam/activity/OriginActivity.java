@@ -48,7 +48,7 @@ public class OriginActivity extends Activity {
                     OriginActivity.this.finish();
                 }
             };
-            timer.schedule(timerTask, 2000);
+            timer.schedule(timerTask, 1500);
         } else {
             timerTask = new TimerTask() {
                 @Override
@@ -57,7 +57,7 @@ public class OriginActivity extends Activity {
                     loginThread.start();
                 }
             };
-            timer.schedule(timerTask, 1500);
+            timer.schedule(timerTask, 1000);
         }
     }
 
@@ -105,6 +105,7 @@ public class OriginActivity extends Activity {
             final Bundle bundle = message.getData();
             if (bundle.getInt("code") == NetCore.LOGIN_ERROR) {
                 // 登录失败
+                Log.v("error", 0+"");
                 Toast.makeText(OriginActivity.this,
                         bundle.getString("msg"), Toast.LENGTH_SHORT)
                         .show();
@@ -117,9 +118,7 @@ public class OriginActivity extends Activity {
                 if (bundle.getString("msg").trim().length() == 0) {
                     Toast.makeText(OriginActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
                     intent = new Intent();
-                    intent.setClass(OriginActivity.this, LoginActivity.class);
-                    intent.putExtra("loginName", loginName);
-                    intent.putExtra("loginPassword", loginPassword);
+                    intent.setClass(OriginActivity.this, StartActivity.class);
                     startActivity(intent);
                     OriginActivity.this.finish();
                     return;

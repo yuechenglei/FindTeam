@@ -1,23 +1,36 @@
 package cn.sdu.online.findteam.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.fragment.BuildTeamFragment;
+import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.util.ChangeHeader;
 
 
-public class InfoPersonActivity extends Activity {
+public class InfoPersonActivity extends Activity implements View.OnClickListener {
     public Button bt_return;
     public EditText text_nickname, text_introduction, text_tag1, text_tag2, text_tag3, text_realname,
             text_gender, text_dress, text_school, text_phonenumber, text_email;
     public TextView text_edit;
     public Boolean bl;
+
+    private RelativeLayout relativeLayout;
+    private RoundImageView head;
+
+    private ChangeHeader changeHeader;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,10 +52,20 @@ public class InfoPersonActivity extends Activity {
         text_phonenumber = (EditText) findViewById(R.id.text_phonenumber);
         text_email = (EditText) findViewById(R.id.text_email);
         text_edit = (TextView) findViewById(R.id.text_edit);
+        head = (RoundImageView) findViewById(R.id.head);
+        relativeLayout = (RelativeLayout) findViewById(R.id.info_person_headlayout);
+        relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                getWindowManager().getDefaultDisplay().getWidth()));
 
-        text_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        text_edit.setOnClickListener(this);
+        bt_return.setOnClickListener(this);
+        head.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.text_edit:
                 if (bl) {
                     text_nickname.setFocusableInTouchMode(true);
                     text_nickname.requestFocus();
@@ -106,16 +129,92 @@ public class InfoPersonActivity extends Activity {
                     text_email.clearFocus();
                     text_edit.setBackgroundColor(Color.WHITE);
                     text_edit.setText("编辑资料");
-                    text_edit.setTextColor(Color.rgb(80,154,255));
+                    text_edit.setTextColor(Color.rgb(80, 154, 255));
                     bl = true;
                 }
-            }
-        });
-        bt_return.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+                break;
+
+            case R.id.bt_return:
+                InfoPersonActivity.this.finish();
+                break;
+
+            case R.id.head:
+                final String[] itemsfirst = {"修改个人头像", "查看大图"};// 第一级条目列表
+                new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
+                        /*.setTitle("请选择方式")// 标题*/
+                        .setItems(itemsfirst, new DialogInterface.OnClickListener() {// 以下为监听
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                if (which == 0) {
+                                    final String[] itemssecond = {"相册", "相机"}; // 第二级条目列表
+                                    new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
+                                            .setTitle("请选择方式")// 标题
+                                            .setItems(itemssecond, new DialogInterface.OnClickListener() {// 以下为监听
+
+                                                @Override
+                                                public void onClick(DialogInterface dialog,
+                                                                    int which) {
+                                                    if (which == 0) {
+                                                        // 相册
+                                                        changeHeader =
+                                                        new ChangeHeader(InfoPersonActivity.this,
+                                                                head, ChangeHeader.PERSONHEADER);
+                                                        changeHeader.chooseAlbum();
+                                                    }
+                                                    if (which == 1) {
+                                                        // 相机
+                                                        changeHeader =
+                                                        new ChangeHeader(InfoPersonActivity.this,
+                                                                head, ChangeHeader.PERSONHEADER);
+                                                        changeHeader.chooseCamera();
+                                                    }
+                                                }
+                                            }).show();
+                                }
+                                if (which == 1) {
+
+                                }
+                            }
+                        }).show();
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case BuildTeamFragment.PHOTO_REQUEST:// 相册返回
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        changeHeader.setHeaderImgAlbum();
+                        break;
+                }
+                break;
+
+            case BuildTeamFragment.CAMERA_REQUEST:// 照相返回
+
+                switch (resultCode) {
+                    case Activity.RESULT_OK:// 照相完成点击确定
+                        changeHeader.getHeaderImgCamera();
+                        break;
+
+                    case Activity.RESULT_CANCELED:// 取消
+                        break;
+                }
+                break;
+
+            case BuildTeamFragment.CAMERA_CUT_REQUEST:
+
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        changeHeader.setHeaderImgCamera(data);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
+        }
     }
 }

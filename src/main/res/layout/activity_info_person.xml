@@ -1,340 +1,339 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<cn.sdu.online.findteam.view.BounceScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/grey_color"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_weight="5"
-        android:background="@drawable/otherteam_headtmp">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#B2000000"/>
-
-        <Button
-            android:id="@+id/bt_return"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/singlecompetition_backbt_bg" />
-
-        <cn.sdu.online.findteam.resource.RoundImageView
-            android:id="@+id/head"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/otherteam_headtmp" />
-
-        <EditText
-            android:id="@+id/text_nickname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/head"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:focusable="false"
-            android:text="照亮凉夜"
-            android:textColor="@color/abc_primary_text_disable_only_material_dark"
-            android:textSize="17sp" />
-
-        <EditText
-            android:id="@+id/text_introduction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_nickname"
-            android:layout_centerHorizontal="true"
-            android:background="@null"
-            android:focusable="false"
-            android:text="我是个人简介或者叫个性签名"
-            android:textColor="@color/underline1_gray"
-            android:textSize="13sp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:background="@drawable/background_label"
-        android:paddingTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="32dp"
-            android:gravity="center"
-            android:text="标签"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:id="@+id/textView"
-            android:layout_marginStart="32dp"
-            android:layout_alignBottom="@+id/text_tag1"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <EditText
-            android:id="@+id/text_tag1"
-            android:layout_width="55dp"
-            android:layout_height="21dp"
-            android:layout_marginLeft="53dp"
-            android:background="@drawable/background_tag"
-            android:focusable="false"
-            android:gravity="center"
-            android:text="PS"
-            android:textColor="@color/white_color"
-            android:textSize="15sp"
-            android:layout_marginStart="53dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/textView"
-            android:layout_toEndOf="@+id/textView" />
-
-        <EditText
-            android:id="@+id/text_tag2"
-            android:layout_width="55dp"
-            android:layout_height="21dp"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/background_tag"
-            android:focusable="false"
-            android:gravity="center"
-            android:text="A"
-            android:textColor="@color/white_color"
-            android:textSize="15sp"
-            android:layout_marginStart="30dp"
-            android:layout_alignTop="@+id/text_tag1"
-            android:layout_toRightOf="@+id/text_tag1"
-            android:layout_toEndOf="@+id/text_tag1" />
-
-        <EditText
-            android:id="@+id/text_tag3"
-            android:layout_width="55dp"
-            android:layout_height="21dp"
-            android:background="@drawable/background_tag"
-            android:focusable="false"
-            android:gravity="center"
-            android:text="A"
-            android:textColor="@color/white_color"
-            android:textSize="15sp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginStart="30dp"
-            android:layout_alignTop="@+id/text_tag2"
-            android:layout_toRightOf="@+id/text_tag2"
-            android:layout_toEndOf="@+id/text_tag2" />
-    </RelativeLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:orientation="vertical"
-        android:background="@color/underline1_gray"
-        android:paddingBottom="5dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp">
+        android:background="@color/grey_color"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/info_person_headlayout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@drawable/otherteam_headtmp">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#B2000000" />
+
+            <Button
+                android:id="@+id/bt_return"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/singlecompetition_backbt_bg" />
+
+            <cn.sdu.online.findteam.resource.RoundImageView
+                android:id="@+id/head"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/otherteam_headtmp" />
+
+            <EditText
+                android:id="@+id/text_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/head"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:focusable="false"
+                android:text="照亮凉夜"
+                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/text_introduction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/text_nickname"
+                android:layout_centerHorizontal="true"
+                android:background="@null"
+                android:focusable="false"
+                android:text="我是个人简介或者叫个性签名"
+                android:textColor="@color/underline1_gray"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/background_label"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/text_tag1"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="32dp"
+                android:layout_marginStart="32dp"
+                android:gravity="center"
+                android:text="标签"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/text_tag1"
+                android:layout_width="55dp"
+                android:layout_height="21dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="53dp"
+                android:layout_marginStart="53dp"
+                android:layout_toEndOf="@+id/textView"
+                android:layout_toRightOf="@+id/textView"
+                android:background="@drawable/background_tag"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="PS"
+                android:textColor="@color/white_color"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/text_tag2"
+                android:layout_width="55dp"
+                android:layout_height="21dp"
+                android:layout_alignTop="@+id/text_tag1"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_toEndOf="@+id/text_tag1"
+                android:layout_toRightOf="@+id/text_tag1"
+                android:background="@drawable/background_tag"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="@color/white_color"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/text_tag3"
+                android:layout_width="55dp"
+                android:layout_height="21dp"
+                android:layout_alignTop="@+id/text_tag2"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="30dp"
+                android:layout_toEndOf="@+id/text_tag2"
+                android:layout_toRightOf="@+id/text_tag2"
+                android:background="@drawable/background_tag"
+                android:focusable="false"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="@color/white_color"
+                android:textSize="15sp" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:background="@color/underline1_gray"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="真实姓名"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_realname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="赵亮"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="性别"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="男"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="居住地"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_dress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="山东省济南市舜华路1500号"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="学校学院"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_school"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="山东大学齐鲁软件学院"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="联系方式"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_phonenumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="178********"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="邮箱"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/text_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="154368506@qq.com"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_edit"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
             android:background="#ffffff"
-            android:padding="5dp">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="真实姓名"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_realname"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                android:text="赵亮" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/underline1_gray"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:background="#ffffff">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="性别"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_gender"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:textColor="#000000"
-                android:text="男" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/underline1_gray"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:background="#ffffff">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="居住地"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_dress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:textColor="#000000"
-                android:text="山东省济南市舜华路1500号" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/underline1_gray"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:background="#ffffff">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="学校学院"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_school"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                android:text="山东大学齐鲁软件学院" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/underline1_gray"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:background="#ffffff">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="联系方式"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_phonenumber"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:textColor="#000000"
-                android:text="178********" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/underline1_gray"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:background="#ffffff">
-
-            <TextView
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="邮箱"
-                android:textColor="#000000"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/text_email"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:focusable="false"
-                android:gravity="center"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                android:text="154368506@qq.com" />
-        </LinearLayout>
+            android:clickable="true"
+            android:gravity="center"
+            android:text="编辑资料"
+            android:textColor="@color/blue_color"
+            android:textSize="18sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/text_edit"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:layout_weight="1.2"
-        android:background="#ffffff"
-        android:clickable="true"
-        android:gravity="center"
-        android:text="编辑资料"
-        android:textColor="@color/blue_color"
-        android:textSize="18sp" />
-
-</LinearLayout>
+</cn.sdu.online.findteam.view.BounceScrollView>

@@ -1,11 +1,11 @@
 package cn.sdu.online.findteam.activity;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +23,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,7 +32,6 @@ import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
 import cn.sdu.online.findteam.share.MyApplication;
-import cn.sdu.online.findteam.util.Time;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
 
@@ -76,6 +74,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
+        Log.v("heheheda", "MainActivity start");
+        Log.v("heheheda", String.valueOf(buildTeamFragment));
 
         intentString = getIntent().getExtras().getString("loginIdentity");
 
@@ -86,7 +86,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setActionBarLayout(view_actionbar);
 
         if (intentString.startsWith("<##用户##>")) {
-            Log.v("用户", intentString);
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.drawer_layout);
             viewStub.inflate();
@@ -108,16 +107,34 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         acState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-        if (fragmentManager.findFragmentByTag("mainfragment") == null
+
+/*        if (fragmentManager.findFragmentByTag("mainfragment") == null
                 && fragmentManager.findFragmentByTag("fragmentsetting") == null
                 && fragmentManager.findFragmentByTag("buildteamfragment") == null
-                && fragmentManager.findFragmentByTag("allgamefragment") == null) {
+                && fragmentManager.findFragmentByTag("allgamefragment") == null) {*/
+
+        addFragment();
+        MyApplication.IDENTITY = "队长";
+    }
+
+    private void addFragment() {
+        if (fragmentManager.findFragmentByTag("buildteamfragment") != null) {
+            buildTeamFragment = new BuildTeamFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, buildTeamFragment, "buildteamfragment").commit();
+        } else if (fragmentManager.findFragmentByTag("fragmentsetting") != null) {
+            fragmentSetting = new FragmentSetting();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
+        } else if (fragmentManager.findFragmentByTag("allgamefragment") != null) {
+            allGamesFragment = new AllGamesFragment();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, allGamesFragment, "allgamefragment").commit();
+        } else {
             mainFragment = new MainFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.container, mainFragment, "mainfragment").commit();
+                    .replace(R.id.container, mainFragment, "mainfragment").commit();
         }
-
-        MyApplication.IDENTITY = "队长";
     }
 
     void initMDrawer() {
@@ -288,9 +305,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_make:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                if (buildTeamFragment == null){
+                if (buildTeamFragment == null) {
                     buildTeamFragment = new BuildTeamFragment();
                 }
+                Log.v("heheheda", "BuildTeam add");
                 Timer timer3 = new Timer(true);
                 TimerTask timerTask3 = new TimerTask() {
                     @Override
@@ -333,7 +351,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_games:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                if (allGamesFragment == null){
+                if (allGamesFragment == null) {
                     allGamesFragment = new AllGamesFragment();
                 }
                 Timer timer6 = new Timer(true);
@@ -341,7 +359,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction().
-                                replace(R.id.container, allGamesFragment,"allgamefragment").commit();
+                                replace(R.id.container, allGamesFragment, "allgamefragment").commit();
                     }
                 };
                 timer6.schedule(timerTask6, 200);
@@ -349,7 +367,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.bt_hot:
                 mDrawerLayout.closeDrawer(mDrawerRelative);
-                if (mainFragment == null){
+                if (mainFragment == null) {
                     mainFragment = new MainFragment();
                 }
                 Timer timer9 = new Timer(true);
@@ -375,7 +393,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.visitor_allgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
-                if (allGamesFragment == null){
+                if (allGamesFragment == null) {
                     allGamesFragment = new AllGamesFragment();
                 }
                 Timer timer8 = new Timer(true);
@@ -383,7 +401,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void run() {
                         fragmentManager.beginTransaction().
-                                replace(R.id.container, allGamesFragment,"allgamefragment").commit();
+                                replace(R.id.container, allGamesFragment, "allgamefragment").commit();
                     }
                 };
                 timer8.schedule(timerTask8, 200);
@@ -392,7 +410,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.visitor_hotgame_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
-                if (mainFragment == null){
+                if (mainFragment == null) {
                     mainFragment = new MainFragment();
                 }
                 Timer timer10 = new Timer(true);
@@ -409,7 +427,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             case R.id.visitor_setting_btn:
                 mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
-                if (fragmentSetting == null){
+                if (fragmentSetting == null) {
                     fragmentSetting = new FragmentSetting();
                 }
                 Timer timer7 = new Timer(true);
@@ -464,6 +482,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     mDrawerLayout.closeDrawer(mDrawerRelative);
                 } else {
                     if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                        if (mainFragment == null) {
+                            mainFragment = new MainFragment();
+                        }
                         fragmentManager.beginTransaction().replace(R.id.container,
                                 mainFragment, "mainfragment").commit();
                     } else {
@@ -475,6 +496,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
                 } else {
                     if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                        if (mainFragment == null) {
+                            mainFragment = new MainFragment();
+                        }
                         fragmentManager.beginTransaction().replace(R.id.container,
                                 mainFragment, "mainfragment").commit();
                     } else {
@@ -487,6 +511,51 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case BuildTeamFragment.PHOTO_REQUEST:// 相册返回
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        if (buildTeamFragment == null) {
+                            buildTeamFragment = (BuildTeamFragment) fragmentManager.findFragmentByTag("buildfragment");
+                        }
+                        buildTeamFragment.setHeaderImgAlbum();
+                        break;
+                }
+                break;
+
+            case BuildTeamFragment.CAMERA_REQUEST:// 照相返回
+
+                switch (resultCode) {
+                    case Activity.RESULT_OK:// 照相完成点击确定
+                        if (buildTeamFragment == null) {
+                            buildTeamFragment = new BuildTeamFragment();
+                        }
+                        buildTeamFragment.getHeaderImgCamera();
+                        break;
+
+                    case Activity.RESULT_CANCELED:// 取消
+                        break;
+                }
+                break;
+
+            case BuildTeamFragment.CAMERA_CUT_REQUEST:
+
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        if (buildTeamFragment == null) {
+                            buildTeamFragment = new BuildTeamFragment();
+                        }
+                        buildTeamFragment.setHeaderImgCamera(data);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        break;
+                }
+                break;
+        }
+    }
 }
 
 

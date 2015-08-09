@@ -18,12 +18,13 @@
             android:paddingLeft="25dp"
             android:paddingTop="8dp">
 
-            <ImageView
+            <cn.sdu.online.findteam.resource.RoundImageView
                 android:id="@+id/buildteam_head_img"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_centerVertical="true"
-                android:background="@drawable/head_moren" />
+                android:src="@drawable/head_moren"
+                android:scaleType="centerCrop"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
