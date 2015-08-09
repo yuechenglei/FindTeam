@@ -173,7 +173,10 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                                             }).show();
                                 }
                                 if (which == 1) {
-
+                                    Intent intent = new Intent();
+                                    intent.setClass(InfoPersonActivity.this, ImgShowerActivity.class);
+                                    InfoPersonActivity.this.startActivity(intent);
+                                    overridePendingTransition(R.anim.zoomin, 0);
                                 }
                             }
                         }).show();

@@ -76,5 +76,8 @@
 
         <activity android:name=".activity.StartActivity"
             android:theme="@style/NoActionBar_trans"/>
+
+        <activity android:name=".activity.ImgShowerActivity"
+            android:theme="@style/NoActionBar_trans"/>
     </application>
 </manifest>

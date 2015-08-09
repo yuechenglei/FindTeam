@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +25,9 @@ import cn.sdu.online.findteam.fragment.TeamInformationFragment;
 import cn.sdu.online.findteam.fragment.TeamLogFragment;
 import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
+import cn.sdu.online.findteam.view.TeamPopWindow;
 
-public class MyTeamActivity extends FragmentActivity {
+public class MyTeamActivity extends FragmentActivity implements View.OnClickListener{
     public static Context mContext;
 
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
@@ -134,7 +134,6 @@ public class MyTeamActivity extends FragmentActivity {
              * position :当前页面，及你点击滑动的页面 offset:当前页面偏移的百分比
              * offsetPixels:当前页面偏移的像素位置
              * **/
-
             @Override
             public void onPageScrolled(int position, float offset,
                                        int offsetPixels) {
@@ -191,12 +190,8 @@ public class MyTeamActivity extends FragmentActivity {
         });
         mPageVp.setOffscreenPageLimit(2);
         setTabListener();
-        backimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MyTeamActivity.this.finish();
-            }
-        });
+        backimg.setOnClickListener(this);
+        teamsetting.setOnClickListener(this);
     }
 
     /**
@@ -276,6 +271,20 @@ public class MyTeamActivity extends FragmentActivity {
                 break;
 
             default:
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.otherteam_back_img:
+                MyTeamActivity.this.finish();
+                break;
+
+            case R.id.team_setting_bt:
+                TeamPopWindow teamPopWindow = new TeamPopWindow(MyTeamActivity.this);
+                teamPopWindow.showPopupWindow(teamsetting);
                 break;
         }
     }
