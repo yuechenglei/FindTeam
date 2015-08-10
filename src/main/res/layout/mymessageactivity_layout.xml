@@ -7,8 +7,6 @@
         android:id="@+id/mymessage_search_layout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@color/blue_color"
         android:orientation="horizontal"
         android:visibility="gone">

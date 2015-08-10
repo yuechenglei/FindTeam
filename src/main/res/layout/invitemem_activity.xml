@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ListView
+        android:id="@+id/invite_activity_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"/>
+
+    <Button
+        android:id="@+id/invite_finish_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/simplecompetition_button_bg"
+        android:text="完成"
+        android:layout_alignParentBottom="true"
+        android:textColor="@color/singlecompetiton_buttontext_bg"/>
+</RelativeLayout>

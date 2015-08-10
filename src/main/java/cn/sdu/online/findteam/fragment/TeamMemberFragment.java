@@ -1,5 +1,6 @@
 package cn.sdu.online.findteam.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.InviteNewMemActivity;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.adapter.TeamMemberListViewAdapter;
 import cn.sdu.online.findteam.mob.TeamMemberListItem;
@@ -54,8 +56,17 @@ public class TeamMemberFragment extends Fragment {
         }
 
         TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
-
         listView.setAdapter(teamMemberListViewAdapter);
+
+        invitemem = (Button) view.findViewById(R.id.invite_new_member);
+        invitemem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TeamMemberFragment.this.getActivity(),
+                        InviteNewMemActivity.class);
+                TeamMemberFragment.this.getActivity().startActivity(intent);
+            }
+        });
     }
 
     private void otherTeanMemInit() {
@@ -70,10 +81,5 @@ public class TeamMemberFragment extends Fragment {
         TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
 
         listView.setAdapter(teamMemberListViewAdapter);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 }

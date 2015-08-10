@@ -83,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="队伍信息"
-                    android:textColor="#0000ff"
+                    android:textColor="@color/blue_color"
                     android:textSize="18sp" />
 
             </LinearLayout>

@@ -28,6 +28,7 @@ public class RoundImageView extends ImageView {
     // 控件默认长、宽
     private int defaultWidth = 0;
     private int defaultHeight = 0;
+    private Bitmap bigBmp;
 
     public RoundImageView(Context context) {
         super(context);
@@ -59,6 +60,7 @@ public class RoundImageView extends ImageView {
             return;
         Bitmap b = ((BitmapDrawable) drawable).getBitmap();
         Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        bigBmp = bitmap;
         if (defaultWidth == 0) {
             defaultWidth = getWidth();
 
@@ -189,4 +191,13 @@ public class RoundImageView extends ImageView {
         canvas.drawCircle(defaultWidth / 2, defaultHeight / 2, radius, paint);
     }
 
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        bigBmp = bm;
+    }
+
+    public Bitmap getBmp(){
+        return bigBmp;
+    }
 }

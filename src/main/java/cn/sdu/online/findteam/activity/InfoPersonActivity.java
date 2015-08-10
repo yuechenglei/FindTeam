@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
@@ -25,7 +28,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     public EditText text_nickname, text_introduction, text_tag1, text_tag2, text_tag3, text_realname,
             text_gender, text_dress, text_school, text_phonenumber, text_email;
     public TextView text_edit;
-    public Boolean bl;
+    public Boolean isEdited;
 
     private RelativeLayout relativeLayout;
     private RoundImageView head;
@@ -38,7 +41,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_info_person);
 
-        bl = true;
+        isEdited = false;
         bt_return = (Button) findViewById(R.id.bt_return);
         text_nickname = (EditText) findViewById(R.id.text_nickname);
         text_introduction = (EditText) findViewById(R.id.text_introduction);
@@ -66,7 +69,8 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.text_edit:
-                if (bl) {
+                isEdited = !isEdited;
+                if (isEdited) {
                     text_nickname.setFocusableInTouchMode(true);
                     text_nickname.requestFocus();
                     text_introduction.setFocusableInTouchMode(true);
@@ -92,7 +96,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                     text_edit.setBackgroundColor(0xff519aff);
                     text_edit.setText("保存资料");
                     text_edit.setTextColor(Color.WHITE);
-                    bl = false;
                 } else {
                     text_nickname.setFocusableInTouchMode(false);
                     text_nickname.requestFocus();
@@ -130,7 +133,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                     text_edit.setBackgroundColor(Color.WHITE);
                     text_edit.setText("编辑资料");
                     text_edit.setTextColor(Color.rgb(80, 154, 255));
-                    bl = true;
                 }
                 break;
 
@@ -139,49 +141,65 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 break;
 
             case R.id.head:
-                final String[] itemsfirst = {"修改个人头像", "查看大图"};// 第一级条目列表
-                new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
-                        /*.setTitle("请选择方式")// 标题*/
-                        .setItems(itemsfirst, new DialogInterface.OnClickListener() {// 以下为监听
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                if (which == 0) {
-                                    final String[] itemssecond = {"相册", "相机"}; // 第二级条目列表
-                                    new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
-                                            .setTitle("请选择方式")// 标题
-                                            .setItems(itemssecond, new DialogInterface.OnClickListener() {// 以下为监听
+                if (isEdited) {
+                    final String[] itemsfirst = {"修改个人头像", "查看大图"};// 第一级条目列表
+                    new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
+                            .setItems(itemsfirst, new DialogInterface.OnClickListener() {// 以下为监听
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    if (which == 0) {
+                                        final String[] itemssecond = {"相册", "相机"}; // 第二级条目列表
+                                        new AlertDialog.Builder(InfoPersonActivity.this, R.style.AlertDialogCustom)// 建立对话框
+                                                .setTitle("请选择方式")// 标题
+                                                .setItems(itemssecond, new DialogInterface.OnClickListener() {// 以下为监听
 
-                                                @Override
-                                                public void onClick(DialogInterface dialog,
-                                                                    int which) {
-                                                    if (which == 0) {
-                                                        // 相册
-                                                        changeHeader =
-                                                        new ChangeHeader(InfoPersonActivity.this,
-                                                                head, ChangeHeader.PERSONHEADER);
-                                                        changeHeader.chooseAlbum();
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog,
+                                                                        int which) {
+                                                        if (which == 0) {
+                                                            // 相册
+                                                            changeHeader =
+                                                                    new ChangeHeader(InfoPersonActivity.this,
+                                                                            head, ChangeHeader.PERSONHEADER);
+                                                            changeHeader.chooseAlbum();
+                                                        }
+                                                        if (which == 1) {
+                                                            // 相机
+                                                            changeHeader =
+                                                                    new ChangeHeader(InfoPersonActivity.this,
+                                                                            head, ChangeHeader.PERSONHEADER);
+                                                            changeHeader.chooseCamera();
+                                                        }
                                                     }
-                                                    if (which == 1) {
-                                                        // 相机
-                                                        changeHeader =
-                                                        new ChangeHeader(InfoPersonActivity.this,
-                                                                head, ChangeHeader.PERSONHEADER);
-                                                        changeHeader.chooseCamera();
-                                                    }
-                                                }
-                                            }).show();
+                                                }).show();
+                                    }
+                                    if (which == 1) {
+                                        Intent intent = new Intent();
+                                        intent.setClass(InfoPersonActivity.this, ImgShowerActivity.class);
+                                        intent.putExtra("bitmap", getBytes(head.getBmp()));
+                                        InfoPersonActivity.this.startActivity(intent);
+                                        overridePendingTransition(R.anim.zoomin, 0);
+                                    }
                                 }
-                                if (which == 1) {
-                                    Intent intent = new Intent();
-                                    intent.setClass(InfoPersonActivity.this, ImgShowerActivity.class);
-                                    InfoPersonActivity.this.startActivity(intent);
-                                    overridePendingTransition(R.anim.zoomin, 0);
-                                }
-                            }
-                        }).show();
+                            }).show();
+                }
+                else {
+                    Intent intent = new Intent();
+                    intent.setClass(InfoPersonActivity.this, ImgShowerActivity.class);
+                    intent.putExtra("bitmap", getBytes(head.getBmp()));
+                    InfoPersonActivity.this.startActivity(intent);
+                    overridePendingTransition(R.anim.zoomin, 0);
+                }
                 break;
         }
+    }
+
+    public byte[] getBytes(Bitmap bitmap) {
+        //实例化字节数组输出流
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);//压缩位图
+        return baos.toByteArray();//创建分配字节数组
     }
 
     @Override

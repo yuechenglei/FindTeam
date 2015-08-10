@@ -35,7 +35,7 @@ public class MyMessageListViewAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         //获取数据集中与指定索引对应的数据项
-        return position;
+        return data.get(position);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class MyMessageListViewAdapter extends BaseAdapter {
         holder.title.setText(data.get(position).title);
         holder.info.setText(data.get(position).info);
 
-        if (data.get(position).getSeeornot() == true) {
+        if (data.get(position).getSeeornot()) {
             holder.badgeView.setVisibility(View.VISIBLE);
             holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
             holder.badgeView.setBadgeCount(data.get(position).getNum());

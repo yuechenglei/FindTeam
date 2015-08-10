@@ -66,10 +66,6 @@
             android:theme="@style/trans_style" />
 
         <activity
-            android:name=".activity.FriendActivity"
-            android:theme="@style/trans_style" />
-
-        <activity
             android:name=".activity.ChatActivity"
             android:theme="@style/trans_style"
             android:windowSoftInputMode="adjustResize|stateHidden" />
@@ -79,5 +75,8 @@
 
         <activity android:name=".activity.ImgShowerActivity"
             android:theme="@style/NoActionBar_trans"/>
+
+        <activity android:name=".activity.InviteNewMemActivity"
+            android:theme="@style/trans_style"/>
     </application>
 </manifest>
