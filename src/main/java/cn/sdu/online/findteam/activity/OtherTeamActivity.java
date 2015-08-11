@@ -22,6 +22,7 @@ import cn.sdu.online.findteam.fragment.TeamInformationFragment;
 import cn.sdu.online.findteam.fragment.TeamLogFragment;
 import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class OtherTeamActivity extends FragmentActivity {
     public static Context mContext;
@@ -54,7 +55,7 @@ public class OtherTeamActivity extends FragmentActivity {
     private ImageView mTabLineIv;
 
     /**
-     *  三个引导fragment的 Layout
+     * 三个引导fragment的 Layout
      */
     private LinearLayout teaminfo_ll;
     private LinearLayout teammem_ll;
@@ -74,6 +75,13 @@ public class OtherTeamActivity extends FragmentActivity {
         findById();
         init();
         initTabLineWidth();
+        if (MyApplication.ohterTeam_CurrentPage == 0) {
+            mPageVp.setCurrentItem(0);
+        } else if (MyApplication.ohterTeam_CurrentPage == 1) {
+            mPageVp.setCurrentItem(1);
+        } else {
+            mPageVp.setCurrentItem(2);
+        }
     }
 
     private void findById() {
@@ -167,12 +175,15 @@ public class OtherTeamActivity extends FragmentActivity {
                 switch (position) {
                     case 0:
                         mTeamInfoTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.ohterTeam_CurrentPage = 0;
                         break;
                     case 1:
                         mTeamMemTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.ohterTeam_CurrentPage = 1;
                         break;
                     case 2:
                         mTeamLogTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.ohterTeam_CurrentPage = 2;
                         break;
                 }
                 currentIndex = position;
@@ -193,6 +204,13 @@ public class OtherTeamActivity extends FragmentActivity {
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
                 .getLayoutParams();
         lp.width = screenWidth / 3;
+
+        if (MyApplication.ohterTeam_CurrentPage == 1) {
+            lp.setMargins(screenWidth / 3, 0, 0, 0);
+        } else if (MyApplication.ohterTeam_CurrentPage == 2) {
+            mPageVp.setCurrentItem(2);
+            lp.setMargins((screenWidth / 3) * 2, 0, 0, 0);
+        }
         mTabLineIv.setLayoutParams(lp);
     }
 
@@ -205,11 +223,12 @@ public class OtherTeamActivity extends FragmentActivity {
         mTeamLogTv.setTextColor(Color.BLACK);
     }
 
-    private void setTabListener(){
+    private void setTabListener() {
         teaminfo_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(0);
+                MyApplication.ohterTeam_CurrentPage = 0;
             }
         });
 
@@ -217,6 +236,7 @@ public class OtherTeamActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(1);
+                MyApplication.ohterTeam_CurrentPage = 1;
             }
         });
 
@@ -224,11 +244,12 @@ public class OtherTeamActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(2);
+                MyApplication.ohterTeam_CurrentPage = 3;
             }
         });
     }
 
-    public static Context getContext(){
+    public static Context getContext() {
         return mContext;
     }
 }

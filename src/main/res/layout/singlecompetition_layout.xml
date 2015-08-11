@@ -18,19 +18,24 @@
             android:text="优衣库设计大赛"
             android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/underline"
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/underline1" />
+            android:layout_height="1dp"
+            android:background="@color/underline1_gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="15dp"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:text="　冠军虽然只有一个，
             但通过本次比赛收获良多的，却不只是盛大众信 +
             5v5聚力纵、崂山一中，以及蓝村队，凭借严明的纪律，获得 +
@@ -40,65 +45,70 @@
             记者聊了起来，“决赛确实精彩，我们还有 +
             许多东西向他们学习，来年 +
             希望能打出更好成绩"
-                android:maxLines="2"
-                android:ellipsize="end"
-                android:textSize="7pt"
                 android:textColor="#666666"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/game_detail_infor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="15dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="比赛的详细介绍"
+                    android:textColor="@color/blue_color"
+                    android:textSize="12sp" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/blue_color"/>
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="比赛的详细介绍"
-                android:textSize="7pt"
-                android:textColor="#666666"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="奖品："
-                android:textSize="7pt"
-                android:textColor="#666666"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="主办方："
-                android:textSize="7pt"
-                android:textColor="#666666"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="截至时间："
-                android:textSize="7pt"
-                android:textColor="#666666"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="开始时间："
-                android:textSize="7pt"
-                android:textColor="#666666"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
-                android:layout_marginBottom="15dp"/>
+                android:text="奖品："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="主办方："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="截至时间："
+                android:textColor="#666666"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="开始时间："
+                android:textColor="#666666"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="7dp"
-            android:background="@color/blanking_grey"/>
+            android:background="@color/blanking_grey" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -108,19 +118,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
+                android:layout_margin="12dp"
                 android:text="可以加入的队伍"
-                android:layout_margin="12dp"/>
+                android:textSize="20sp" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1sp"
-                android:background="@color/underline1_gray"/>
+                android:layout_height="1dp"
+                android:background="@color/underline1_gray" />
 
             <cn.sdu.online.findteam.view.SingleCompetitionListView
                 android:id="@+id/singlecplist"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </LinearLayout>
 
     </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,22 +23,12 @@ import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 /**
  * 具体的单个比赛信息界面
  */
-public class SingleCompetitionActivity extends Activity {
+public class SingleCompetitionActivity extends Activity implements View.OnClickListener{
 
     public static Context SingleCompetitionContext;
     private ListView singlelistView;
 
-    /**
-     * adapter 中要传入的数据
-     */
-    private ImageView imageView;
-    private TextView teamname;
-    private TextView personnum;
-    private View line1;
-    private TextView content;
-    private View line2;
-    private Button look;
-    private Button join;
+    private LinearLayout detail;
 
     private List<SingleCompetitionListItem> listItems;
 
@@ -56,18 +47,19 @@ public class SingleCompetitionActivity extends Activity {
         setActionBarLayout(R.layout.singlecompetition_actionbar_layout);
         setContentView(R.layout.singlecompetition_layout);
 
-        SingleCompetitionContext = SingleCompetitionActivity.this;
-        singlelistView = (ListView) findViewById(R.id.singlecplist);
-
+        initView();
         initListView();
 
+
+    }
+
+    private void initView(){
+        SingleCompetitionContext = SingleCompetitionActivity.this;
+        singlelistView = (ListView) findViewById(R.id.singlecplist);
         returnButton = (Button) findViewById(R.id.singlecp_return_bt);
-        returnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SingleCompetitionActivity.this.finish();
-            }
-        });
+        returnButton.setOnClickListener(this);
+        detail = (LinearLayout) findViewById(R.id.game_detail_infor);
+        detail.setOnClickListener(this);
     }
 
     public void initListView(){
@@ -105,5 +97,18 @@ public class SingleCompetitionActivity extends Activity {
 
     public static Context getContext(){
         return SingleCompetitionContext;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.singlecp_return_bt:
+                SingleCompetitionActivity.this.finish();
+                break;
+
+            case R.id.game_detail_infor:
+
+                break;
+        }
     }
 }

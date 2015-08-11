@@ -26,8 +26,8 @@ public class InviteMemListAdapter extends BaseAdapter {
         this.layoutInflater = LayoutInflater.from(context);
     }
 
-    public static interface TextCallback {
-        public void onListenr(int count);
+    public interface TextCallback {
+        public void onListener(int count);
     }
 
     public void setTextCallback(TextCallback listener) {
@@ -85,12 +85,12 @@ public class InviteMemListAdapter extends BaseAdapter {
                     viewHolder.linearLayout.setVisibility(View.VISIBLE);
                     selectTotal++;
                     if (textcallback != null)
-                        textcallback.onListenr(selectTotal);
+                        textcallback.onListener(selectTotal);
                 } else if (!listItem.isSelected) {
                     viewHolder.linearLayout.setVisibility(View.GONE);
                     selectTotal--;
                     if (textcallback != null)
-                        textcallback.onListenr(selectTotal);
+                        textcallback.onListener(selectTotal);
                 }
             }
         });

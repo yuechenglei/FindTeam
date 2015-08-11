@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
@@ -11,10 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.EditTeamSettingActivity;
 
 public class TeamPopWindow extends PopupWindow implements View.OnClickListener {
     private View contentView;
-    private LinearLayout search;
+    private LinearLayout search, edit;
     private Activity context;
 
     public TeamPopWindow(final Activity context) {
@@ -23,13 +25,15 @@ public class TeamPopWindow extends PopupWindow implements View.OnClickListener {
         this.context = context;
         contentView = inflater.inflate(R.layout.teampopup_dialog, null);
         search = (LinearLayout) contentView.findViewById(R.id.exit_team);
-        int w = context.getWindowManager().getDefaultDisplay().getWidth();
         search.setOnClickListener(this);
+        edit = (LinearLayout) contentView.findViewById(R.id.edit_team_setting);
+        edit.setOnClickListener(this);
 
+        int w = context.getWindowManager().getDefaultDisplay().getWidth();
         // 设置SelectPicPopupWindow的View
         this.setContentView(contentView);
         // 设置SelectPicPopupWindow弹出窗体的宽
-        this.setWidth(w / 4 );
+        this.setWidth(w / 3 );
         // 设置SelectPicPopupWindow弹出窗体的高
         this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         // 设置SelectPicPopupWindow弹出窗体可点击
@@ -63,6 +67,13 @@ public class TeamPopWindow extends PopupWindow implements View.OnClickListener {
 
                 this.dismiss();
                 break;
+
+            case R.id.edit_team_setting:
+                this.dismiss();
+                Intent intent = new Intent(context, EditTeamSettingActivity.class);
+                context.startActivity(intent);
+                break;
+
             default:
                 break;
         }

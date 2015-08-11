@@ -10,6 +10,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +25,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.BadgeView;
 
 import cn.sdu.online.findteam.R;
@@ -31,7 +33,7 @@ import cn.sdu.online.findteam.fragment.ChatMainFragment;
 import cn.sdu.online.findteam.fragment.FriendMainFragment;
 
 
-public class MyMessageActivity extends FragmentActivity implements View.OnClickListener{
+public class MyMessageActivity extends FragmentActivity implements View.OnClickListener {
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mDatas;
@@ -49,19 +51,26 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
     private Button back;
     private Button actionsearch;
 
+    // 搜索框的状态
     private boolean state;
 
     public static BadgeView badgeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v("123", "onCreate");
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setActionBarLayout(R.layout.mymessage_actionbar);
         setContentView(R.layout.mymessageactivity_layout);
         state = false;
-        initTabLine();
         initView();
+        initTabLine();
+        if (MyApplication.myMessage_CurrentPage == 0) {
+            mViewPager.setCurrentItem(0);
+        } else {
+            mViewPager.setCurrentItem(1);
+        }
     }
 
     private void initTabLine() {
@@ -73,6 +82,9 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         LinearLayout.LayoutParams lp1 = (LinearLayout.LayoutParams) mTabline
                 .getLayoutParams();
         lp1.width = mScreen1_2;
+        if (MyApplication.myMessage_CurrentPage == 1) {
+            lp1.setMargins(mScreen1_2,0,0,0);
+        }
         mTabline.setLayoutParams(lp1);
     }
 
@@ -118,9 +130,11 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                 switch (position) {
                     case 1:
                         mChatTextView.setTextColor(Color.parseColor("#509aff"));
+                        MyApplication.myMessage_CurrentPage = 1;
                         break;
                     case 0:
                         mFriendTextView.setTextColor(Color.parseColor("#509aff"));
+                        MyApplication.myMessage_CurrentPage = 0;
                         break;
 
                 }
@@ -173,22 +187,23 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.mymessage_friend_tab:
                 mViewPager.setCurrentItem(0);
+                MyApplication.myMessage_CurrentPage = 0;
                 break;
             case R.id.mymessage_chat_tab:
                 mViewPager.setCurrentItem(1);
+                MyApplication.myMessage_CurrentPage = 1;
                 break;
             case R.id.mymessage_back_btn:
                 MyMessageActivity.this.finish();
                 break;
             case R.id.mymessage_actionsearch:
-                if (state == false) {
+                if (!state) {
                     searchlayout.setVisibility(View.VISIBLE);
                     state = true;
-                }
-                else {
+                } else {
                     searchlayout.setVisibility(View.GONE);
                     state = false;
                 }

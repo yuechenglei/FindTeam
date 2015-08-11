@@ -25,6 +25,7 @@ import cn.sdu.online.findteam.fragment.TeamInformationFragment;
 import cn.sdu.online.findteam.fragment.TeamLogFragment;
 import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.TeamPopWindow;
 
 public class MyTeamActivity extends FragmentActivity implements View.OnClickListener{
@@ -87,6 +88,15 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
         findById();
         init();
         initTabLineWidth();
+        if (MyApplication.myTeam_CurrentPage == 0){
+            mPageVp.setCurrentItem(0);
+        }
+        else if (MyApplication.myTeam_CurrentPage == 1){
+            mPageVp.setCurrentItem(1);
+        }
+        else {
+            mPageVp.setCurrentItem(2);
+        }
     }
 
     private void findById() {
@@ -177,12 +187,15 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
                 switch (position) {
                     case 0:
                         mTeamInfoTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.myTeam_CurrentPage = 0;
                         break;
                     case 1:
                         mTeamMemTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.myTeam_CurrentPage = 1;
                         break;
                     case 2:
                         mTeamLogTv.setTextColor(Color.rgb(80, 154, 255));
+                        MyApplication.myTeam_CurrentPage = 2;
                         break;
                 }
                 currentIndex = position;
@@ -205,6 +218,12 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
                 .getLayoutParams();
         lp.width = screenWidth / 3;
+        if (MyApplication.myTeam_CurrentPage == 1){
+            lp.setMargins(screenWidth / 3, 0, 0, 0);
+        }
+        else if (MyApplication.myTeam_CurrentPage == 2){
+            lp.setMargins((screenWidth / 3) * 2, 0, 0, 0);
+        }
         mTabLineIv.setLayoutParams(lp);
     }
 
@@ -222,6 +241,7 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(0);
+                MyApplication.myTeam_CurrentPage = 0;
             }
         });
 
@@ -229,6 +249,7 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(1);
+                MyApplication.myTeam_CurrentPage = 1;
             }
         });
 
@@ -236,6 +257,7 @@ public class MyTeamActivity extends FragmentActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 mPageVp.setCurrentItem(2);
+                MyApplication.myTeam_CurrentPage = 2;
             }
         });
     }
