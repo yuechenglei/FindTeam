@@ -7,15 +7,26 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.wukong.Callback;
+import com.alibaba.wukong.auth.ALoginParam;
+import com.alibaba.wukong.auth.AuthInfo;
+import com.alibaba.wukong.auth.AuthService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.UserService;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,6 +34,9 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.util.AndTools;
+import cn.sdu.online.findteam.util.LoginUtils;
 
 
 public class LoginActivity extends Activity implements View.OnClickListener {
@@ -33,7 +47,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private Button register;
     private Dialog dialog;
 
-    User user;
+    User myUser;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -72,9 +86,14 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 String name = loginname.getText().toString();
                 String password = loginpassword.getText().toString();
 
+                if (TextUtils.isEmpty(name) || name.length() > 50) {// 长度校验
+                    Toast.makeText(LoginActivity.this, "用户名格式错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // 打开progressDialog
                 dialog = DialogDefine.createLoadingDialog(LoginActivity.this,
-                        "登陆中......");
+                        "登陆中...");
                 dialog.show();
                 Thread loginThread = new Thread(new LoginThread(name, password));
                 loginThread.start();
@@ -107,10 +126,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private Bundle startLogin(String name, String password) {
-        user = new User();
-        user.setName(name);
-        user.setPassword(password);
-        String jsonResult = new NetCore().Login(user);
+        myUser = new User();
+        myUser.setName(name);
+        myUser.setPassword(password);
+        String jsonResult = new NetCore().Login(myUser);
 
         int codeResult = 404;
         String messageResult = "";
@@ -149,33 +168,58 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                preferences = getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
-                editor = preferences.edit();
-                editor.putString("loginName", user.getName()).apply();
-                editor.putString("loginPassword", user.getPassword()).apply();
-
-                Toast.makeText(LoginActivity.this,
-                        bundle.getString("msg"), Toast.LENGTH_SHORT).show();
-
-                Timer timer = new Timer();
-                TimerTask timerTask = new TimerTask() {
+                DemoUtil.getExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
-                        if (MainActivity.mainActivity != null) {
-                            MainActivity.mainActivity.finish();
-                        }
-                        Intent intent = new Intent();
-                        intent.setClass(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("loginIdentity", "<##用户##>" + loginname.getText().toString());
-                        startActivity(intent);
-                        LoginActivity.this.finish();
-                        if (StartActivity.startActivity != null) {
-                            StartActivity.startActivity.finish();
-                        }
+                        ALoginParam params = LoginUtils.loginRequest(myUser.getName(), myUser.getPassword());
+                        loginWukong(params, myUser.getName());
                     }
-                };
-                timer.schedule(timerTask, 100);
+                });
             }
         }
     };
+
+    private void loginWukong(ALoginParam param, final String nickname) {
+        AuthService.getInstance().login(param, new Callback<AuthInfo>() {
+            @Override
+            public void onSuccess(AuthInfo authInfo) {
+                AuthService.getInstance().setNickname(nickname);
+                preferences = getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.remove("loginName").apply();
+                editor.remove("loginPassword").apply();
+                editor.putString("loginName", myUser.getName()).apply();
+                editor.putString("loginPassword", myUser.getPassword()).apply();
+
+                if (MainActivity.mainActivity != null) {
+                    MainActivity.mainActivity.finish();
+                }
+                Intent intent = new Intent();
+                intent.setClass(LoginActivity.this, MainActivity.class);
+                intent.putExtra("loginIdentity", "<##用户##>" + myUser.getName());
+                intent.putExtra("loginID", preferences.getLong("loginID", 0));
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(LoginActivity.this, "登陆成功");
+                startActivity(intent);
+                LoginActivity.this.finish();
+                if (StartActivity.startActivity != null) {
+                    StartActivity.startActivity.finish();
+                }
+            }
+
+            @Override
+            public void onException(String code, String reason) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(LoginActivity.this, "登录失败" + "  " + reason);
+            }
+
+            @Override
+            public void onProgress(AuthInfo authInfo, int i) {
+            }
+        });
+    }
 }

@@ -27,6 +27,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.alibaba.wukong.auth.AuthService;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,7 +49,6 @@ public class FragmentSetting extends Fragment implements OnClickListener {
     private LinearLayout llUpdate;
     private LinearLayout llAbout;
     private LinearLayout llShareSoft;
-    private SharedPreferences sp;
     View view;
 
     Dialog dialogDefine;
@@ -189,9 +190,9 @@ public class FragmentSetting extends Fragment implements OnClickListener {
                 if (dialogDefine != null) {
                     dialogDefine.dismiss();
                 }
-                if (bundle.getString("msg").trim().length() == 0){
+                if (bundle.getString("msg").trim().length() == 0) {
                     Toast.makeText(FragmentSetting.this.getActivity(),
-                            "网络错误！",Toast.LENGTH_SHORT).show();
+                            "网络错误！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -200,26 +201,19 @@ public class FragmentSetting extends Fragment implements OnClickListener {
                 Toast.makeText(FragmentSetting.this.getActivity(),
                         bundle.getString("msg"), Toast.LENGTH_SHORT).show();
 
-                Timer timer = new Timer(true);
-                TimerTask timerTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent();
-                        intent.setClass(FragmentSetting.this.getActivity(),
-                                MainActivity.class);
-                        intent.putExtra("loginIdentity", "<##游客##>");
-                        FragmentSetting.this.getActivity().finish();
-                        startActivity(intent);
-                    }
-                };
-                timer.schedule(timerTask,200);
+                Intent intent = new Intent();
+                intent.setClass(FragmentSetting.this.getActivity(),
+                        MainActivity.class);
+                intent.putExtra("loginIdentity", "<##游客##>");
+                FragmentSetting.this.getActivity().finish();
+                startActivity(intent);
             } else {
                 if (dialogDefine != null) {
                     dialogDefine.dismiss();
                 }
-                if (bundle.getString("msg").trim().length() == 0){
+                if (bundle.getString("msg").trim().length() == 0) {
                     Toast.makeText(FragmentSetting.this.getActivity(),
-                            "网络错误！",Toast.LENGTH_SHORT).show();
+                            "网络错误！", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Toast.makeText(FragmentSetting.this.getActivity(),
@@ -237,12 +231,10 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 //		MobclickAgent.onPageEnd("Setting");
 //	}
 
-    protected void exitSuccess(){
+    protected void exitSuccess() {
+        AuthService.getInstance().logout();
         sharedPreferences = FragmentSetting.this.
                 getActivity().getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
-        sharedPreferences.edit().remove("loginName").apply();
-        sharedPreferences.edit().remove("loginPassword").apply();
-        Log.v("eeeeeeee", sharedPreferences.getString("loginName", "啥也没"));
-        Log.v("eeeeeeee", sharedPreferences.getString("loginPassword", "啥也没"));
+        sharedPreferences.edit().clear().apply();
     }
 }

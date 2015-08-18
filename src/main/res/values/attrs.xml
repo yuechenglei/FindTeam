@@ -27,4 +27,21 @@
       <enum name="mirror" value="2" />
     </attr>
   </declare-styleable>
+
+  <!--阿里悟空相关-->
+  <declare-styleable name="MakeupImageView">
+    <attr name="makeupHeight" format="dimension" />
+
+    <attr name="makeupDirection">
+      <flag name="normal" value="0x0" />
+      <flag name="left" value="0x1" />
+      <flag name="right" value="0x2" />
+    </attr>
+
+    <attr name="colorSelection">
+      <flag name="white" value="0x0" />
+      <flag name="yellow" value="0x1" />
+    </attr>
+
+  </declare-styleable>
 </resources>

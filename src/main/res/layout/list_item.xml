@@ -11,8 +11,6 @@
         android:orientation="vertical"
         android:background="@drawable/mainlistview_item_bg">
 
-
-
         <TextView
             android:id="@+id/item_title_tv"
             android:layout_width="match_parent"

@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class User implements Serializable{
     private String name, password, email, confirm;
+    private Long ID;
 
     public String getName(){
         return name;
@@ -35,5 +36,13 @@ public class User implements Serializable{
 
     public void setConfirm(String confirm){
         this.confirm = confirm;
+    }
+
+    public void setID(Long ID){
+        this.ID = ID;
+    }
+
+    public Long getID(){
+        return ID;
     }
 }

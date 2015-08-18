@@ -23,17 +23,28 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.widget.Toast;
 
+import com.alibaba.wukong.Callback;
+import com.alibaba.wukong.im.Conversation;
+import com.alibaba.wukong.im.ConversationChangeListener;
+import com.alibaba.wukong.im.ConversationService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.Message;
+import com.alibaba.wukong.im.MessageListener;
+import com.alibaba.wukong.im.MessageService;
+
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
+import cn.sdu.online.findteam.fragment.FriendMainFragment;
+import cn.sdu.online.findteam.share.DemoUtil;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.BadgeView;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.fragment.ChatMainFragment;
-import cn.sdu.online.findteam.fragment.FriendMainFragment;
+import cn.sdu.online.findteam.fragment.SessionFragment;
 
 
-public class MyMessageActivity extends FragmentActivity implements View.OnClickListener {
+public class MyMessageActivity extends FragmentActivity implements View.OnClickListener{
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mDatas;
@@ -56,9 +67,11 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     public static BadgeView badgeView;
 
+    private static Bundle savedInstanceState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("123", "onCreate");
+        this.savedInstanceState = savedInstanceState;
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setActionBarLayout(R.layout.mymessage_actionbar);
@@ -73,6 +86,10 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         }
     }
 
+    public static Bundle getSavedInstanceState() {
+        return savedInstanceState;
+    }
+
     private void initTabLine() {
         mTabline = (ImageView) findViewById(R.id.id_invite_tabline);
         DisplayMetrics dpMetrics = new DisplayMetrics();
@@ -83,7 +100,7 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                 .getLayoutParams();
         lp1.width = mScreen1_2;
         if (MyApplication.myMessage_CurrentPage == 1) {
-            lp1.setMargins(mScreen1_2,0,0,0);
+            lp1.setMargins(mScreen1_2, 0, 0, 0);
         }
         mTabline.setLayoutParams(lp1);
     }
@@ -104,10 +121,11 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         actionsearch.setOnClickListener(this);
 
         mDatas = new ArrayList<Fragment>();
-        ChatMainFragment tab02 = new ChatMainFragment();
+        SessionFragment tab02 = new SessionFragment();
         FriendMainFragment tab01 = new FriendMainFragment();
         mDatas.add(tab01);
         mDatas.add(tab02);
+
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public int getCount() {
@@ -121,7 +139,7 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         };
         mViewPager.setAdapter(mAdapter);
 
-        mViewPager.setOnPageChangeListener(new OnPageChangeListener() {
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
@@ -168,17 +186,23 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
             }
         });
         badgeView = new BadgeView(this);
-        badgeView.setBadgeCount(0);
-        badgeView.setBackgroundResource(R.drawable.badgeview_bg);
-        chat.addView(badgeView);
-        badgeView.setVisibility(View.GONE);
+        addBadgeView();
+        setBadgeCountListener();
+/*        if (getUnreadNum() == 0) {
+            badgeView.setBadgeCount(0);
+            badgeView.setVisibility(View.GONE);
+        }
+        else {
+            badgeView.setBadgeCount(getUnreadNum());
+            badgeView.setVisibility(View.VISIBLE);
+        }*/
     }
-/*
 
-    public static int getCount(){
+
+    public static int getCount() {
         return badgeView.getBadgeCount();
     }
-*/
+
 
     protected void resetTextView() {
         mChatTextView.setTextColor(Color.BLACK);
@@ -213,7 +237,8 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     /**
      * @param layoutId 布局Id
-     */
+     **/
+
     public void setActionBarLayout(int layoutId) {
         ActionBar actionBar = getActionBar();
         if (null != actionBar) {
@@ -224,5 +249,115 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
             ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
             actionBar.setCustomView(v, layout);
         }
+    }
+
+    public void addBadgeView() {
+        IMEngine.getIMService(ConversationService.class).getTotalUnreadCount(
+                new Callback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer unReadCount) {
+                        chat.addView(badgeView);
+                        badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+                        badgeView.setBadgeCount(unReadCount);
+                        MyApplication.unreadnum = unReadCount;
+                    }
+
+                    @Override
+                    public void onException(String code, String reason) {
+                        chat.addView(badgeView);
+                        badgeView.setBackgroundResource(R.drawable.badgeview_bg);
+                        badgeView.setBadgeCount(0);
+                        badgeView.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onProgress(Integer data, int progress) {
+
+                    }
+                }, false);
+    }
+
+    public void setBadgeCountListener(){
+        IMEngine.getIMService(ConversationService.class).addConversationChangeListener(new ConversationChangeListener() {
+            @Override
+            public void onTitleChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onIconChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onStatusChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onLatestMessageChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onUnreadCountChanged(List<Conversation> list) {
+                IMEngine.getIMService(ConversationService.class).getTotalUnreadCount(new Callback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        badgeView.setBadgeCount(integer);
+                    }
+
+                    @Override
+                    public void onException(String s, String s1) {
+                        Toast.makeText(MyMessageActivity.this, s1, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onProgress(Integer integer, int i) {
+
+                    }
+                },false);
+            }
+
+            @Override
+            public void onDraftChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onTagChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onExtensionChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onAtMeStatusChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onLocalExtrasChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onNotificationChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onTopChanged(List<Conversation> list) {
+
+            }
+
+            @Override
+            public void onMemberCountChanged(List<Conversation> list) {
+
+            }
+        });
     }
 }

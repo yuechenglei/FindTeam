@@ -20,7 +20,7 @@
         android:layout_marginRight="10dp"
         android:layout_marginTop="12dp"
         android:layout_toLeftOf="@id/img_userimgright"
-        android:src="@drawable/chat_arrow_right" />
+        android:src="@drawable/chat_arrow_rightnum9" />
 
     <LinearLayout
         android:layout_width="200dp"

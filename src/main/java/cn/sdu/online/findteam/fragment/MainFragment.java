@@ -63,7 +63,6 @@ public class MainFragment extends Fragment implements
             }
         });
         // Inflate the layout for this fragment
-        Log.v("eeeee","mainfragment");
         return view;
     }
 

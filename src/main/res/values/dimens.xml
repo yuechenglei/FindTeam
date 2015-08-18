@@ -34,4 +34,47 @@
 
     <dimen name="font_size_new_tag">11sp</dimen>
     <dimen name="padding_new_tag">3dp</dimen>
+
+
+    <!--阿里悟空相关-->
+    <!-- common values -->
+    <dimen name="common_navigator_divider_height">1dp</dimen>
+    <dimen name="common_navigator_height">48dp</dimen>
+    <dimen name="common_actionbar_height">48dp</dimen>
+
+    <dimen name="text_size_xsmall">10sp</dimen>
+    <dimen name="text_size_small">13sp</dimen>
+    <dimen name="text_size_small_avatar">12dp</dimen>
+    <dimen name="text_size_8">8dp</dimen>
+    <dimen name="text_size_10">10sp</dimen>
+    <dimen name="text_size_12">12sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
+    <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_15">15sp</dimen>
+    <dimen name="text_size_medium">16sp</dimen>
+    <dimen name="text_size_16">16sp</dimen>
+    <dimen name="text_size_17">17sp</dimen>
+    <dimen name="text_size_18">18sp</dimen>
+    <dimen name="text_size_20">20sp</dimen>
+    <dimen name="text_size_24">24sp</dimen>
+    <dimen name="text_size_28">28sp</dimen>
+    <dimen name="text_size_32">32sp</dimen>
+    <dimen name="text_size_xmedium">18sp</dimen>
+
+    <dimen name="chatting_item_time_divider_height">8dp</dimen>
+    <dimen name="chatting_item_avatar_width">40dp</dimen>
+    <dimen name="chatting_item_avatar_height">40dp</dimen>
+    <dimen name="chatting_item_avatar_marginRight">3dp</dimen>
+    <dimen name="chatting_item_picture_makeup_height">16dp</dimen>
+    <dimen name="chatting_item_padding_bs">8dp</dimen>
+    <dimen name="chatting_txt_avatar_radius">20dp</dimen>
+    <dimen name="chatting_input_panel_margin">8dp</dimen>
+    <dimen name="chatting_input_panel_height">48dp</dimen>
+    <dimen name="chatting_input_operation_icon_width">48dp</dimen>
+    <dimen name="chatting_input_operation_icon_height">48dp</dimen>
+    <dimen name="chatting_input_face_icon_width">43dp</dimen>
+    <dimen name="chatting_input_face_icon_height">43dp</dimen>
+
+    <dimen name="contact_item_avatar_width">36dp</dimen>
+    <dimen name="contact_item_avatar_height">36dp</dimen>
 </resources>

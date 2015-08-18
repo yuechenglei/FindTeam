@@ -32,7 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginRight="100dp">
 
                 <TextView
                     android:id="@+id/tv"
@@ -40,6 +41,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="你好  world"
+                    android:maxLines="1"
+                    android:ellipsize="end"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 

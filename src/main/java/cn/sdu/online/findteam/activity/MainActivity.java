@@ -31,6 +31,7 @@ import cn.sdu.online.findteam.fragment.AllGamesFragment;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
+import cn.sdu.online.findteam.share.DemoUtil;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
@@ -58,10 +59,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private View view_actionbar;
 
     private LinearLayout mVisitorDrawerLayout;
-    // 获取intent传入的字符串
+    // 获取intent传入的字符串和长整型ID
     private String intentString;
+    private Long intentID;
     // 侧边栏用户名
-    private TextView tv_text;
+    private TextView tv_text,tv_id;
 
     MainFragment mainFragment;
     BuildTeamFragment buildTeamFragment;
@@ -74,10 +76,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
-        Log.v("heheheda", "MainActivity start");
-        Log.v("heheheda", String.valueOf(buildTeamFragment));
 
         intentString = getIntent().getExtras().getString("loginIdentity");
+        intentID = getIntent().getExtras().getLong("loginID");
 
         fragmentManager = getSupportFragmentManager();
         // 设置ActionBar的自定义布局。
@@ -93,9 +94,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             initMDrawer();
             init_button();
             tv_text = (TextView) findViewById(R.id.tv_name);
+            tv_id = (TextView) findViewById(R.id.tv_ID);
             tv_text.setText(intentString.substring(8));
+            tv_id.setText("(ID:" + intentID + ")");
         } else {
-            Log.v("游客", intentString);
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.visitor_drawer_layout);
             viewStub.inflate();
@@ -103,6 +105,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             initMDrawer();
             init_Visitor_Btn();
         }
+        Log.v("currentididid", DemoUtil.currentOpenId()+"");
         // 初始化 acState 为true
         acState = true;
 

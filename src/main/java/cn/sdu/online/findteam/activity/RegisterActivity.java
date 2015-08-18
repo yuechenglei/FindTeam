@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +14,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.alibaba.wukong.auth.ALoginParam;
+import com.alibaba.wukong.auth.AuthInfo;
+import com.alibaba.wukong.auth.AuthService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +31,9 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.util.AndTools;
+import cn.sdu.online.findteam.util.LoginUtils;
 
 public class RegisterActivity extends Activity implements View.OnClickListener {
 
@@ -33,8 +41,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     private Button registerbtn;
 
     private Dialog dialog;
-
-    boolean isemail;
+    SharedPreferences preferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,33 +154,28 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
                 case NetCore.REGISTER_SUCCESS:
                     //注册成功
-                    if (dialog != null) {
-                        dialog.dismiss();
+                    if (bundle.getString("msg").trim().length() == 0) {
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
+                        Toast.makeText(RegisterActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
+                        return;
                     }
-                    Toast.makeText(RegisterActivity.this,
-                            bundle.getString("msg"), Toast.LENGTH_SHORT).show();
 
-                    Timer timer = new Timer();
-                    TimerTask timerTask = new TimerTask() {
+                    DemoUtil.getExecutor().execute(new Runnable() {
                         @Override
                         public void run() {
-                            Intent intent = new Intent();
-                            if (MainActivity.mainActivity != null){
-                                MainActivity.mainActivity.finish();
-                            }
-                            intent.setClass(RegisterActivity.this, MainActivity.class);
-                            intent.putExtra("loginIdentity", "<##用户##>" + registername.getText().toString());
-                            intent.putExtra("loginID", bundle.getInt("code"));
-                            startActivity(intent);
-                            RegisterActivity.this.finish();
-                            if (StartActivity.startActivity != null
-                                    && LoginActivity.loginActivity != null) {
-                                LoginActivity.loginActivity.finish();
-                                StartActivity.startActivity.finish();
-                            }
+                            String username = registername.getText().toString();
+                            ALoginParam params = LoginUtils.registerRequest(username, registerpassword.getText().toString());
+                            registerWuKong(params, username);
                         }
-                    };
-                    timer.schedule(timerTask, 200);
+                    });
+
+                    if (StartActivity.startActivity != null
+                            && LoginActivity.loginActivity != null) {
+                        LoginActivity.loginActivity.finish();
+                        StartActivity.startActivity.finish();
+                    }
                     break;
 
                 default:
@@ -180,4 +183,48 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             }
         }
     };
+
+    private void registerWuKong(ALoginParam param, final String nickname){
+        AuthService.getInstance().login(param, new com.alibaba.wukong.Callback<AuthInfo>() {
+            @Override
+            public void onSuccess(AuthInfo data) {
+                AuthService.getInstance().setNickname(nickname);
+                preferences = getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.remove("loginName").apply();
+                editor.remove("loginPassword").apply();
+                editor.putString("loginName", registername.getText().toString()).apply();
+                editor.putString("loginPassword", registerpassword.getText().toString()).apply();
+
+                Intent intent = new Intent();
+                if (MainActivity.mainActivity != null) {
+                    MainActivity.mainActivity.finish();
+                }
+                intent.setClass(RegisterActivity.this, MainActivity.class);
+                intent.putExtra("loginIdentity", "<##用户##>" + registername.getText().toString());
+                intent.putExtra("loginID", preferences.getLong("loginID", 0));
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(RegisterActivity.this, "注册成功");
+                startActivity(intent);
+                RegisterActivity.this.finish();
+                if (StartActivity.startActivity != null) {
+                    StartActivity.startActivity.finish();
+                }
+            }
+
+            @Override
+            public void onException(String code, String reason) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(RegisterActivity.this, R.string.signup_failed + " " + reason);
+            }
+
+            @Override
+            public void onProgress(AuthInfo s, int i) {
+            }
+        });
+    }
 }

@@ -48,7 +48,7 @@ public class ChatActivity extends Activity implements View.OnClickListener,View.
         setActionBarLayout(R.layout.chatactivity_actionbar);
         chatPerson = (TextView) findViewById(R.id.chat_person);
         chatPerson.setText(getIntent().getExtras().getString("chatperson"));
-        setContentView(R.layout.chat_layout);
+        setContentView(R.layout.chatactivity_layout);
         initView();
 
         mInflater = LayoutInflater.from(this);

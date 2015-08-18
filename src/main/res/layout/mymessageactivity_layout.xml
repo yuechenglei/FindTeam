@@ -47,3 +47,24 @@
         android:layout_height="match_parent" />
 
 </LinearLayout>
+
+
+    <!--<android.support.v4.view.ViewPager-->
+    <!--android:id="@id/view_pager"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginTop="38dp"/>-->
+
+    <!--<com.alibaba.wukong.demo.imkit.widget.indicator.PagerSlidingTabStrip-->
+    <!--android:id="@id/indicator"-->
+    <!--app:pstsShouldExpand="true"-->
+    <!--app:pstsIndicatorHeight="3dp"-->
+    <!--app:pstsUnderlineHeight="0dp"-->
+    <!--app:pstsTabPaddingLeftRight="0dp"-->
+    <!--app:pstsDividerWidth="0dp"-->
+    <!--app:pstsUnderlineColor="@color/gray"-->
+    <!--app:pstsIndicatorColor="@color/pure_white"-->
+    <!--android:background="@drawable/actionbar_bg"-->
+    <!--android:layout_below="@id/header"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="50dp"/>-->
