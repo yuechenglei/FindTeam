@@ -2,11 +2,17 @@ package cn.sdu.online.findteam.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -14,12 +20,22 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.ChangeHeader;
 
 
@@ -34,14 +50,33 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     private RoundImageView head;
 
     private ChangeHeader changeHeader;
+    Dialog dialog;
+    View contentView;
+    JSONObject person;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_info_person);
 
+        dialog = DialogDefine.createLoadingDialog(InfoPersonActivity.this,
+                "加载中...");
         isEdited = false;
+        dialog.show();
+        if(!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+            if (dialog != null){
+                dialog.dismiss();
+                Toast.makeText(InfoPersonActivity.this,"当前网络不可用！",Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        findview();
+        Thread loadUserInfo = new Thread(new loadUserInfo());
+        loadUserInfo.start();
+/*        setContentView(R.layout.activity_info_person);*/
+
+
+/*        isEdited = false;
         bt_return = (Button) findViewById(R.id.bt_return);
         text_nickname = (EditText) findViewById(R.id.text_nickname);
         text_introduction = (EditText) findViewById(R.id.text_introduction);
@@ -62,7 +97,77 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
 
         text_edit.setOnClickListener(this);
         bt_return.setOnClickListener(this);
-        head.setOnClickListener(this);
+        head.setOnClickListener(this);*/
+    }
+
+    class loadUserInfo implements Runnable {
+        @Override
+        public void run() {
+            try {
+                String info = new NetCore().getUserInfo("");
+                if (!info.equals("")) {
+                    JSONTokener jsonParser = new JSONTokener(info);
+                    // 此时还未读取任何json文本，直接读取就是一个JSONObject对象。
+                    // 如果此时的读取位置在"name" : 了，那么nextValue就是"yuanzhifei89"（String）
+                    try {
+                        person = (JSONObject) jsonParser.nextValue();
+                        if (person != null){
+                            Message message = new Message();
+                            handler.sendMessage(message);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            try {
+                text_phonenumber.setText(person.getString("contact"));
+                text_nickname.setText(person.getString("username"));
+                text_introduction.setText(person.getString("introduce"));
+                text_email.setText(person.getString("mail"));
+                text_realname.setText(person.getString("realName"));
+                text_gender.setText(person.getString("sex"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            InfoPersonActivity.this.setContentView(contentView);
+        }
+    };
+
+    private void findview() {
+        contentView = View.inflate(InfoPersonActivity.this, R.layout.activity_info_person, null);
+        bt_return = (Button) contentView.findViewById(R.id.bt_return);
+        text_nickname = (EditText) contentView.findViewById(R.id.text_nickname);
+        text_introduction = (EditText) contentView.findViewById(R.id.text_introduction);
+        text_tag1 = (EditText) contentView.findViewById(R.id.text_tag1);
+        text_tag2 = (EditText) contentView.findViewById(R.id.text_tag2);
+        text_tag3 = (EditText) contentView.findViewById(R.id.text_tag3);
+        text_realname = (EditText) contentView.findViewById(R.id.text_realname);
+        text_gender = (EditText) contentView.findViewById(R.id.text_gender);
+        text_dress = (EditText) contentView.findViewById(R.id.text_dress);
+        text_school = (EditText) contentView.findViewById(R.id.text_school);
+        text_phonenumber = (EditText) contentView.findViewById(R.id.text_phonenumber);
+        text_email = (EditText) contentView.findViewById(R.id.text_email);
+        text_edit = (TextView) contentView.findViewById(R.id.text_edit);
+        head = (RoundImageView) contentView.findViewById(R.id.head);
+        relativeLayout = (RelativeLayout) contentView.findViewById(R.id.info_person_headlayout);
+        relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                getWindowManager().getDefaultDisplay().getWidth()));
+
+        text_edit.setOnClickListener(InfoPersonActivity.this);
+        bt_return.setOnClickListener(InfoPersonActivity.this);
+        head.setOnClickListener(InfoPersonActivity.this);
     }
 
     @Override
@@ -183,8 +288,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                                     }
                                 }
                             }).show();
-                }
-                else {
+                } else {
                     Intent intent = new Intent();
                     intent.setClass(InfoPersonActivity.this, ImgShowerActivity.class);
                     intent.putExtra("bitmap", getBytes(head.getBmp()));

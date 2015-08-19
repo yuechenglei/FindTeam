@@ -1,8 +1,7 @@
-<cn.sdu.online.findteam.view.BounceScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<cn.sdu.online.findteam.view.BounceScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_color"
+    android:background="@color/underline1_gray"
     android:orientation="vertical">
 
     <LinearLayout
@@ -44,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/head"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
                 android:background="@null"
                 android:focusable="false"
                 android:text="照亮凉夜"
@@ -65,71 +65,77 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/background_label"
-            android:paddingTop="10dp">
+            android:layout_height="50dp">
+
+            <View
+                android:layout_width="12dp"
+                android:layout_height="match_parent"
+                android:background="@color/blue_color" />
 
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/text_tag1"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginLeft="32dp"
-                android:layout_marginStart="32dp"
                 android:gravity="center"
                 android:text="标签"
                 android:textColor="#000000"
                 android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/text_tag1"
-                android:layout_width="55dp"
-                android:layout_height="21dp"
+            <View
+                android:id="@+id/space"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="32dp"
+                android:layout_toRightOf="@id/textView"
+                android:background="#000000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="53dp"
-                android:layout_marginStart="53dp"
-                android:layout_toEndOf="@+id/textView"
-                android:layout_toRightOf="@+id/textView"
-                android:background="@drawable/background_tag"
-                android:focusable="false"
+                android:layout_toRightOf="@id/space"
                 android:gravity="center"
-                android:text="PS"
-                android:textColor="@color/white_color"
-                android:textSize="15sp" />
+                android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/text_tag2"
-                android:layout_width="55dp"
-                android:layout_height="21dp"
-                android:layout_alignTop="@+id/text_tag1"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_toEndOf="@+id/text_tag1"
-                android:layout_toRightOf="@+id/text_tag1"
-                android:background="@drawable/background_tag"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="A"
-                android:textColor="@color/white_color"
-                android:textSize="15sp" />
+                <EditText
+                    android:id="@+id/text_tag1"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/background_tag"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="PS"
+                    android:textColor="@color/white_color"
+                    android:textSize="15sp" />
 
-            <EditText
-                android:id="@+id/text_tag3"
-                android:layout_width="55dp"
-                android:layout_height="21dp"
-                android:layout_alignTop="@+id/text_tag2"
-                android:layout_marginLeft="30dp"
-                android:layout_marginStart="30dp"
-                android:layout_toEndOf="@+id/text_tag2"
-                android:layout_toRightOf="@+id/text_tag2"
-                android:background="@drawable/background_tag"
-                android:focusable="false"
-                android:gravity="center"
-                android:text="A"
-                android:textColor="@color/white_color"
-                android:textSize="15sp" />
+                <EditText
+                    android:id="@+id/text_tag2"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/background_tag"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="@color/white_color"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/text_tag3"
+                    android:layout_width="50dp"
+                    android:layout_height="20dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@drawable/background_tag"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="@color/white_color"
+                    android:textSize="15sp" />
+            </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
@@ -328,7 +334,6 @@
             android:id="@+id/text_edit"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_alignParentBottom="true"
             android:background="#ffffff"
             android:clickable="true"
             android:gravity="center"

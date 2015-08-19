@@ -1,5 +1,6 @@
 package cn.sdu.online.findteam.net;
 
+import android.content.Entity;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -12,6 +13,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.impl.cookie.BrowserCompatSpec;
+import org.apache.http.impl.cookie.CookieSpecBase;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cn.sdu.online.findteam.entity.User;
@@ -32,12 +37,15 @@ public class NetCore {
     // 登录的url
     private final String LoginAddr = ServerAddr + "user/login";
 
+    // 获取到的有用cookie
     public static String jsessionid;
 
     // 注册的url
-    private final String RegisterAddr = ServerAddr + "user/register";
+    private final static String RegisterAddr = ServerAddr + "user/register";
     // 登出的url
     public final static String LogingOutAddr = ServerAddr + "user/loginout";
+    // 获取个人信息的url
+    public final static String getUserInfoAddr = ServerAddr + "user/userInfo";
 
     /**
      * 后台的返回参数
@@ -53,6 +61,7 @@ public class NetCore {
 
     // 登出的返回参数
     public static final int LOGINOUT_SUCCESS = 0; // 登出成功
+
     /**
      * 登陆
      * <p/>
@@ -98,7 +107,7 @@ public class NetCore {
             for (int i = 0; i < cookies.size(); i++) {
                 if ("JSESSIONID".equals(cookies.get(i).getName())) {
                     jsessionid = cookies.get(i).getValue();
-                    Log.v("LoginActivity", jsessionid);
+                    Log.v("LoginActivityeeeeeddd", jsessionid);
                     break;
                 }
             }
@@ -109,14 +118,13 @@ public class NetCore {
             while ((line = br.readLine()) != null) {
                 jsonData += line + "\r\n";
             }
-            Log.v("LoginActivity",jsonData+"");
+            Log.v("LoginActivity", jsonData + "");
         }
         return jsonData;
     }
 
     /**
      * 注册 必填字段// reg.name // reg.email // reg.password // reg.confirm //
-     *
      */
     public String Register(User user) {
 
@@ -171,6 +179,34 @@ public class NetCore {
         HttpEntity entity = httpResponse.getEntity();
         if (entity != null) {
             jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+        }
+        return jsonData;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public String getUserInfo(String userId) throws IOException {
+        HttpPost httpPost = new HttpPost(getUserInfoAddr);
+        Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
+        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+        List<Cookie> cookies = new ArrayList<Cookie>();
+        cookies.add(cookie);
+        cookieSpecBase.formatCookies(cookies);
+        httpPost.setHeader(cookieSpecBase.formatCookies(cookies).get(0));
+
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        String jsonData = "";
+
+        if (userId.equals("")) {
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity entity = httpResponse.getEntity();
+            if (entity != null) {
+                jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+            }
+        }
+        else {
+
         }
         return jsonData;
     }

@@ -2,16 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_color"
+    android:background="@color/underline1_gray"
     android:orientation="vertical">
 
-    <ScrollView
+    <cn.sdu.online.findteam.view.BounceScrollView
         android:id="@+id/teamlog_scrollview"
         android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
-        android:background="@color/white_color">
+        android:background="@color/underline1_gray">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,7 +114,7 @@
 
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </cn.sdu.online.findteam.view.BounceScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -35,6 +35,7 @@ import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.LoginUtils;
 
@@ -88,6 +89,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
                 if (TextUtils.isEmpty(name) || name.length() > 50) {// 长度校验
                     Toast.makeText(LoginActivity.this, "用户名格式错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+                    Toast.makeText(LoginActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

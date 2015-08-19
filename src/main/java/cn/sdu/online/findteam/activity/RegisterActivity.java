@@ -32,6 +32,7 @@ import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.LoginUtils;
 
@@ -43,6 +44,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     private Dialog dialog;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.v("输入格式", registeremail.getText().toString());
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+            Toast.makeText(RegisterActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String name = registername.getText().toString();
         String email = registeremail.getText().toString();
         String password = registerpassword.getText().toString();
@@ -97,7 +102,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
     }
 
     private Bundle startRegister(String name, String email, String password, String confirm) {
-        User user = new User();
+        user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setPassword(password);
@@ -108,9 +113,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         String messageResult = "";
         try {
             codeResult = new JSONObject(jsonResult).getInt("code");
-            Log.v("后台的数据", codeResult + "");
             messageResult = new JSONObject(jsonResult).getString("msg");
-            Log.v("后台的数据", messageResult);
         } catch (JSONException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -162,14 +165,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         return;
                     }
 
-                    DemoUtil.getExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            String username = registername.getText().toString();
-                            ALoginParam params = LoginUtils.loginRequest(username, registerpassword.getText().toString());
-                            registerWuKong(params, username);
-                        }
-                    });
+                    Thread loginThread = new Thread(new LoginThread());
+                    loginThread.start();
                     break;
 
                 default:
@@ -178,7 +175,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         }
     };
 
-    private void registerWuKong(ALoginParam param, final String nickname){
+    private void loginWuKong(ALoginParam param, final String nickname) {
         AuthService.getInstance().login(param, new com.alibaba.wukong.Callback<AuthInfo>() {
             @Override
             public void onSuccess(AuthInfo data) {
@@ -187,15 +184,15 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 editor = preferences.edit();
                 editor.remove("loginName").apply();
                 editor.remove("loginPassword").apply();
-                editor.putString("loginName", registername.getText().toString()).apply();
-                editor.putString("loginPassword", registerpassword.getText().toString()).apply();
+                editor.putString("loginName", user.getName()).apply();
+                editor.putString("loginPassword", user.getPassword()).apply();
 
                 Intent intent = new Intent();
                 if (MainActivity.mainActivity != null) {
                     MainActivity.mainActivity.finish();
                 }
                 intent.setClass(RegisterActivity.this, MainActivity.class);
-                intent.putExtra("loginIdentity", "<##用户##>" + registername.getText().toString());
+                intent.putExtra("loginIdentity", "<##用户##>" + user.getName());
                 intent.putExtra("loginID", preferences.getLong("loginID", 0));
                 if (dialog != null) {
                     dialog.dismiss();
@@ -221,4 +218,65 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             }
         });
     }
+
+    class LoginThread implements Runnable {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            Bundle result = startLogin();
+            Message message = new Message();
+            message.setData(result);
+            loginHandler.sendMessage(message);
+        }
+    }
+
+    private Bundle startLogin() {
+        String jsonResult = new NetCore().Login(user);
+        int codeResult = 404;
+        String messageResult = "";
+        try {
+            codeResult = new JSONObject(jsonResult).getInt("code");
+            messageResult = new JSONObject(jsonResult).getString("msg");
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt("code", codeResult);
+        bundle.putString("msg", messageResult);
+        return bundle;
+    }
+
+    Handler loginHandler = new Handler() {
+        public void handleMessage(Message message) {
+            final Bundle bundle = message.getData();
+            if (bundle.getInt("code") == NetCore.LOGIN_ERROR) {
+                // 登录失败
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                Toast.makeText(RegisterActivity.this,
+                        bundle.getString("msg"), Toast.LENGTH_SHORT)
+                        .show();
+            } else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
+                // 登录成功
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+
+                if (bundle.getString("msg").trim().length() == 0) {
+                    Toast.makeText(RegisterActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                DemoUtil.getExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        ALoginParam params = LoginUtils.loginRequest(user.getName(), user.getPassword());
+                        loginWuKong(params, user.getName());
+                    }
+                });
+            }
+        }
+    };
 }

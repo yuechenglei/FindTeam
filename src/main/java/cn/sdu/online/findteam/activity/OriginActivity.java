@@ -25,6 +25,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.LoginUtils;
 
@@ -57,7 +58,7 @@ public class OriginActivity extends Activity {
                     startActivity(intent);
                     OriginActivity.this.finish();
                 } else {
-                    if (!AuthService.getInstance().isLogin()) {
+                    if (!AuthService.getInstance().isLogin() || !AndTools.isNetworkAvailable(MyApplication.getInstance())) {
                         Bundle bundle = new Bundle();
                         bundle.putString("fail", "初始化聊天功能失败,请重新选择帐号登录");
                         Message message = new Message();
