@@ -31,7 +31,7 @@
         <meta-data android:name="lwp.extension" android:value="com.alibaba.wukong.auth.AuthExtension"/>
         <!-- 每个App需要配置各自的AppKey-->
         <!--<meta-data android:name="wk.appKey" android:value="a28240bf426b05c05db7cfe785155a78"/>-->
-        <meta-data android:name="wk.appKey" android:value="b63baeee1141365c0ce205f0396d26fd"/>
+        <meta-data android:name="wk.appKey" android:value="4c345eb5118322135d834a16fa35c74e"/>
 
         <!-- 配置长链接服务 -->
         <service
@@ -147,6 +147,8 @@
             android:theme="@style/trans_style">
         </activity>
 
+        <activity android:name=".activity.NewChatActivity"
+            android:theme="@style/trans_style"/>
 
     </application>
 </manifest>

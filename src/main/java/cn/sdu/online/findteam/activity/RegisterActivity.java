@@ -166,16 +166,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                         @Override
                         public void run() {
                             String username = registername.getText().toString();
-                            ALoginParam params = LoginUtils.registerRequest(username, registerpassword.getText().toString());
+                            ALoginParam params = LoginUtils.loginRequest(username, registerpassword.getText().toString());
                             registerWuKong(params, username);
                         }
                     });
-
-                    if (StartActivity.startActivity != null
-                            && LoginActivity.loginActivity != null) {
-                        LoginActivity.loginActivity.finish();
-                        StartActivity.startActivity.finish();
-                    }
                     break;
 
                 default:

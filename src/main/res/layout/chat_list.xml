@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    >
+    android:orientation="vertical"
+    android:background="@color/underline1_gray">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_layout"
@@ -13,19 +13,16 @@
 
         <ListView
             android:id="@+id/chat_list"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:cacheColorHint="@color/transparent"
             android:divider="@null"
-            android:dividerHeight="1dp"
-            android:fadeScrollbars="false"
-            android:fadingEdge="none"
             android:fastScrollEnabled="false"
             android:listSelector="@color/transparent"
             android:overScrollMode="never"
             android:saveEnabled="false"
             android:scrollbars="none"
-            android:transcriptMode="normal" />
+            android:transcriptMode="alwaysScroll" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

@@ -8,14 +8,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
-        <com.alibaba.wukong.demo.login.widget.ClearableEditText
+        <cn.sdu.online.findteam.aliwukong.widget.ClearableEditText
             android:id="@+id/et_create_chat"
+            style="@style/edittext_style"
             android:layout_marginTop="10dp"
-            android:hint="@string/chat_create_openIdHint"
-            style="@style/edittext_style"/>
+            android:hint="@string/chat_create_openIdHint" />
 
         <View
             android:id="@+id/divider1"
@@ -36,11 +35,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:textColor="@color/gray"
-            android:text="@string/chat_create_tips" />
+            android:layout_marginTop="20dp"
+            android:text="@string/chat_create_tips"
+            android:textColor="@color/gray" />
 
     </LinearLayout>
 

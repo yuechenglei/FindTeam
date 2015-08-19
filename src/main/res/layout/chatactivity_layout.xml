@@ -56,4 +56,9 @@
             android:textColor="@color/white_color"
             android:textSize="14sp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/transparent"/>
 </RelativeLayout>

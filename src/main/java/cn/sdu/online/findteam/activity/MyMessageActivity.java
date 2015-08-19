@@ -7,6 +7,7 @@ import java.util.List;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -44,7 +45,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.SessionFragment;
 
 
-public class MyMessageActivity extends FragmentActivity implements View.OnClickListener{
+public class MyMessageActivity extends FragmentActivity implements View.OnClickListener {
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mDatas;
@@ -61,17 +62,18 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     private Button back;
     private Button actionsearch;
+    private Button newChat;
 
     // 搜索框的状态
     private boolean state;
 
     public static BadgeView badgeView;
 
-    private static Bundle savedInstanceState;
+/*    private static Bundle savedInstanceState;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.savedInstanceState = savedInstanceState;
+/*        this.savedInstanceState = savedInstanceState;*/
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setActionBarLayout(R.layout.mymessage_actionbar);
@@ -86,9 +88,9 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    public static Bundle getSavedInstanceState() {
+/*    public static Bundle getSavedInstanceState() {
         return savedInstanceState;
-    }
+    }*/
 
     private void initTabLine() {
         mTabline = (ImageView) findViewById(R.id.id_invite_tabline);
@@ -114,7 +116,9 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         back = (Button) findViewById(R.id.mymessage_back_btn);
         actionsearch = (Button) findViewById(R.id.mymessage_actionsearch);
         searchlayout = (LinearLayout) findViewById(R.id.mymessage_search_layout);
+        newChat = (Button) findViewById(R.id.newaction_chat);
 
+        newChat.setOnClickListener(this);
         friend.setOnClickListener(this);
         chat.setOnClickListener(this);
         back.setOnClickListener(this);
@@ -231,6 +235,12 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                     searchlayout.setVisibility(View.GONE);
                     state = false;
                 }
+                break;
+
+            case R.id.newaction_chat:
+                Intent intent = new Intent(this, NewChatActivity.class);
+                startActivity(intent);
+                break;
 
         }
     }
@@ -277,7 +287,7 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                 }, false);
     }
 
-    public void setBadgeCountListener(){
+    public void setBadgeCountListener() {
         IMEngine.getIMService(ConversationService.class).addConversationChangeListener(new ConversationChangeListener() {
             @Override
             public void onTitleChanged(List<Conversation> list) {
@@ -316,7 +326,7 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                     public void onProgress(Integer integer, int i) {
 
                     }
-                },false);
+                }, false);
             }
 
             @Override

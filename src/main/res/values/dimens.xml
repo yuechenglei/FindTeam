@@ -64,7 +64,7 @@
     <dimen name="chatting_item_time_divider_height">8dp</dimen>
     <dimen name="chatting_item_avatar_width">40dp</dimen>
     <dimen name="chatting_item_avatar_height">40dp</dimen>
-    <dimen name="chatting_item_avatar_marginRight">3dp</dimen>
+    <dimen name="chatting_item_avatar_marginRight">5dp</dimen>
     <dimen name="chatting_item_picture_makeup_height">16dp</dimen>
     <dimen name="chatting_item_padding_bs">8dp</dimen>
     <dimen name="chatting_txt_avatar_radius">20dp</dimen>

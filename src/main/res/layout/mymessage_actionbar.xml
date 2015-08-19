@@ -32,4 +32,13 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_alignParentEnd="true" />
+
+    <Button
+        android:id="@+id/newaction_chat"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/actionbar_create_chat"
+        android:layout_toLeftOf="@id/mymessage_actionsearch"
+        android:layout_marginRight="8dp"
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

@@ -81,10 +81,6 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
         removeOldViewHolder(viewHolder);
         viewHolder.parentView = parent;
         addViewHolder(viewHolder, item.getId());
-
-        /**
-         * 有问题！！！
-         */
         onBindView(viewHolder, item, position);
         return convertView;
     }
@@ -103,7 +99,6 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
 
     protected void onBindView(ViewHolder viewHolder, T item, int position) {
         viewHolder.position = position;
-        Log.v("positionnnnnn", viewHolder.position+"");
         item.onShow(mContext, viewHolder, null);
     }
 

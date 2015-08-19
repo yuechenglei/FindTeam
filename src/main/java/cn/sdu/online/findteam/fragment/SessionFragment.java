@@ -55,15 +55,13 @@ public class SessionFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null){
-            loadData();
-            mService.onRemoved(onSessionRemoved)
+        loadData();
+        mService.onRemoved(onSessionRemoved)
 //                    .onReceiveMessage(onReceiveMessage)
-                    .onUnreadCountChange(onUnreadChange)
-                    .onContentChange(onContentChange)
-                    .onCreated(onCreateSession)
-                    .onTopChange(onTopChange);
-        }
+                .onUnreadCountChange(onUnreadChange)
+                .onContentChange(onContentChange)
+                .onCreated(onCreateSession)
+                .onTopChange(onTopChange);
     }
 
     @Override
@@ -95,10 +93,10 @@ public class SessionFragment extends ListFragment {
         });
     }
 
-    private Action<List<Session>> onCreateSession=new Action<List<Session>>() {
+    private Action<List<Session>> onCreateSession = new Action<List<Session>>() {
         @Override
         public void action(List<Session> sessions) {
-            mSessionAdapter.addSession(0,sessions);
+            mSessionAdapter.addSession(0, sessions);
             mSessionAdapter.sort();
             mSessionAdapter.notifyDataSetChanged();
         }
@@ -132,7 +130,7 @@ public class SessionFragment extends ListFragment {
     private Action<List<Session>> onUnreadChange = new Action<List<Session>>() {
         @Override
         public void action(List<Session> sessions) {
-            mSessionAdapter.notifyDataSetChanged(sessions,"unread");
+            mSessionAdapter.notifyDataSetChanged(sessions, "unread");
         }
     };
 

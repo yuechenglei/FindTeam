@@ -24,6 +24,7 @@ public class SendMessage extends ChatMessage {
      * @param viewHolder
      */
     public void showForSendMessageStatus(final Context context, SendViewHolder viewHolder) {
+        viewHolder.sendChatting_avatar.setImageResource(R.drawable.headphoto);
         switch (mMessage.status()) {
             case OFFLINE:
                 sendAgain(context, viewHolder);

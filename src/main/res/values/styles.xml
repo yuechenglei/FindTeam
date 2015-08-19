@@ -168,13 +168,21 @@
         <item name="android:layout_marginTop">12dp</item>
     </style>
 
-    <!-- 聊天头像的样式风格定义 -->
+    <!-- 接收聊天头像的样式风格定义 -->
     <style name="ChattingUIFromAvatar">
         <item name="android:layout_width">@dimen/chatting_item_avatar_width</item>
         <item name="android:layout_height">@dimen/chatting_item_avatar_height</item>
         <item name="android:textSize">12sp</item>
         <item name="android:gravity">center</item>
         <item name="android:layout_marginRight">@dimen/chatting_item_avatar_marginRight</item>
+    </style>
+
+    <!-- 发送聊天头像的样式风格-->
+    <style name="SendChattingUIFromAvatar">
+        <item name="android:layout_width">@dimen/chatting_item_avatar_width</item>
+        <item name="android:layout_height">@dimen/chatting_item_avatar_height</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <!--输入框样式风格定义-->

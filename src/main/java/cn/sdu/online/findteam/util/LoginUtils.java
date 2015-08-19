@@ -23,11 +23,11 @@ import cn.sdu.online.findteam.activity.LoginActivity;
  * Created by wn on 2015/8/13.
  */
 public class LoginUtils {
-    private static final String DEMO_LOGIN_URL = "http://demo.wukong.laiwang.com/r/app/";
+    private static final String DEMO_LOGIN_URL = "http://202.194.14.195:8080/findTeamChat/r/app/";
 
-    public static ALoginParam registerRequest(String username, String password) {
+/*    public static ALoginParam registerRequest(String username, String password) {
         return request("reg", username, password);
-    }
+    }*/
 
     public static ALoginParam loginRequest(String username, String password) {
         return request("login", username, password);
@@ -81,13 +81,11 @@ public class LoginUtils {
 
     public static ALoginParam buildLoginParam(long openId, String nonce, long timestamp, String signature) throws UnsupportedEncodingException {
         ALoginParam param = new ALoginParam();
-        param.domain = "WKDemo";
+        param.domain = "findTeams";
         param.openId = openId;
-        Log.v("hhljkljkl" ,""+openId);
         param.nonce = nonce;
         param.timestamp = timestamp;
         param.signature = signature;
         return param;
     }
-
 }

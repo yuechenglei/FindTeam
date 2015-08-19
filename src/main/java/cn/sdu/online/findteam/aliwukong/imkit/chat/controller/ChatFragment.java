@@ -84,12 +84,10 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null) {
-            //加载首屏消息
-            loadData();
-            //注册消息监听器
-            registerMessageListener();
-        }
+        //加载首屏消息
+        loadData();
+        //注册消息监听器
+        registerMessageListener();
     }
 
     /**
@@ -109,7 +107,7 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
         }
     }
 
-    private void registerMessageListener(){
+    private void registerMessageListener() {
         mMessageService.addMessageListener(new MessageListener() {
             @Override
             public void onAdded(List<Message> list, DataType dataType) {
@@ -127,7 +125,7 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
             }
 
             @Override
-            public void onChanged (List < Message > list) {
+            public void onChanged(List<Message> list) {
                 //已读状态处理
                 List<ChatMessage> chatMessages = mChatMessageFactory.createList(list);
                 List<ChatMessage> needUpdate = new ArrayList<ChatMessage>();
@@ -143,9 +141,8 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
             }
 
 
-
             @Override
-            public void onRemoved (List < Message > list) {
+            public void onRemoved(List<Message> list) {
             }
         });
     }
@@ -161,7 +158,7 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
 //                            return lhs.createdAt() > rhs.createdAt() ? 1 : -1;
 //                        }
 //                    });
-                    List<ChatMessage> list= mChatMessageFactory.createList(messages);
+                    List<ChatMessage> list = mChatMessageFactory.createList(messages);
                     bindMessageListView(list);
                     mChatAdapter.setList(list);
                     scrollToBottom();
@@ -195,27 +192,27 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onDestroy() {
         super.onDestroy();
-        SessionServiceFacade.mCurrentConversationId=null;
+        SessionServiceFacade.mCurrentConversationId = null;
         ChatWindowManager.getInstance().exitChatWindow(mCurrentConversation.conversationId());
     }
 
-    private void refreshData(Message cursorMessage){
-        //设置新加item的时候不要自动滚动到底部显示新项
-        mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);
+    private void refreshData(Message cursorMessage) {
+/*        //设置新加item的时候不要自动滚动到底部显示新项
+        mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);*/
         mCurrentConversation.listPreviousMessages(cursorMessage, PAGE_NUM, new Callback<List<Message>>() {
             @Override
             public void onSuccess(List<Message> messages) {
                 if (messages != null && messages.size() > 0) {
-                    List<ChatMessage> list= mChatMessageFactory.createList(messages);
+                    List<ChatMessage> list = mChatMessageFactory.createList(messages);
                     bindMessageListView(list);
                     mChatAdapter.addChatMessageFront(list);
                     isAllLoaded = false;
-                }else{
+                } else {
                     isAllLoaded = true;
                 }
                 isRefresh = false;
                 swipeRefreshLayout.setRefreshing(false);
-                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
             }
 
             @Override
@@ -232,15 +229,15 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        if(!isRefresh) {
+        if (!isRefresh) {
             isRefresh = true;
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(isAllLoaded){    //如果已经加载完所有消息就不需要在刷新数据了
+                    if (isAllLoaded) {    //如果已经加载完所有消息就不需要在刷新数据了
                         isRefresh = false;
                         swipeRefreshLayout.setRefreshing(false);
-                    }else {
+                    } else {
                         refreshData(((ChatMessage) mChatAdapter.getItem(0)).getMessage());
                     }
                 }
