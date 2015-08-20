@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
                 android:text="@string/audio_duration"
-                android:textColor="@color/waveform_selected_right"
+                android:textColor="@color/textcolor_gray"
                 android:textScaleX="0.85"
                 android:textSize="@dimen/text_size_17"
                 android:textStyle="bold" />

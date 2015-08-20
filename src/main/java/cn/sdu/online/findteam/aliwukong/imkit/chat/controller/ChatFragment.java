@@ -197,8 +197,8 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
     }
 
     private void refreshData(Message cursorMessage) {
-/*        //设置新加item的时候不要自动滚动到底部显示新项
-        mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);*/
+        //设置新加item的时候不要自动滚动到底部显示新项
+        mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_DISABLED);
         mCurrentConversation.listPreviousMessages(cursorMessage, PAGE_NUM, new Callback<List<Message>>() {
             @Override
             public void onSuccess(List<Message> messages) {
@@ -212,13 +212,15 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
                 }
                 isRefresh = false;
                 swipeRefreshLayout.setRefreshing(false);
-/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
+                /*mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
+                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
             }
 
             @Override
             public void onException(String code, String reason) {
                 AndTools.showToast(getActivity(), "刷新失败");
-                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
+                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
             }
 
             @Override

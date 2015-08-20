@@ -1,6 +1,6 @@
 package cn.sdu.online.findteam.net;
 
-import android.content.Entity;
+import android.content.Context;
 import android.util.Log;
 
 import org.apache.http.HttpEntity;
@@ -21,15 +21,14 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import cn.sdu.online.findteam.entity.User;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class NetCore {
     private static final String ServerAddr = "http://202.194.14.195:8080/findteam/";
@@ -46,6 +45,8 @@ public class NetCore {
     public final static String LogingOutAddr = ServerAddr + "user/loginout";
     // 获取个人信息的url
     public final static String getUserInfoAddr = ServerAddr + "user/userInfo";
+    // 修改个人信息的url
+    public final static String modifyUserInfoAddr = ServerAddr + "user/modify";
 
     /**
      * 后台的返回参数
@@ -62,6 +63,9 @@ public class NetCore {
     // 登出的返回参数
     public static final int LOGINOUT_SUCCESS = 0; // 登出成功
 
+    // 修改个人信息参数
+    public static final int MODIFY_SUCCESS = 0; // 修改成功
+    public static final int MODIFY_ERROR = 1; // 修改失败
     /**
      * 登陆
      * <p/>
@@ -107,7 +111,8 @@ public class NetCore {
             for (int i = 0; i < cookies.size(); i++) {
                 if ("JSESSIONID".equals(cookies.get(i).getName())) {
                     jsessionid = cookies.get(i).getValue();
-                    Log.v("LoginActivityeeeeeddd", jsessionid);
+                    MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).
+                            edit().putString("jsessionid", jsessionid).apply();
                     break;
                 }
             }
@@ -188,6 +193,7 @@ public class NetCore {
      */
     public String getUserInfo(String userId) throws IOException {
         HttpPost httpPost = new HttpPost(getUserInfoAddr);
+        jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
         Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
         CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
         List<Cookie> cookies = new ArrayList<Cookie>();
@@ -204,10 +210,52 @@ public class NetCore {
             if (entity != null) {
                 jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
             }
-        }
-        else {
+        } else {
 
         }
         return jsonData;
     }
+
+    /**
+     * 修改个人信息
+     * <p/>
+     * 可填字段// usr.realName(用户真实姓名) // usr.cid(学号) // usr.introduce(个人介绍)
+     * // usr.contact(联系方式) // usr.imgPath(用户头像) // usr.newPassword(用户新密码)
+     * <p/>
+     * 必填字段// usr.password(用户原密码) // jessionid(登录返回的cookie)
+     *
+     * @param user 用户
+     */
+    public String modifyUserInfo(User user)
+            throws ClientProtocolException, IOException {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("usr.realName", user.getName()));
+        params.add(new BasicNameValuePair("usr.password", user.getPassword()));
+        params.add(new BasicNameValuePair("usr.contact", user.getContact()));
+        params.add(new BasicNameValuePair("usr.introduce", user.getIntroduce()));
+
+        HttpPost httpRequest = new HttpPost(modifyUserInfoAddr);
+        jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
+        Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
+        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+        List<Cookie> cookies = new ArrayList<Cookie>();
+        cookies.add(cookie);
+        cookieSpecBase.formatCookies(cookies);
+        httpRequest.setHeader(cookieSpecBase.formatCookies(cookies).get(0));
+
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
+
 }

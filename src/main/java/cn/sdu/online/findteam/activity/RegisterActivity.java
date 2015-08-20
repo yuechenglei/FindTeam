@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -65,11 +66,27 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        String name = registername.getText().toString();
+
+        if (TextUtils.isEmpty(name)) {
+            Toast.makeText(RegisterActivity.this, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (name.length() > 11){
+            Toast.makeText(RegisterActivity.this, "用户名不能超过11个字符！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (name.contains(" ")){
+            Toast.makeText(RegisterActivity.this, "用户名不能包含有空格！", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
             Toast.makeText(RegisterActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
             return;
         }
-        String name = registername.getText().toString();
         String email = registeremail.getText().toString();
         String password = registerpassword.getText().toString();
         String confirm = registerconfirm.getText().toString();
@@ -98,7 +115,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             message.setData(result);
             registerHandler.sendMessage(message);
         }
-
     }
 
     private Bundle startRegister(String name, String email, String password, String confirm) {

@@ -87,8 +87,18 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 String name = loginname.getText().toString();
                 String password = loginpassword.getText().toString();
 
-                if (TextUtils.isEmpty(name) || name.length() > 50) {// 长度校验
-                    Toast.makeText(LoginActivity.this, "用户名格式错误", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(LoginActivity.this, "用户名不能为空！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (name.length() > 11){
+                    Toast.makeText(LoginActivity.this, "用户名不能超过11个字符！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (name.contains(" ")){
+                    Toast.makeText(LoginActivity.this, "用户名不能包含有空格！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

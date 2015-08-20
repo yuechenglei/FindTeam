@@ -48,9 +48,9 @@ public class AudioSendMessage extends SendMessage implements ItemClick.OnItemCli
 
     private void initDrawable(Context context){
         if(mPalyDrawable == null) {
-            Bitmap bmpPlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.btn_play_right);
+            Bitmap bmpPlay = BitmapFactory.decodeResource(context.getResources(), R.drawable.btn_play_left);
             mPalyDrawable = new BitmapDrawable(bmpPlay);
-            Bitmap bmpStop = BitmapFactory.decodeResource(context.getResources(), R.drawable.btn_stop_right);
+            Bitmap bmpStop = BitmapFactory.decodeResource(context.getResources(), R.drawable.btn_stop_left);
             mStopDrawable = new BitmapDrawable(bmpStop);
         }
     }

@@ -37,7 +37,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/otherteam_headtmp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/text_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,8 +46,9 @@
                 android:layout_marginTop="5dp"
                 android:background="@null"
                 android:focusable="false"
+                android:gravity="center"
                 android:text="照亮凉夜"
-                android:textColor="@color/abc_primary_text_disable_only_material_dark"
+                android:textColor="@color/white_color"
                 android:textSize="17sp" />
 
             <EditText
@@ -57,15 +58,21 @@
                 android:layout_below="@+id/text_nickname"
                 android:layout_centerHorizontal="true"
                 android:background="@null"
+                android:minWidth="50dp"
                 android:focusable="false"
+                android:gravity="center"
                 android:text="我是个人简介或者叫个性签名"
+                android:hint="您还没有个性签名呦，快在此处编辑吧"
                 android:textColor="@color/underline1_gray"
+                android:maxLength="30"
+                android:textColorHint="@color/underline1_gray"
                 android:textSize="13sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp">
+            android:layout_height="50dp"
+            android:background="@color/white_color">
 
             <View
                 android:layout_width="12dp"
@@ -102,39 +109,54 @@
 
                 <EditText
                     android:id="@+id/text_tag1"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/background_tag"
                     android:focusable="false"
                     android:gravity="center"
-                    android:text="PS"
+                    android:text="数学建模"
                     android:textColor="@color/white_color"
-                    android:textSize="15sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/text_tag2"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/background_tag"
                     android:focusable="false"
                     android:gravity="center"
                     android:text="A"
                     android:textColor="@color/white_color"
-                    android:textSize="15sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@+id/text_tag3"
-                    android:layout_width="50dp"
-                    android:layout_height="20dp"
-                    android:layout_marginRight="15dp"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/background_tag"
                     android:focusable="false"
                     android:gravity="center"
                     android:text="A"
                     android:textColor="@color/white_color"
-                    android:textSize="15sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/text_tag4"
+                    android:layout_width="60dp"
+                    android:layout_height="25dp"
+                    android:background="@drawable/background_tag"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="@color/white_color"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -152,7 +174,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="100dp"
@@ -165,7 +188,7 @@
                 <EditText
                     android:id="@+id/text_realname"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
@@ -193,16 +216,57 @@
                     android:textColor="#000000"
                     android:textSize="14sp" />
 
-                <EditText
-                    android:id="@+id/text_gender"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@null"
-                    android:focusable="false"
-                    android:gravity="center"
-                    android:text="男"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
+                    android:background="@color/transparent">
+
+                    <TextView
+                        android:id="@+id/text_gender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:focusable="false"
+                        android:gravity="center"
+                        android:text="男"
+                        android:layout_centerVertical="true"
+                        android:textColor="#000000"
+                        android:textSize="14sp"/>
+
+                    <RadioGroup
+                        android:id="@+id/sex_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone" >
+
+                        <RadioButton
+                            android:id="@+id/sex_man"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="男"
+                            android:layout_marginRight="20dp"
+                            android:checked="true"
+                            android:drawableLeft="@drawable/radiobutton_bg"
+                            android:button="@null"
+                            android:background="@null"
+                            android:textSize="14sp"
+                            android:drawablePadding="6dp"/>
+
+                        <RadioButton
+                            android:id="@+id/sex_woman"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="女"
+                            android:textSize="14sp"
+                            android:drawableLeft="@drawable/radiobutton_bg"
+                            android:button="@null"
+                            android:background="@null"
+                            android:drawablePadding="6dp"/>
+                    </RadioGroup>
+                </RelativeLayout>
             </LinearLayout>
 
             <View
@@ -214,7 +278,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="100dp"
@@ -227,7 +292,7 @@
                 <EditText
                     android:id="@+id/text_dress"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
@@ -245,7 +310,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="100dp"
@@ -258,7 +324,7 @@
                 <EditText
                     android:id="@+id/text_school"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
@@ -276,7 +342,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="100dp"
@@ -289,11 +356,11 @@
                 <EditText
                     android:id="@+id/text_phonenumber"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
-                    android:text="178********"
+                    android:inputType="phone"
                     android:textColor="#000000"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -307,7 +374,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="100dp"
@@ -320,11 +388,11 @@
                 <EditText
                     android:id="@+id/text_email"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
-                    android:text="154368506@qq.com"
+                    android:inputType="textEmailAddress"
                     android:textColor="#000000"
                     android:textSize="14sp" />
             </LinearLayout>

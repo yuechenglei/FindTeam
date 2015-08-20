@@ -23,7 +23,7 @@
             android:longClickable="true"
             android:maxWidth="240dp"
             android:minHeight="40dp"
-            android:textColor="@color/white"
+            android:textColor="@color/textcolor_gray"
             android:textColorLink="@color/chat_link_color"
             android:textSize="16sp" />
 
