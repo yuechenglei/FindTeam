@@ -122,6 +122,7 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
                     mChatAdapter.addChatMessage(needAdd);
                     bindMessageListView(needAdd);
                 }
+                scrollToBottom();
             }
 
             @Override
@@ -212,15 +213,15 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
                 }
                 isRefresh = false;
                 swipeRefreshLayout.setRefreshing(false);
-                /*mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
-                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);*/
             }
 
             @Override
             public void onException(String code, String reason) {
                 AndTools.showToast(getActivity(), "刷新失败");
-/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);*/
-                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_NORMAL);
+/*                mListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);*/
             }
 
             @Override

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +24,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -63,12 +66,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private String intentString;
     private Long intentID;
     // 侧边栏用户名
-    private TextView tv_text,tv_id;
+    private TextView tv_text, tv_id;
 
     MainFragment mainFragment;
     BuildTeamFragment buildTeamFragment;
     FragmentSetting fragmentSetting;
     AllGamesFragment allGamesFragment;
+    private List<Fragment> fragmentList;
+
+    public final static int MAIN_FRAGMENT = 0;
+    public final static int ALLGAMES_FRAGMENT = 1;
+    public final static int BUILDTEAM_FRAGMENT = 2;
+    public final static int FRAGMENT_SETTING = 3;
+    private int currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,28 +115,56 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             initMDrawer();
             init_Visitor_Btn();
         }
-        Log.v("currentididid", DemoUtil.currentOpenId()+"");
         // 初始化 acState 为true
         acState = true;
 
         searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-
-/*        if (fragmentManager.findFragmentByTag("mainfragment") == null
-                && fragmentManager.findFragmentByTag("fragmentsetting") == null
-                && fragmentManager.findFragmentByTag("buildteamfragment") == null
-                && fragmentManager.findFragmentByTag("allgamefragment") == null) {*/
 
         addFragment();
         MyApplication.IDENTITY = "队长";
     }
 
     private void addFragment() {
-        if (fragmentManager.findFragmentByTag("buildteamfragment") != null) {
-            buildTeamFragment = new BuildTeamFragment();
+        fragmentList = new ArrayList<Fragment>();
+        mainFragment = new MainFragment();
+        allGamesFragment = new AllGamesFragment();
+        buildTeamFragment = new BuildTeamFragment();
+        fragmentSetting = new FragmentSetting();
+        fragmentList.add(mainFragment);
+        fragmentList.add(allGamesFragment);
+        fragmentList.add(buildTeamFragment);
+        fragmentList.add(fragmentSetting);
+        fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
+                .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
+                .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
+                .add(R.id.container, fragmentList.get(FRAGMENT_SETTING)).commit();
+        if (MyApplication.currentFragment == MAIN_FRAGMENT) {
+            currentFragment = MAIN_FRAGMENT;
+            fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
+                    .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
+        } else if (MyApplication.currentFragment == ALLGAMES_FRAGMENT) {
+            currentFragment = ALLGAMES_FRAGMENT;
+            fragmentManager.beginTransaction().hide(fragmentList.get(MAIN_FRAGMENT))
+                    .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
+        } else if (MyApplication.currentFragment == BUILDTEAM_FRAGMENT) {
+            currentFragment = BUILDTEAM_FRAGMENT;
+            fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
+                    .hide(fragmentList.get(MAIN_FRAGMENT))
+                    .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
+        } else if (MyApplication.currentFragment == FRAGMENT_SETTING) {
+            currentFragment = FRAGMENT_SETTING;
+            fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
+                    .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .hide(fragmentList.get(MAIN_FRAGMENT)).commit();
+        }
+/*        if (fragmentManager.findFragmentByTag("buildteamfragment") != null) {
+*//*            buildTeamFragment = new BuildTeamFragment();*//*
             fragmentManager.beginTransaction()
                     .replace(R.id.container, buildTeamFragment, "buildteamfragment").commit();
         } else if (fragmentManager.findFragmentByTag("fragmentsetting") != null) {
-            fragmentSetting = new FragmentSetting();
+*//*            fragmentSetting = new FragmentSetting();*//*
             fragmentManager.beginTransaction()
                     .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
         } else if (fragmentManager.findFragmentByTag("allgamefragment") != null) {
@@ -134,10 +172,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             fragmentManager.beginTransaction()
                     .replace(R.id.container, allGamesFragment, "allgamefragment").commit();
         } else {
-            mainFragment = new MainFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, mainFragment, "mainfragment").commit();
-        }
+*//*            mainFragment = new MainFragment();*//*
+            currentFragment = MAIN_FRAGMENT;
+            fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
+                    .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
+*//*                    .replace(R.id.container, fragmentList.get(MAIN_FRAGMENT), "mainfragment").commit();*//*
+        }*/
     }
 
     void initMDrawer() {
@@ -299,8 +340,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask2 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(FRAGMENT_SETTING)).commit();
+/*                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();*/
+                        currentFragment = FRAGMENT_SETTING;
                     }
                 };
                 timer2.schedule(timerTask2, 200);
@@ -311,13 +354,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (buildTeamFragment == null) {
                     buildTeamFragment = new BuildTeamFragment();
                 }
-                Log.v("heheheda", "BuildTeam add");
                 Timer timer3 = new Timer(true);
                 TimerTask timerTask3 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, buildTeamFragment, "buildteamfragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(BUILDTEAM_FRAGMENT)).commit();
+                        currentFragment = BUILDTEAM_FRAGMENT;
                     }
                 };
                 timer3.schedule(timerTask3, 200);
@@ -361,8 +404,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask6 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction().
-                                replace(R.id.container, allGamesFragment, "allgamefragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(ALLGAMES_FRAGMENT)).commit();
+                        currentFragment = ALLGAMES_FRAGMENT;
                     }
                 };
                 timer6.schedule(timerTask6, 200);
@@ -377,8 +421,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask9 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, mainFragment, "mainfragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(MAIN_FRAGMENT)).commit();
+                        currentFragment = MAIN_FRAGMENT;
                     }
                 };
                 timer9.schedule(timerTask9, 200);
@@ -403,8 +448,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask8 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction().
-                                replace(R.id.container, allGamesFragment, "allgamefragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(ALLGAMES_FRAGMENT)).commit();
+                        currentFragment = ALLGAMES_FRAGMENT;
                     }
                 };
                 timer8.schedule(timerTask8, 200);
@@ -420,8 +466,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask10 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, mainFragment, "mainfragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(MAIN_FRAGMENT)).commit();
+                        currentFragment = MAIN_FRAGMENT;
                     }
                 };
                 timer10.schedule(timerTask10, 200);
@@ -437,8 +484,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 TimerTask timerTask7 = new TimerTask() {
                     @Override
                     public void run() {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(FRAGMENT_SETTING)).commit();
+                        currentFragment = FRAGMENT_SETTING;
                     }
                 };
                 timer7.schedule(timerTask7, 200);
@@ -484,12 +532,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (mDrawerLayout.isDrawerOpen(mDrawerRelative)) {
                     mDrawerLayout.closeDrawer(mDrawerRelative);
                 } else {
-                    if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                    if (currentFragment != MAIN_FRAGMENT) {
                         if (mainFragment == null) {
                             mainFragment = new MainFragment();
                         }
-                        fragmentManager.beginTransaction().replace(R.id.container,
-                                mainFragment, "mainfragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(MAIN_FRAGMENT)).commit();
+                        currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数
                     }
@@ -498,12 +547,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (mDrawerLayout.isDrawerOpen(mVisitorDrawerLayout)) {
                     mDrawerLayout.closeDrawer(mVisitorDrawerLayout);
                 } else {
-                    if (fragmentManager.findFragmentByTag("mainfragment") == null) {
+                    if (currentFragment != MAIN_FRAGMENT) {
                         if (mainFragment == null) {
                             mainFragment = new MainFragment();
                         }
-                        fragmentManager.beginTransaction().replace(R.id.container,
-                                mainFragment, "mainfragment").commit();
+                        fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
+                                .show(fragmentList.get(MAIN_FRAGMENT)).commit();
+                        currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数
                     }
@@ -522,7 +572,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         if (buildTeamFragment == null) {
-                            buildTeamFragment = (BuildTeamFragment) fragmentManager.findFragmentByTag("buildfragment");
+                            buildTeamFragment = new BuildTeamFragment();
                         }
                         buildTeamFragment.setHeaderImgAlbum();
                         break;

@@ -11,12 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.mob.MainListViewItem;
 
 public class ListViewAdapter extends BaseAdapter {
     Context mContext;
-    private List<HashMap<String, String>> mlist;
+    private List<MainListViewItem> mlist;
 
-    public ListViewAdapter(Context context, List<HashMap<String, String>> list) {
+    public ListViewAdapter(Context context, List<MainListViewItem> list) {
         mContext = context;
         mlist = list;
     }
@@ -24,54 +25,48 @@ public class ListViewAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         // TODO 自动生成的方法存根
-        return mlist.size();
+        return mlist != null ? mlist.size() : 0;
     }
 
     @Override
     public Object getItem(int position) {
         // TODO 自动生成的方法存根
-        return mlist.get(position);
+        return mlist != null ? mlist.get(position) : null;
     }
 
     @Override
     public long getItemId(int position) {
         // TODO 自动生成的方法存根
-        return position;
+        return mlist != null ? position : 0;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        if (mlist == null){
+            return null;
+        }
         Holder holder;
         if (convertView == null) {
             holder = new Holder();
             convertView = LayoutInflater.from(mContext).inflate(
                     R.layout.list_item, null);
-           // holder.type = (TextView) convertView.findViewById(R.id.item_type_tv);
+            // holder.type = (TextView) convertView.findViewById(R.id.item_type_tv);
             holder.title = (TextView) convertView.findViewById(R.id.item_title_tv);
-            holder.content = (TextView)convertView.findViewById(R.id.item_content_tv);
+            holder.content = (TextView) convertView.findViewById(R.id.item_content_tv);
             holder.view = convertView.findViewById(R.id.spacing_view);
 
             convertView.setTag(holder);
         } else {
             holder = (Holder) convertView.getTag();
         }
-       // holder.type.setText("热门赛事");
-        holder.title.setText("优衣库");
-        holder.content.setText("　冠军虽然只有一个" +
-                "，但通过本次比赛收获良多的，却不只是盛大众信" +
-                "5v5聚力纵、崂山一中" +
-                "，以及蓝村队，凭借严明的纪律，获得" +
-                "了赛事组委会颁发的公平竞赛奖。而许多球" +
-                "队虽然排名靠后，但通过比赛得到的锻炼，让他们收益" +
-                "颇多。在观看完决赛后，蓝村队的姜曙光和" +
-                "记者聊了起来，“决赛确实精彩，我们还有" +
-                "许多东西向他们学习，来年" +
-                "希望能打出更好成绩。");
+        // holder.type.setText("热门赛事");
+        holder.title.setText(mlist.get(position).name);
+        holder.content.setText(mlist.get(position).introduce);
         return convertView;
     }
 
     public class Holder {
-       // TextView type;
+        // TextView type;
         TextView title;
         TextView content;
         View view;

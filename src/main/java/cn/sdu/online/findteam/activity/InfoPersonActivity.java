@@ -56,7 +56,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     View contentView;
     JSONObject person;
     String gender = "男";
-    private final int maxNun = 30;
+    private final int maxNun = 40;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +65,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
 
         dialog = DialogDefine.createLoadingDialog(InfoPersonActivity.this,
                 "加载中...");
-/*        Log.v("jesssionidd", NetCore.jsessionid);*/
         isEdited = false;
         dialog.show();
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
@@ -208,30 +207,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         bt_return = (Button) contentView.findViewById(R.id.bt_return);
         text_nickname = (TextView) contentView.findViewById(R.id.text_nickname);
         text_introduction = (EditText) contentView.findViewById(R.id.text_introduction);
-/*        text_introduction.addTextChangedListener(new TextWatcher() {
-            private CharSequence temp;
-            private int selectionStart;
-            private int selectionEnd;
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-*//*                selectionStart = text_introduction.getSelectionStart();
-                selectionEnd = text_introduction.getSelectionEnd();*//*
-                if (s.length() > maxNun) {
-                    text_introduction.setText(s.subSequence(0, maxNun));
-                    text_introduction.setSelection(maxNun);//设置光标在最后
-                }
-            }
-        });*/
         text_tag1 = (EditText) contentView.findViewById(R.id.text_tag1);
         text_tag2 = (EditText) contentView.findViewById(R.id.text_tag2);
         text_tag3 = (EditText) contentView.findViewById(R.id.text_tag3);
@@ -271,6 +246,10 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 } else {
                     if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
                         Toast.makeText(InfoPersonActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (text_introduction.getText().toString().length() > maxNun){
+                        AndTools.showToast(InfoPersonActivity.this, "亲，最多只能输入40个字哦！");
                         return;
                     }
                     dialog.show();
@@ -388,6 +367,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_realname.requestFocus();
         text_realname.clearFocus();
         text_realname.setBackgroundResource(R.color.transparent);
+        text_introduction.setFocusableInTouchMode(false);
         text_introduction.requestFocus();
         text_introduction.clearFocus();
         radioGroup.setVisibility(View.GONE);

@@ -125,10 +125,12 @@
 
         <activity
             android:name=".aliwukong.imkit.chat.controller.SingleChatActivity"
-            android:theme="@style/trans_style"/>
+            android:theme="@style/trans_style"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".aliwukong.imkit.chat.controller.GroupChatActivity"
-            android:theme="@style/trans_style"/>
+            android:theme="@style/trans_style"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".aliwukong.user.UserProfileActivity"
             android:theme="@style/trans_style"/>
@@ -148,7 +150,8 @@
         </activity>
 
         <activity android:name=".activity.NewChatActivity"
-            android:theme="@style/trans_style"/>
+            android:theme="@style/trans_style"
+            android:windowSoftInputMode="adjustResize"/>
 
     </application>
 </manifest>

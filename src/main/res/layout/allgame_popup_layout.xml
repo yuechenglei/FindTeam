@@ -28,6 +28,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="计算机"
+                android:textColor="@color/white_color"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -185,6 +186,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="数学"
+                android:textColor="@color/white_color"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -281,6 +283,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="创业"
+                android:textColor="@color/white_color"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -377,6 +380,7 @@
                 android:gravity="center"
                 android:padding="5dp"
                 android:text="其它"
+                android:textColor="@color/white_color"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -407,5 +411,15 @@
                 android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <Button
+        android:id="@+id/add_category_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/blue_color"
+        android:text="添加分类或比赛"
+        android:gravity="center"
+        android:textColor="@color/white_color"
+        android:textSize="@dimen/text_size_20"/>
 </LinearLayout>
 

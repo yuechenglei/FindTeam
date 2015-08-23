@@ -18,6 +18,7 @@ import com.alibaba.wukong.im.MessageService;
 
 import java.util.List;
 
+import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagician;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.MessageSenderImpl;
@@ -33,7 +34,12 @@ public class MyApplication extends Application {
     private AuthReceiver mAuthReceiver;
 
     private static MyApplication instance;
+
+    // 聊天的未读数
     public static int unreadnum;
+
+    // MainActivity需要加载的fragment
+    public static int currentFragment = MainActivity.MAIN_FRAGMENT;
 
     @Override
     public void onCreate() {

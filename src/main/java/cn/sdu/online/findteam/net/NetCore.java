@@ -24,8 +24,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.share.MyApplication;
@@ -47,6 +50,8 @@ public class NetCore {
     public final static String getUserInfoAddr = ServerAddr + "user/userInfo";
     // 修改个人信息的url
     public final static String modifyUserInfoAddr = ServerAddr + "user/modify";
+    // 获取比赛信息
+    public final static String getGamesAddr = ServerAddr + "category/listGame";
 
     /**
      * 后台的返回参数
@@ -66,6 +71,7 @@ public class NetCore {
     // 修改个人信息参数
     public static final int MODIFY_SUCCESS = 0; // 修改成功
     public static final int MODIFY_ERROR = 1; // 修改失败
+
     /**
      * 登陆
      * <p/>
@@ -258,4 +264,30 @@ public class NetCore {
         return jsonData;
     }
 
+    /**
+     * 下拉刷新比赛信息
+     *
+     * @param pageNum  获取第几页的信息
+     * @param pageList 每页获取的记录数
+     */
+    public String pullRefreshGamesData(String url, int pageNum, int pageListNum) throws IOException {
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("page", pageNum + ""));
+        params.add(new BasicNameValuePair("pagelistnum", pageListNum + ""));
+
+        HttpPost httpRequest = new HttpPost(url);
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
 }

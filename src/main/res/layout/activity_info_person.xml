@@ -61,12 +61,14 @@
                 android:minWidth="50dp"
                 android:focusable="false"
                 android:gravity="center"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:text="我是个人简介或者叫个性签名"
                 android:hint="您还没有个性签名呦，快在此处编辑吧"
                 android:textColor="@color/underline1_gray"
-                android:maxLength="30"
+                android:maxLength="40"
                 android:textColorHint="@color/underline1_gray"
-                android:textSize="13sp" />
+                android:textSize="14sp" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -117,8 +119,7 @@
                     android:gravity="center"
                     android:text="数学建模"
                     android:textColor="@color/white_color"
-                    android:textSize="12sp"
-                    android:visibility="gone" />
+                    android:textSize="13sp" />
 
                 <EditText
                     android:id="@+id/text_tag2"
@@ -130,7 +131,7 @@
                     android:gravity="center"
                     android:text="A"
                     android:textColor="@color/white_color"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:visibility="gone" />
 
                 <EditText
@@ -143,7 +144,7 @@
                     android:gravity="center"
                     android:text="A"
                     android:textColor="@color/white_color"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:visibility="gone" />
 
                 <EditText

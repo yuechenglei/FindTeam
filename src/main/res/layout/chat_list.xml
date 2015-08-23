@@ -22,7 +22,7 @@
             android:overScrollMode="never"
             android:saveEnabled="false"
             android:scrollbars="none"
-            android:transcriptMode="alwaysScroll" />
+            android:transcriptMode="normal" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
