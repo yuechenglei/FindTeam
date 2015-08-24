@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 import cn.sdu.online.findteam.activity.LoginActivity;
+import cn.sdu.online.findteam.share.MyApplication;
 
 /**
  * Created by wn on 2015/8/13.
@@ -58,7 +60,7 @@ public class LoginUtils {
                         JSONObject object = new JSONObject(result);
                         boolean ret = object.getBoolean("success");
                         JSONObject data = object.getJSONObject("imSignModel");
-                        LoginActivity.loginActivity.getSharedPreferences("loginmessage", Activity.MODE_PRIVATE).
+                        MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
                                 edit().putLong("loginID", data.getLong("openId")).apply();
                         if(ret) {
                             return buildLoginParam(data.getLong("openId"), data.getString("nonce"),

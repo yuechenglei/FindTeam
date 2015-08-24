@@ -47,7 +47,6 @@
                 android:background="@null"
                 android:focusable="false"
                 android:gravity="center"
-                android:text="照亮凉夜"
                 android:textColor="@color/white_color"
                 android:textSize="17sp" />
 
@@ -182,6 +181,69 @@
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:text="用户ID"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_userID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="聊天帐号"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_openID"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:text="0202"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/underline1_gray" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:padding="10dp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="真实姓名"
                     android:textColor="#000000"
                     android:textSize="14sp" />
@@ -291,7 +353,7 @@
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/text_dress"
+                    android:id="@+id/text_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
@@ -386,14 +448,13 @@
                     android:textColor="#000000"
                     android:textSize="14sp" />
 
-                <EditText
+                <TextView
                     android:id="@+id/text_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:focusable="false"
                     android:gravity="center"
-                    android:inputType="textEmailAddress"
                     android:textColor="#000000"
                     android:textSize="14sp" />
             </LinearLayout>

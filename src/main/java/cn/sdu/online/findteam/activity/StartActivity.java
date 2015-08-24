@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -8,6 +9,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class StartActivity extends Activity implements View.OnClickListener {
 
@@ -37,9 +39,9 @@ public class StartActivity extends Activity implements View.OnClickListener {
             case R.id.start_login_btn:
                 Intent intent = new Intent();
                 intent.setClass(StartActivity.this, LoginActivity.class);
-                String loginName = getSharedPreferences("loginmessage", MODE_PRIVATE).
+                String loginName = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
                         getString("loginName", "");
-                String loginPassword = getSharedPreferences("loginmessage", MODE_PRIVATE).
+                String loginPassword = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
                         getString("loginPassword", "");
                 if (!loginName.equals("") &&
                         !loginPassword.equals("")) {
@@ -50,9 +52,10 @@ public class StartActivity extends Activity implements View.OnClickListener {
                 break;
 
             case R.id.start_seearound_btn:
+                MyApplication.USER_OR_NOT = 0;
                 Intent intent1 = new Intent();
                 intent1.setClass(StartActivity.this, MainActivity.class);
-                intent1.putExtra("loginIdentity", "<##游客##>");
+/*                intent1.putExtra("loginIdentity", "<##游客##>");*/
                 startActivity(intent1);
                 StartActivity.this.finish();
         }

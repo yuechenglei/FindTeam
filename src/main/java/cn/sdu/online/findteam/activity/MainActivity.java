@@ -63,8 +63,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private LinearLayout mVisitorDrawerLayout;
     // 获取intent传入的字符串和长整型ID
-    private String intentString;
-    private Long intentID;
+/*    private String intentString;
+    private Long intentID;*/
     // 侧边栏用户名
     private TextView tv_text, tv_id;
 
@@ -87,8 +87,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
 
-        intentString = getIntent().getExtras().getString("loginIdentity");
-        intentID = getIntent().getExtras().getLong("loginID");
+/*        intentString = getIntent().getExtras().getString("loginIdentity");
+        intentID = getIntent().getExtras().getLong("loginID");*/
 
         fragmentManager = getSupportFragmentManager();
         // 设置ActionBar的自定义布局。
@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         view_actionbar = inflator.inflate(R.layout.actionbar_layout, null);
         setActionBarLayout(view_actionbar);
 
-        if (intentString.startsWith("<##用户##>")) {
+        if (/*intentString.startsWith("<##用户##>")*/MyApplication.USER_OR_NOT == 1) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.drawer_layout);
             viewStub.inflate();
@@ -105,8 +105,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             init_button();
             tv_text = (TextView) findViewById(R.id.tv_name);
             tv_id = (TextView) findViewById(R.id.tv_ID);
-            tv_text.setText(intentString.substring(8));
-            tv_id.setText("(ID:" + intentID + ")");
+            tv_text.setText(MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""));
+            tv_id.setText("(聊天帐号:" + MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0) + ")");
         } else {
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.visitor_drawer_layout);

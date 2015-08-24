@@ -26,7 +26,11 @@ import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.ChatWindowManager;
 import cn.sdu.online.findteam.aliwukong.imkit.route.RouteRegister;
 
 public class MyApplication extends Application {
+    // 个人身份，队长还是队员
     public static String IDENTITY = "";
+    // 个人身份，用户还是游客(1为用户，0为游客)
+    public static int USER_OR_NOT;
+
     public static int myMessage_CurrentPage = 0;
     public static int myTeam_CurrentPage = 0;
     public static int ohterTeam_CurrentPage = 0;

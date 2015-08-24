@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class ChangeHeader {
 
@@ -96,14 +97,14 @@ public class ChangeHeader {
         // 团队头像名称是时间 + team + 创建人名字
         if (headerClass == TEAMHEADER) {
             headerImgname = format.format(date) + "team" +
-                    activity.getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
+                    MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
                             getString("loginName", ""); // 将时间转换成对应格式字符串
-            activity.getSharedPreferences("teamHeader", Context.MODE_PRIVATE).edit().
+            MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).edit().
                     putString("headerImg", headerImgname).apply();
         } else if (headerClass == PERSONHEADER) {
-            headerImgname = activity.getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
+            headerImgname = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
                     getString("loginName", "") + format.format(date); // 将时间转换成对应格式字符串
-            activity.getSharedPreferences("personHeader", Context.MODE_PRIVATE).edit().
+            MyApplication.getInstance().getSharedPreferences("personHeader", Context.MODE_PRIVATE).edit().
                     putString("headerImg", headerImgname).apply();
         }
         File tempFile = new File(photo_path + "/" + headerImgname + ".jpg");
@@ -127,10 +128,10 @@ public class ChangeHeader {
     //从相册中选中的照片设置头像
     public void setHeaderImgAlbum() {
         if (headerClass == TEAMHEADER) {
-            headerImgname = activity.getSharedPreferences("teamHeader", Context.MODE_PRIVATE).
+            headerImgname = MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).
                     getString("headerImg", "");
         }else if (headerClass == PERSONHEADER){
-            headerImgname = activity.getSharedPreferences("personHeader", Context.MODE_PRIVATE).
+            headerImgname = MyApplication.getInstance().getSharedPreferences("personHeader", Context.MODE_PRIVATE).
                     getString("headerImg", "");
         }
         Bitmap header = BitmapFactory.decodeFile(photo_path + "/" + headerImgname + ".jpg");

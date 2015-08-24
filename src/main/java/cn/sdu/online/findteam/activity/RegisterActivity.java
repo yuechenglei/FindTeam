@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -196,7 +197,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(AuthInfo data) {
                 AuthService.getInstance().setNickname(nickname);
-                preferences = getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+                preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
                 editor = preferences.edit();
                 editor.remove("loginName").apply();
                 editor.remove("loginPassword").apply();
@@ -208,8 +209,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     MainActivity.mainActivity.finish();
                 }
                 intent.setClass(RegisterActivity.this, MainActivity.class);
-                intent.putExtra("loginIdentity", "<##用户##>" + user.getName());
-                intent.putExtra("loginID", preferences.getLong("loginID", 0));
+/*                intent.putExtra("loginIdentity", "<##用户##>" + user.getName());
+                intent.putExtra("loginID", preferences.getLong("loginID", 0));*/
+                MyApplication.USER_OR_NOT = 1;
                 if (dialog != null) {
                     dialog.dismiss();
                 }

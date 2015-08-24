@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -44,8 +45,8 @@ import cn.sdu.online.findteam.util.ChangeHeader;
 public class InfoPersonActivity extends Activity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
     public Button bt_return;
     public EditText text_tag1, text_tag2, text_tag3, text_tag4, text_realname,
-            text_dress, text_school, text_phonenumber, text_email, text_introduction;
-    public TextView text_edit, text_nickname, text_gender;
+            text_address, text_school, text_phonenumber, text_introduction;
+    public TextView text_edit, text_nickname, text_gender, text_email, text_openID, text_ID;
     public Boolean isEdited;
     private RadioGroup radioGroup;
     private RelativeLayout relativeLayout;
@@ -79,6 +80,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         loadUserInfo.start();
     }
 
+    // 获取个人信息
     class loadUserInfo implements Runnable {
         @Override
         public void run() {
@@ -86,13 +88,11 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 String info = new NetCore().getUserInfo("");
                 if (!info.equals("")) {
                     JSONTokener jsonParser = new JSONTokener(info);
-                    // 此时还未读取任何json文本，直接读取就是一个JSONObject对象。
-                    // 如果此时的读取位置在"name" : 了，那么nextValue就是"yuanzhifei89"（String）
                     try {
                         person = (JSONObject) jsonParser.nextValue();
+                        Log.v("infoperson", person+"");
                         if (person != null) {
-                            Message message = new Message();
-                            handler.sendMessage(message);
+                            handler.sendEmptyMessage(0);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -106,20 +106,20 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
 
     // 修改个人信息的Runable类
     class ModifyUserInfo implements Runnable {
-
-        String name, contact, password, introduce;
         User user;
 
-        ModifyUserInfo(String name, String contact, String password, String introduce) {
-            this.name = name;
-            this.contact = contact;
-            this.password = password;
-            this.introduce = introduce;
+        ModifyUserInfo(String name, String contact,
+                       String password, String introduce,
+                       String address, String school,
+                       String sex) {
             user = new User();
             user.setName(name);
             user.setPassword(password);
             user.setContact(contact);
             user.setIntroduce(introduce);
+            user.setAddress(address);
+            user.setSchool(school);
+            user.setSex(sex);
         }
 
         @Override
@@ -182,6 +182,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         }
     };
 
+    // 获取个人信息
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -192,6 +193,10 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 text_email.setText(person.getString("mail"));
                 text_realname.setText(person.getString("realName"));
                 text_gender.setText(person.getString("sex"));
+                text_address.setText(person.getString("address"));
+                text_school.setText(person.getString("college"));
+                text_ID.setText(person.getString("id"));
+                text_openID.setText(person.getString("openId"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -212,12 +217,14 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_tag3 = (EditText) contentView.findViewById(R.id.text_tag3);
         text_realname = (EditText) contentView.findViewById(R.id.text_realname);
         text_gender = (TextView) contentView.findViewById(R.id.text_gender);
-        text_dress = (EditText) contentView.findViewById(R.id.text_dress);
+        text_address = (EditText) contentView.findViewById(R.id.text_address);
         text_school = (EditText) contentView.findViewById(R.id.text_school);
         text_phonenumber = (EditText) contentView.findViewById(R.id.text_phonenumber);
-        text_email = (EditText) contentView.findViewById(R.id.text_email);
+        text_email = (TextView) contentView.findViewById(R.id.text_email);
         text_edit = (TextView) contentView.findViewById(R.id.text_edit);
         head = (RoundImageView) contentView.findViewById(R.id.head);
+        text_openID = (TextView) contentView.findViewById(R.id.text_openID);
+        text_ID = (TextView) contentView.findViewById(R.id.text_userID);
         relativeLayout = (RelativeLayout) contentView.findViewById(R.id.info_person_headlayout);
         relativeLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 getWindowManager().getDefaultDisplay().getWidth()));
@@ -253,10 +260,14 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                         return;
                     }
                     dialog.show();
-                    new Thread(new ModifyUserInfo(text_realname.getText().toString(),
+                    new Thread(new ModifyUserInfo(
+                            text_realname.getText().toString(),
                             text_phonenumber.getText().toString(),
-                            InfoPersonActivity.this.getSharedPreferences("loginmessage", MODE_PRIVATE).getString("loginPassword", ""),
-                            text_introduction.getText().toString()))
+                            MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginPassword", ""),
+                            text_introduction.getText().toString(),
+                            text_address.getText().toString(),
+                            text_school.getText().toString(),
+                            gender))
                             .start();
                 }
                 break;
@@ -336,18 +347,15 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_introduction.requestFocus();
         text_gender.setVisibility(View.GONE);
         radioGroup.setVisibility(View.VISIBLE);
-        text_dress.setFocusableInTouchMode(true);
-        text_dress.requestFocus();
-        text_dress.setBackgroundResource(R.drawable.info_person_editbg);
+        text_address.setFocusableInTouchMode(true);
+        text_address.requestFocus();
+        text_address.setBackgroundResource(R.drawable.info_person_editbg);
         text_school.setFocusableInTouchMode(true);
         text_school.requestFocus();
         text_school.setBackgroundResource(R.drawable.info_person_editbg);
         text_phonenumber.setFocusableInTouchMode(true);
         text_phonenumber.requestFocus();
         text_phonenumber.setBackgroundResource(R.drawable.info_person_editbg);
-        text_email.setFocusableInTouchMode(true);
-        text_email.requestFocus();
-        text_email.setBackgroundResource(R.drawable.info_person_editbg);
         text_edit.setBackgroundColor(0xff519aff);
         text_edit.setText("保存资料");
         text_edit.setTextColor(Color.WHITE);
@@ -377,10 +385,10 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_gender.requestFocus();
         text_gender.clearFocus();
         text_gender.setBackgroundResource(R.color.transparent);*/
-        text_dress.setFocusableInTouchMode(false);
-        text_dress.requestFocus();
-        text_dress.clearFocus();
-        text_dress.setBackgroundResource(R.color.transparent);
+        text_address.setFocusableInTouchMode(false);
+        text_address.requestFocus();
+        text_address.clearFocus();
+        text_address.setBackgroundResource(R.color.transparent);
         text_school.setFocusableInTouchMode(false);
         text_school.requestFocus();
         text_school.clearFocus();
@@ -389,10 +397,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_phonenumber.requestFocus();
         text_phonenumber.clearFocus();
         text_phonenumber.setBackgroundResource(R.color.transparent);
-        text_email.setFocusableInTouchMode(false);
-        text_email.requestFocus();
-        text_email.clearFocus();
-        text_email.setBackgroundResource(R.color.transparent);
         text_edit.setBackgroundColor(Color.WHITE);
         text_edit.setText("编辑资料");
         text_edit.setTextColor(Color.rgb(80, 154, 255));

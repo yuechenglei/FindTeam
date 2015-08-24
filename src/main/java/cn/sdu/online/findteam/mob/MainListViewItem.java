@@ -6,9 +6,11 @@ package cn.sdu.online.findteam.mob;
 public class MainListViewItem {
     public String name;
     public String introduce;
+    public String id;
 
-    public MainListViewItem(String name , String introduce){
+    public MainListViewItem(String name , String introduce, String id){
         this.name = name;
         this.introduce = introduce;
+        this.id = id;
     }
 }

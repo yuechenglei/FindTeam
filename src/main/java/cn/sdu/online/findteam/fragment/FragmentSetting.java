@@ -40,6 +40,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.MyApplication;
 
 
 public class FragmentSetting extends Fragment implements OnClickListener {
@@ -233,8 +234,7 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 
     protected void exitSuccess() {
         AuthService.getInstance().logout();
-        sharedPreferences = FragmentSetting.this.
-                getActivity().getSharedPreferences("loginmessage", Activity.MODE_PRIVATE);
+        sharedPreferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
         sharedPreferences.edit().clear().apply();
     }
 }

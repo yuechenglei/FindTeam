@@ -9,7 +9,11 @@ public class User implements Serializable{
             // 邮箱，确认密码
             email, confirm,
             // 联系方式, 个性签名
-            contact, introduce;
+            contact, introduce,
+            // 学校学院，家庭住址
+            school, address,
+            // 性别
+            sex;
     private Long ID;
 
     public String getName(){
@@ -66,5 +70,29 @@ public class User implements Serializable{
 
     public void setIntroduce(String introduce){
         this.introduce = introduce;
+    }
+
+    public void setSchool(String school){
+        this.school = school;
+    }
+
+    public String getSchool(){
+        return school;
+    }
+
+    public void setAddress(String address){
+        this.address = address;
+    }
+
+    public String getAddress(){
+        return address;
+    }
+
+    public void setSex(String sex){
+        this.sex = sex;
+    }
+
+    public String getSex(){
+        return sex;
     }
 }

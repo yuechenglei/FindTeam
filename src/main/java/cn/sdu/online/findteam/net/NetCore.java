@@ -235,10 +235,15 @@ public class NetCore {
     public String modifyUserInfo(User user)
             throws ClientProtocolException, IOException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("usr.realName", user.getName()));
+        // 必填
         params.add(new BasicNameValuePair("usr.password", user.getPassword()));
+
+        params.add(new BasicNameValuePair("usr.realName", user.getName()));
         params.add(new BasicNameValuePair("usr.contact", user.getContact()));
         params.add(new BasicNameValuePair("usr.introduce", user.getIntroduce()));
+        params.add(new BasicNameValuePair("usr.address", user.getAddress()));
+        params.add(new BasicNameValuePair("usr.college", user.getSchool()));
+        params.add(new BasicNameValuePair("usr.sex", user.getSex()));
 
         HttpPost httpRequest = new HttpPost(modifyUserInfoAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");

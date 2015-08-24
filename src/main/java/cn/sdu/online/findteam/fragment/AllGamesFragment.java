@@ -64,6 +64,9 @@ public class AllGamesFragment extends Fragment implements
     Dialog dialog;
     private int loadPageNum;
 
+    // 网络错误时显示的界面
+    LinearLayout emptyContainer;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,28 +80,31 @@ public class AllGamesFragment extends Fragment implements
                 "加载中...");
         dialog.show();
         view = inflater.inflate(R.layout.allgame_layout, container, false);
-        listView = (XListView) view.findViewById(R.id.allgame_listview);
-        handleRefresh(inflater, container);
+        relativeLayout = (RelativeLayout) view.findViewById(R.id.allgame_relayout);
+        emptyContainer = (LinearLayout) view.findViewById(R.id.allgames_empty_container);
+
+        handleRefresh();
 
         return view;
     }
 
-    private void handleRefresh(final LayoutInflater inflater, final ViewGroup container) {
+    private void handleRefresh() {
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
-            View emptyView = inflater.inflate(R.layout.refresh_failed_layout, container, false);
             if (dialog != null) {
                 dialog.dismiss();
             }
-            listView.setEmptyView(emptyView);
-            LinearLayout emptyLayout = (LinearLayout) emptyView.findViewById(R.id.empty_layout);
-            emptyLayout.setOnClickListener(new View.OnClickListener() {
+            relativeLayout.setVisibility(View.GONE);
+            emptyContainer.setVisibility(View.VISIBLE);
+            emptyContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    handleRefresh(inflater, container);
+                    handleRefresh();
                 }
             });
         }
         else {
+            relativeLayout.setVisibility(View.VISIBLE);
+            emptyContainer.setVisibility(View.GONE);
             initView();
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -114,7 +120,7 @@ public class AllGamesFragment extends Fragment implements
     }
 
     public void initView() {
-
+        listView = (XListView) view.findViewById(R.id.allgame_listview);
         listView.setXListViewListener(this);
         listView.setPullLoadEnable(true);
         listView.setRefreshTime(MyApplication.getInstance().getSharedPreferences("allgamesfragment_refreshtime", Context.MODE_PRIVATE).
@@ -126,7 +132,6 @@ public class AllGamesFragment extends Fragment implements
 
         View popupView = AllGamesFragment.this.getActivity().
                 getLayoutInflater().inflate(R.layout.allgame_popup_layout, null);
-        relativeLayout = (RelativeLayout) view.findViewById(R.id.allgame_relayout);
         textView = (TextView) view.findViewById(R.id.allgame_class);
         mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
         mPopupWindow.setTouchable(true);
@@ -288,7 +293,8 @@ public class AllGamesFragment extends Fragment implements
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
             String description = temp.getString("description");
-            list.add(i, new MainListViewItem(name, description));
+            String id = temp.getString("id");
+            list.add(i, new MainListViewItem(name, description, id));
         }
         adapter.notifyDataSetChanged();
         MyApplication.getInstance().getSharedPreferences("allgamesfragment_refreshtime", Context.MODE_PRIVATE).edit()
@@ -330,7 +336,8 @@ public class AllGamesFragment extends Fragment implements
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
             String description = temp.getString("description");
-            list.add(list.size(), new MainListViewItem(name, description));
+            String id = temp.getString("id");
+            list.add(list.size(), new MainListViewItem(name, description,id));
         }
         adapter.notifyDataSetChanged();
         listView.stopLoadMore();

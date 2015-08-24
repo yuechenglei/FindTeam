@@ -3,37 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <!--<RelativeLayout
-        android:id="@+id/rela_top"
-        android:layout_below="@+id/search_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:gravity="center_vertical"
-            android:text="选择分类"
-            android:textSize="@dimen/size16"/>
-        <Button
-            android:id="@+id/arrow"
-            android:layout_width="25dp"
-            android:layout_height="12dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/arrow_down"
-            android:gravity="center_vertical"/>
-        <TextView
-            android:layout_height="1dp"
-            android:layout_below="@+id/arrow"
-            android:layout_marginTop="2dp"
-            android:layout_width="match_parent"
-            android:id="@+id/tv_line"
-            android:background="@color/grey_color"/>-->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -89,6 +58,6 @@
         android:id="@+id/drawer_viewstub"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>

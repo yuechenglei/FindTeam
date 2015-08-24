@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.MainActivity;
+import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
+import cn.sdu.online.findteam.fragment.MainFragment;
 import cn.sdu.online.findteam.mob.MainListViewItem;
 
 public class ListViewAdapter extends BaseAdapter {
@@ -62,6 +66,14 @@ public class ListViewAdapter extends BaseAdapter {
         // holder.type.setText("热门赛事");
         holder.title.setText(mlist.get(position).name);
         holder.content.setText(mlist.get(position).introduce);
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.mainActivity, SingleCompetitionActivity.class);
+                MainActivity.mainActivity.startActivity(intent);
+            }
+        });
         return convertView;
     }
 

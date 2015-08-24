@@ -48,6 +48,9 @@ public class MainFragment extends Fragment implements
     Dialog dialog;
     private int loadPageNum;
 
+    // 网络不可用时显示的界面
+    LinearLayout emptyContainer;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,29 +63,29 @@ public class MainFragment extends Fragment implements
                 "加载中...");
         dialog.show();
         view = inflater.inflate(R.layout.fragment_main, container, false);
-        listView = (XListView) view.findViewById(R.id.listview);
+        emptyContainer = (LinearLayout) view.findViewById(R.id.empty_container);
 
-        handleRefresh(inflater, container);
+        handleRefresh();
 
         // Inflate the layout for this fragment
         return view;
     }
 
-    private void handleRefresh(final LayoutInflater inflater, final ViewGroup container) {
+    private void handleRefresh() {
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
-            View emptyView = inflater.inflate(R.layout.refresh_failed_layout, container, false);
             if (dialog != null) {
                 dialog.dismiss();
             }
-            listView.setEmptyView(emptyView);
-            LinearLayout emptyLayout = (LinearLayout) emptyView.findViewById(R.id.empty_layout);
-            emptyLayout.setOnClickListener(new View.OnClickListener() {
+            emptyContainer.setVisibility(View.VISIBLE);
+            emptyContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    handleRefresh(inflater, container);
+                    handleRefresh();
                 }
             });
         } else {
+            emptyContainer.setVisibility(View.GONE);
+            listView = (XListView) view.findViewById(R.id.listview);
             listView.setXListViewListener(this);
             listView.setPullLoadEnable(true);
             listView.setRefreshTime(MyApplication.getInstance().getSharedPreferences("mainfragment_refreshtime", Context.MODE_PRIVATE).
@@ -91,7 +94,7 @@ public class MainFragment extends Fragment implements
             adapter = new ListViewAdapter(getActivity(), list);
             listView.setAdapter(adapter);
             myThread(0);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+/*            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view,
@@ -101,7 +104,7 @@ public class MainFragment extends Fragment implements
                     intent.setClass(getActivity(), SingleCompetitionActivity.class);
                     startActivity(intent);
                 }
-            });
+            });*/
         }
     }
 
@@ -260,7 +263,8 @@ public class MainFragment extends Fragment implements
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
             String description = temp.getString("description");
-            list.add(i, new MainListViewItem(name, description));
+            String id = temp.getString("id");
+            list.add(i, new MainListViewItem(name, description, id));
         }
         adapter.notifyDataSetChanged();
         MyApplication.getInstance().getSharedPreferences("mainfragment_refreshtime", Context.MODE_PRIVATE).edit()
@@ -302,7 +306,8 @@ public class MainFragment extends Fragment implements
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
             String description = temp.getString("description");
-            list.add(list.size(), new MainListViewItem(name, description));
+            String id = temp.getString("id");
+            list.add(list.size(), new MainListViewItem(name, description, id));
         }
         adapter.notifyDataSetChanged();
         listView.stopLoadMore();

@@ -36,6 +36,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.resource.RoundImageView;
 import cn.sdu.online.findteam.resource.SwitchButton;
+import cn.sdu.online.findteam.share.MyApplication;
 
 
 public class BuildTeamFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
@@ -255,9 +256,9 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINESE); // 时间字符串格式
         // 团队头像名称是时间 + team + 创建人名字
         headerImgname = format.format(date) + "team" +
-            MainActivity.mainActivity.getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
-                getString("loginName", ""); // 将时间转换成对应格式字符串
-        MainActivity.mainActivity.getSharedPreferences("teamHeader", Context.MODE_PRIVATE).edit().
+            MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
+                getString("loginName", "");
+        MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).edit().
                 putString("headerImg", headerImgname).apply();
         File tempFile = new File(photo_path + "/" + headerImgname + ".jpg");
         File file = new File(photo_path);
@@ -279,7 +280,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
 
     //从相册中选中的照片设置头像
     public void setHeaderImgAlbum() {
-        headerImgname = MainActivity.mainActivity.getSharedPreferences("teamHeader", Context.MODE_PRIVATE).
+        headerImgname = MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).
                 getString("headerImg", "");
         Bitmap header = BitmapFactory.decodeFile(photo_path + "/" + headerImgname + ".jpg");
         /*BitmapDrawable bd = new BitmapDrawable(header);*/
