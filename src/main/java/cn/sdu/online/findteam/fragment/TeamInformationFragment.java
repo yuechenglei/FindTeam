@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.activity.MyTeamActivity;
+import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 
 public class TeamInformationFragment extends Fragment implements View.OnClickListener {
@@ -26,7 +26,7 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (TeamInformationFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+        if (TeamInformationFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
             view = inflater.inflate(R.layout.myteam_information_layout, container, false);
             changeinfo = (Button) view.findViewById(R.id.change_team_info);
             inforTv = (TextView) view.findViewById(R.id.team_infor_tv);

@@ -17,12 +17,12 @@ import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
 import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 
-public class SingleCompetitionListAdapter extends BaseAdapter{
+public class SingleCompetitionListAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
     List<SingleCompetitionListItem> listItems;
 
-    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems){
+    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems) {
         inflater = LayoutInflater.from(mContext);
         this.listItems = listItems;
     }
@@ -62,7 +62,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.teamname.setText(listItems.get(position).teamname);
-        viewHolder.personnum.setText(listItems.get(position).personnum);
+        viewHolder.personnum.setText("缺" + listItems.get(position).personnum + "人");
         viewHolder.content.setText(listItems.get(position).content);
         viewHolder.look.setTag(position);
         viewHolder.join.setTag(position);
@@ -86,7 +86,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter{
         return convertView;
     }
 
-    public class ViewHolder{
+    public class ViewHolder {
         ImageView imageView;
         TextView teamname;
         TextView personnum;

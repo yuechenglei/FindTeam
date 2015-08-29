@@ -69,11 +69,9 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         isEdited = false;
         dialog.show();
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
-            if (dialog != null) {
-                dialog.dismiss();
-                Toast.makeText(InfoPersonActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
-                return;
-            }
+            dialog.dismiss();
+            AndTools.showToast(InfoPersonActivity.this, "当前网络不可用！");
+            return;
         }
         findview();
         Thread loadUserInfo = new Thread(new loadUserInfo());
@@ -90,7 +88,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                     JSONTokener jsonParser = new JSONTokener(info);
                     try {
                         person = (JSONObject) jsonParser.nextValue();
-                        Log.v("infoperson", person+"");
                         if (person != null) {
                             handler.sendEmptyMessage(0);
                         }
@@ -255,7 +252,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                         Toast.makeText(InfoPersonActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    if (text_introduction.getText().toString().length() > maxNun){
+                    if (text_introduction.getText().toString().length() > maxNun) {
                         AndTools.showToast(InfoPersonActivity.this, "亲，最多只能输入40个字哦！");
                         return;
                     }
@@ -339,23 +336,20 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         text_tag3.requestFocus();
         text_realname.setFocusableInTouchMode(true);
         text_realname.requestFocus();
-        text_realname.setBackgroundResource(R.drawable.info_person_editbg);
-/*        text_gender.setFocusableInTouchMode(true);
-        text_gender.requestFocus();
-        text_gender.setBackgroundResource(R.drawable.info_person_editbg);*/
+        text_realname.setBackgroundResource(R.drawable.info_person_edit);
         text_introduction.setFocusableInTouchMode(true);
         text_introduction.requestFocus();
         text_gender.setVisibility(View.GONE);
         radioGroup.setVisibility(View.VISIBLE);
         text_address.setFocusableInTouchMode(true);
         text_address.requestFocus();
-        text_address.setBackgroundResource(R.drawable.info_person_editbg);
+        text_address.setBackgroundResource(R.drawable.info_person_edit);
         text_school.setFocusableInTouchMode(true);
         text_school.requestFocus();
-        text_school.setBackgroundResource(R.drawable.info_person_editbg);
+        text_school.setBackgroundResource(R.drawable.info_person_edit);
         text_phonenumber.setFocusableInTouchMode(true);
         text_phonenumber.requestFocus();
-        text_phonenumber.setBackgroundResource(R.drawable.info_person_editbg);
+        text_phonenumber.setBackgroundResource(R.drawable.info_person_edit);
         text_edit.setBackgroundColor(0xff519aff);
         text_edit.setText("保存资料");
         text_edit.setTextColor(Color.WHITE);

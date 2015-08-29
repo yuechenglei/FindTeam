@@ -93,17 +93,17 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     return;
                 }
 
-                if (name.length() > 11){
+                if (name.length() > 11) {
                     Toast.makeText(LoginActivity.this, "用户名不能超过11个字符！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (name.contains(" ")){
+                if (name.contains(" ")) {
                     Toast.makeText(LoginActivity.this, "用户名不能包含有空格！", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
                     Toast.makeText(LoginActivity.this, "当前网络不可用！", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -185,6 +185,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     return;
                 }
 
+                preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.putString("userID", bundle.getInt("code") + "").apply();
                 DemoUtil.getExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -201,10 +204,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(AuthInfo authInfo) {
                 AuthService.getInstance().setNickname(nickname);
-                preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
-                editor = preferences.edit();
-                editor.remove("loginName").apply();
-                editor.remove("loginPassword").apply();
                 editor.putString("loginName", myUser.getName()).apply();
                 editor.putString("loginPassword", myUser.getPassword()).apply();
 

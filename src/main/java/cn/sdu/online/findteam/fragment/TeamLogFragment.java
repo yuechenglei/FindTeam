@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.activity.MyTeamActivity;
+import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
@@ -47,7 +47,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+        if (TeamLogFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
             if (MyApplication.IDENTITY.equals("队长")) {
                 view = inflater.inflate(R.layout.myteam_teamlog_layout, null);
                 teamHeaderLog();
@@ -84,8 +84,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent();
                 if (TeamLogFragment.this.getActivity().equals(OtherTeamActivity.getContext())) {
                     intent.setClass(OtherTeamActivity.getContext(), TeamLogActivity.class);
-                } else if (TeamLogFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
-                    intent.setClass(MyTeamActivity.mContext, TeamLogActivity.class);
+                } else if (TeamLogFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
+                    intent.setClass(MySingleTeamActivity.mContext, TeamLogActivity.class);
                 }
                 TeamLogFragment.this.getActivity().startActivity(intent);
             }

@@ -38,10 +38,6 @@ public class NetCore {
 
     // 登录的url
     private final String LoginAddr = ServerAddr + "user/login";
-
-    // 获取到的有用cookie
-    public static String jsessionid;
-
     // 注册的url
     private final static String RegisterAddr = ServerAddr + "user/register";
     // 登出的url
@@ -52,6 +48,13 @@ public class NetCore {
     public final static String modifyUserInfoAddr = ServerAddr + "user/modify";
     // 获取比赛信息
     public final static String getGamesAddr = ServerAddr + "category/listGame";
+    // 获取某个比赛下的队伍
+    public final static String getGamesTeam = ServerAddr + "team/listByCategory";
+    // 列出某用户的队伍
+    public final static String getUserTeam = ServerAddr + "team/listByUser";
+
+    // 获取到的有用cookie
+    public static String jsessionid;
 
     /**
      * 后台的返回参数
@@ -71,6 +74,11 @@ public class NetCore {
     // 修改个人信息参数
     public static final int MODIFY_SUCCESS = 0; // 修改成功
     public static final int MODIFY_ERROR = 1; // 修改失败
+
+    // 列出某用户的队伍申请状态参数
+    public static final String HAS_ENTERED = "1";
+    public static final String HAS_REFUSED = "2";
+    public static final String HAS_OFFERED = "3";
 
     /**
      * 登陆
@@ -273,7 +281,7 @@ public class NetCore {
      * 下拉刷新比赛信息
      *
      * @param pageNum  获取第几页的信息
-     * @param pageList 每页获取的记录数
+     * @param pageListNum 每页获取的记录数
      */
     public String pullRefreshGamesData(String url, int pageNum, int pageListNum) throws IOException {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
@@ -281,6 +289,52 @@ public class NetCore {
         params.add(new BasicNameValuePair("pagelistnum", pageListNum + ""));
 
         HttpPost httpRequest = new HttpPost(url);
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
+
+    /**
+     * 加载某个比赛下的队伍
+     *
+     * @param gameID   分类id
+     */
+
+    public String getGamesTeam(String gameID) throws IOException {
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("category.id", gameID + ""));
+
+        HttpPost httpRequest = new HttpPost(getGamesTeam);
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
+
+    public String getUserTeam(String userID) throws IOException {
+        List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+        params.add(new BasicNameValuePair("user.id", userID + ""));
+
+        HttpPost httpRequest = new HttpPost(getUserTeam);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);

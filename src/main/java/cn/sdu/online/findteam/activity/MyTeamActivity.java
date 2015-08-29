@@ -1,313 +1,156 @@
 package cn.sdu.online.findteam.activity;
 
+import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.util.DisplayMetrics;
+import android.os.Handler;
+import android.os.Message;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
+import android.widget.ActionMenuView;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ExpandableListView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.adapter.OtherTeamFragmentAdapter;
-import cn.sdu.online.findteam.fragment.TeamInformationFragment;
-import cn.sdu.online.findteam.fragment.TeamLogFragment;
-import cn.sdu.online.findteam.fragment.TeamMemberFragment;
-import cn.sdu.online.findteam.resource.DepthPageTransformer;
+import cn.sdu.online.findteam.adapter.MyTeamListAdapter;
+import cn.sdu.online.findteam.mob.MyTeamListItem;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
-import cn.sdu.online.findteam.view.TeamPopWindow;
+import cn.sdu.online.findteam.util.AndTools;
 
-public class MyTeamActivity extends FragmentActivity implements View.OnClickListener{
-    public static Context mContext;
+/**
+ * Created by wn on 2015/8/29.
+ */
+public class MyTeamActivity extends Activity {
 
-    private List<Fragment> mFragmentList = new ArrayList<Fragment>();
-    private OtherTeamFragmentAdapter mFragmentAdapter;
+    private List<List<MyTeamListItem>> list;
+    private static MyTeamActivity instance;
 
-    private ViewPager mPageVp;
-    /**
-     * Tab显示内容TextView
-     */
-    private TextView mTeamInfoTv, mTeamLogTv, mTeamMemTv;
-    /**
-     * Fragment
-     */
-    private TeamInformationFragment mTeamInfoFg;
-    private TeamMemberFragment mTeamMemFg;
-    private TeamLogFragment mTeamLogFg;
-    /**
-     * ViewPager的当前选中页
-     */
-    private int currentIndex;
-    /**
-     * 屏幕的宽度
-     */
-    private int screenWidth;
-    /**
-     * Tab的那个引导线
-     */
-    private ImageView mTabLineIv;
-
-    /**
-     * 三个引导fragment的 Layout
-     */
-    private LinearLayout teaminfo_ll;
-    private LinearLayout teammem_ll;
-    private LinearLayout teamlog_ll;
-
-    /**
-     * 返回按钮
-     */
-    private ImageView backimg;
-    /**
-     * 参加别人队伍的按钮
-     */
-    private Button join;
-
-    /**
-     * 队伍设置按钮
-     */
-    private Button teamsetting;
+    Dialog dialog;
+    View contentView;
+    List<MyTeamListItem> hasEnteredList;
+    List<MyTeamListItem> hasOfferedList;
+    List<MyTeamListItem> hasRefusedList;
+    MyTeamListAdapter adapter;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.otherteam_layout);
-        mContext = MyTeamActivity.this;
-        findById();
-        init();
-        initTabLineWidth();
-        if (MyApplication.myTeam_CurrentPage == 0){
-            mPageVp.setCurrentItem(0);
-        }
-        else if (MyApplication.myTeam_CurrentPage == 1){
-            mPageVp.setCurrentItem(1);
-        }
-        else {
-            mPageVp.setCurrentItem(2);
-        }
-    }
-
-    private void findById() {
-        mTeamLogTv = (TextView) this.findViewById(R.id.id_teamlog_tv);
-        mTeamInfoTv = (TextView) this.findViewById(R.id.id_teaminfo_tv);
-        mTeamMemTv = (TextView) this.findViewById(R.id.id_teammem_tv);
-        mTabLineIv = (ImageView) this.findViewById(R.id.id_tab_line_iv);
-        mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
-        backimg = (ImageView) this.findViewById(R.id.otherteam_back_img);
-        join = (Button) this.findViewById(R.id.join_otherteam);
-        teamsetting = (Button) this.findViewById(R.id.team_setting_bt);
-    }
-
-    private void init() {
-        mTeamMemFg = new TeamMemberFragment();
-        mTeamLogFg = new TeamLogFragment();
-        mTeamInfoFg = new TeamInformationFragment();
-        mFragmentList.add(mTeamInfoFg);
-        mFragmentList.add(mTeamMemFg);
-        mFragmentList.add(mTeamLogFg);
-
-        mFragmentAdapter = new OtherTeamFragmentAdapter(
-                this.getSupportFragmentManager(), mFragmentList);
-        mPageVp.setAdapter(mFragmentAdapter);
-        mPageVp.setCurrentItem(0);
-        mPageVp.setPageTransformer(true, new DepthPageTransformer());
-
-        teaminfo_ll = (LinearLayout) findViewById(R.id.id_teaminfo_ll);
-        teammem_ll = (LinearLayout) findViewById(R.id.id_teammem_ll);
-        teamlog_ll = (LinearLayout) findViewById(R.id.id_tab_teamlog_ll);
-
-        setVisible();
-
-        mPageVp.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-
-           /* *
-             * state滑动中的状态 有三种状态（0，1，2） 1：正在滑动 2：滑动完毕 0：什么都没做。*/
-
+        setActionBarLayout(R.layout.myteam_actionbar);
+        Button back = (Button) findViewById(R.id.myteam_return_btn);
+        back.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-
-            /**
-             * position :当前页面，及你点击滑动的页面 offset:当前页面偏移的百分比
-             * offsetPixels:当前页面偏移的像素位置
-             * **/
-            @Override
-            public void onPageScrolled(int position, float offset,
-                                       int offsetPixels) {
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
-                        .getLayoutParams();
-                /**
-                 * 利用currentIndex(当前所在页面)和position(下一个页面)以及offset来
-                 * 设置mTabLineIv的左边距 滑动场景：
-                 * 记3个页面,
-                 * 从左到右分别为0,1,2
-                 * 0->1; 1->2; 2->1; 1->0*/
-
-
-                if (currentIndex == 0 && position == 0)// 0->1
-                {
-                    lp.leftMargin = (int) (offset * (screenWidth * 1.0 / 3) + currentIndex
-                            * (screenWidth / 3));
-
-                } else if (currentIndex == 1 && position == 0) // 1->0
-                {
-                    lp.leftMargin = (int) (-(1 - offset)
-                            * (screenWidth * 1.0 / 3) + currentIndex
-                            * (screenWidth / 3));
-
-                } else if (currentIndex == 1 && position == 1) // 1->2
-                {
-                    lp.leftMargin = (int) (offset * (screenWidth * 1.0 / 3) + currentIndex
-                            * (screenWidth / 3));
-                } else if (currentIndex == 2 && position == 1) // 2->1
-                {
-                    lp.leftMargin = (int) (-(1 - offset)
-                            * (screenWidth * 1.0 / 3) + currentIndex
-                            * (screenWidth / 3));
-                }
-                mTabLineIv.setLayoutParams(lp);
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                resetTextView();
-                switch (position) {
-                    case 0:
-                        mTeamInfoTv.setTextColor(Color.rgb(80, 154, 255));
-                        MyApplication.myTeam_CurrentPage = 0;
-                        break;
-                    case 1:
-                        mTeamMemTv.setTextColor(Color.rgb(80, 154, 255));
-                        MyApplication.myTeam_CurrentPage = 1;
-                        break;
-                    case 2:
-                        mTeamLogTv.setTextColor(Color.rgb(80, 154, 255));
-                        MyApplication.myTeam_CurrentPage = 2;
-                        break;
-                }
-                currentIndex = position;
+            public void onClick(View v) {
+                finish();
             }
         });
-        mPageVp.setOffscreenPageLimit(2);
-        setTabListener();
-        backimg.setOnClickListener(this);
-        teamsetting.setOnClickListener(this);
+        instance = this;
+
+        dialog = DialogDefine.createLoadingDialog(this,
+                "加载中...");
+        dialog.show();
+
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+            dialog.dismiss();
+            AndTools.showToast(this, "当前网络不可用！");
+            return;
+        }
+
+        userID = MyApplication.getInstance().
+                getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
+                getString("userID", "-1");
+        if (userID.equals("-1")) {
+            dialog.dismiss();
+            AndTools.showToast(MyTeamActivity.this, "您还未登录！");
+            MyTeamActivity.this.finish();
+            return;
+        }
+
+        contentView = View.inflate(this, R.layout.myteam_list_layout, null);
+        ExpandableListView myTeamlv = (ExpandableListView) contentView.findViewById(R.id.myteam_expand_listview);
+        list = new ArrayList<>();
+        hasEnteredList = new ArrayList<>();
+        hasOfferedList = new ArrayList<>();
+        hasRefusedList = new ArrayList<>();
+        list.add(hasEnteredList);
+        list.add(hasOfferedList);
+        list.add(hasRefusedList);
+        adapter = new MyTeamListAdapter(this, list);
+        myTeamlv.setAdapter(adapter);
+
+        new Thread(new loadMyTeam()).start();
     }
+
+    public static MyTeamActivity getInstance() {
+        return instance;
+    }
+
+    class loadMyTeam implements Runnable {
+
+        @Override
+        public void run() {
+            try {
+                String jsonData = new NetCore().getUserTeam(userID);
+                JSONArray teamJsonList = new JSONArray(jsonData);
+                for (int i = 0; i < teamJsonList.length(); i++) {
+                    JSONObject teamJson = (JSONObject) teamJsonList.get(i);
+                    String status = teamJson.getString("status");
+                    String name = teamJson.getString("name");
+                    String introduce = teamJson.getString("introduce");
+                    JSONObject category = new JSONObject(teamJson.getString("category"));
+                    String parentName = category.getString("name");
+                    if (status.equals(NetCore.HAS_ENTERED)) {
+                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                    } else if (status.equals(NetCore.HAS_OFFERED)) {
+                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                    } else if (status.equals(NetCore.HAS_REFUSED)) {
+                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                    }
+                }
+                loadTeamHandler.sendEmptyMessage(0);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    Handler loadTeamHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            adapter.notifyDataSetChanged();
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            MyTeamActivity.this.setContentView(contentView);
+        }
+    };
 
     /**
-     * 设置滑动条的宽度为屏幕的1/3(根据Tab的个数而定)
+     * @param layoutId 布局Id
      */
-    private void initTabLineWidth() {
-        DisplayMetrics dpMetrics = new DisplayMetrics();
-        getWindow().getWindowManager().getDefaultDisplay()
-                .getMetrics(dpMetrics);
-        screenWidth = dpMetrics.widthPixels;
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
-                .getLayoutParams();
-        lp.width = screenWidth / 3;
-        if (MyApplication.myTeam_CurrentPage == 1){
-            lp.setMargins(screenWidth / 3, 0, 0, 0);
-        }
-        else if (MyApplication.myTeam_CurrentPage == 2){
-            lp.setMargins((screenWidth / 3) * 2, 0, 0, 0);
-        }
-        mTabLineIv.setLayoutParams(lp);
-    }
-
-    /**
-     * 重置颜色
-     */
-    private void resetTextView() {
-        mTeamInfoTv.setTextColor(Color.BLACK);
-        mTeamMemTv.setTextColor(Color.BLACK);
-        mTeamLogTv.setTextColor(Color.BLACK);
-    }
-
-    private void setTabListener() {
-        teaminfo_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(0);
-                MyApplication.myTeam_CurrentPage = 0;
-            }
-        });
-
-        teammem_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(1);
-                MyApplication.myTeam_CurrentPage = 1;
-            }
-        });
-
-        teamlog_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(2);
-                MyApplication.myTeam_CurrentPage = 2;
-            }
-        });
-    }
-
-    public static Context getContext() {
-        return mContext;
-    }
-
-    private void setVisible() {
-        join.setVisibility(View.GONE);
-        teamsetting.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
-            case 1:
-                if (data.getExtras() != null) {
-                    mTeamInfoFg.setInfor(data.getExtras().getString("teaminfor"));
-                    Toast.makeText(MyTeamActivity.this, "队伍信息修改成功！", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case 2:
-                if (data.getExtras() != null){
-                    mTeamLogFg.addListItem(R.drawable.teammember_header,
-                        MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""),
-                        "2015年8月5日 21:36",
-                        data.getExtras().getString("teamlog"));
-                    Toast.makeText(MyTeamActivity.this, "日志填写成功！", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.otherteam_back_img:
-                MyTeamActivity.this.finish();
-                break;
-
-            case R.id.team_setting_bt:
-                TeamPopWindow teamPopWindow = new TeamPopWindow(MyTeamActivity.this);
-                teamPopWindow.showPopupWindow(teamsetting);
-                break;
+    public void setActionBarLayout(int layoutId) {
+        ActionBar actionBar = getActionBar();
+        if (null != actionBar) {
+            actionBar.setDisplayShowHomeEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflator.inflate(layoutId, null);
+            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
+            actionBar.setCustomView(v, layout);
         }
     }
 }

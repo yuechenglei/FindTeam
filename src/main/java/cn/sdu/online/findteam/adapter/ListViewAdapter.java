@@ -45,7 +45,7 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         if (mlist == null){
             return null;
         }
@@ -63,7 +63,6 @@ public class ListViewAdapter extends BaseAdapter {
         } else {
             holder = (Holder) convertView.getTag();
         }
-        // holder.type.setText("热门赛事");
         holder.title.setText(mlist.get(position).name);
         holder.content.setText(mlist.get(position).introduce);
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +70,9 @@ public class ListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.mainActivity, SingleCompetitionActivity.class);
+                intent.putExtra("gameID", mlist.get(position).id);
+                intent.putExtra("gameIntroduce", mlist.get(position).introduce);
+                intent.putExtra("gameName", mlist.get(position).name);
                 MainActivity.mainActivity.startActivity(intent);
             }
         });

@@ -91,7 +91,7 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.MyTeamActivity"
+            android:name=".activity.MySingleTeamActivity"
             android:theme="@style/trans_style" />
 
         <activity
@@ -153,5 +153,7 @@
             android:theme="@style/trans_style"
             android:windowSoftInputMode="adjustResize"/>
 
+        <activity android:name=".activity.MyTeamActivity"
+            android:theme="@style/trans_style"/>
     </application>
 </manifest>

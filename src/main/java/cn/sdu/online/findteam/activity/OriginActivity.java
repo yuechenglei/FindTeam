@@ -27,12 +27,9 @@ import cn.sdu.online.findteam.util.AndTools;
 
 public class OriginActivity extends Activity {
 
-    private Timer timer;
-    private TimerTask timerTask;
     private Intent intent;
     private String loginName;
     private String loginPassword;
-    private long loginID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +40,8 @@ public class OriginActivity extends Activity {
         SharedPreferences preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
         loginName = preferences.getString("loginName", "");
         loginPassword = preferences.getString("loginPassword", "");
-        loginID = preferences.getLong("loginID", 0);
-        timer = new Timer(true);
-        timerTask = new TimerTask() {
+        Timer timer = new Timer(true);
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 if (loginName.equals("") || loginPassword.equals("")) {

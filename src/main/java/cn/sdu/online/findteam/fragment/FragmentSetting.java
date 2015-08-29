@@ -199,13 +199,14 @@ public class FragmentSetting extends Fragment implements OnClickListener {
 
                 exitSuccess();
 
-                Toast.makeText(FragmentSetting.this.getActivity(),
-                        bundle.getString("msg"), Toast.LENGTH_SHORT).show();
+/*                Toast.makeText(FragmentSetting.this.getActivity(),
+                        bundle.getString("msg"), Toast.LENGTH_SHORT).show();*/
 
                 Intent intent = new Intent();
                 intent.setClass(FragmentSetting.this.getActivity(),
                         MainActivity.class);
-                intent.putExtra("loginIdentity", "<##游客##>");
+                MyApplication.USER_OR_NOT = 0;
+                MyApplication.currentFragment = MainActivity.MAIN_FRAGMENT;
                 FragmentSetting.this.getActivity().finish();
                 startActivity(intent);
             } else {

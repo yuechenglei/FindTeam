@@ -197,8 +197,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(AuthInfo data) {
                 AuthService.getInstance().setNickname(nickname);
-                preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
-                editor = preferences.edit();
                 editor.remove("loginName").apply();
                 editor.remove("loginPassword").apply();
                 editor.putString("loginName", user.getName()).apply();
@@ -287,6 +285,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     return;
                 }
 
+                preferences = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE);
+                editor = preferences.edit();
+                editor.putString("userID", bundle.getInt("code") + "").apply();
                 DemoUtil.getExecutor().execute(new Runnable() {
                     @Override
                     public void run() {

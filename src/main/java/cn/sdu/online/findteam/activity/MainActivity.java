@@ -10,13 +10,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.Window;
 import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -34,7 +31,6 @@ import cn.sdu.online.findteam.fragment.AllGamesFragment;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
-import cn.sdu.online.findteam.share.DemoUtil;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
@@ -78,24 +74,33 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public final static int ALLGAMES_FRAGMENT = 1;
     public final static int BUILDTEAM_FRAGMENT = 2;
     public final static int FRAGMENT_SETTING = 3;
-    private int currentFragment;
+    private int currentFragment = MAIN_FRAGMENT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        setContentView(R.layout.activity_main);
         mainActivity = MainActivity.this;
+        super.onCreate(savedInstanceState);
+
+        fragmentManager = getSupportFragmentManager();
+        if (null != savedInstanceState) {
+            currentFragment = savedInstanceState.getInt("currentFragment");
+            if (savedInstanceState.getInt("user_or_not") == 0) {
+                MyApplication.USER_OR_NOT = 0;
+            } else if (savedInstanceState.getInt("user_or_not") == 1) {
+                MyApplication.USER_OR_NOT = 1;
+            }
+        }
+
+        // 设置ActionBar的自定义布局。
+        view_actionbar = View.inflate(this, R.layout.actionbar_layout, null);
+        setActionBarLayout(view_actionbar);
+        setContentView(R.layout.activity_main);
 
 /*        intentString = getIntent().getExtras().getString("loginIdentity");
         intentID = getIntent().getExtras().getLong("loginID");*/
 
-        fragmentManager = getSupportFragmentManager();
-        // 设置ActionBar的自定义布局。
-        LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        view_actionbar = inflator.inflate(R.layout.actionbar_layout, null);
-        setActionBarLayout(view_actionbar);
-
+        searchLayout = (LinearLayout) findViewById(R.id.mainactivity_search_layout);
+        acState = true;
         if (/*intentString.startsWith("<##用户##>")*/MyApplication.USER_OR_NOT == 1) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.drawer_layout);
@@ -107,7 +112,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             tv_id = (TextView) findViewById(R.id.tv_ID);
             tv_text.setText(MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""));
             tv_id.setText("(聊天帐号:" + MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0) + ")");
-        } else {
+        } else if (MyApplication.USER_OR_NOT == 0) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.visitor_drawer_layout);
             viewStub.inflate();
@@ -115,16 +120,22 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             initMDrawer();
             init_Visitor_Btn();
         }
-        // 初始化 acState 为true
-        acState = true;
-
-        searchLayout = (LinearLayout) findViewById(R.id.search_layout);
-
-        addFragment();
+        addFragment(savedInstanceState);
         MyApplication.IDENTITY = "队长";
     }
 
-    private void addFragment() {
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentFragment", currentFragment);
+        if (MyApplication.USER_OR_NOT == 1) {
+            outState.putInt("user_or_not", 1);
+        } else if (MyApplication.USER_OR_NOT == 0) {
+            outState.putInt("user_or_not", 0);
+        }
+    }
+
+    private void addFragment(Bundle savedInstanceState) {
         fragmentList = new ArrayList<Fragment>();
         mainFragment = new MainFragment();
         allGamesFragment = new AllGamesFragment();
@@ -134,51 +145,40 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         fragmentList.add(allGamesFragment);
         fragmentList.add(buildTeamFragment);
         fragmentList.add(fragmentSetting);
-        fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
-                .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
-                .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
-                .add(R.id.container, fragmentList.get(FRAGMENT_SETTING)).commit();
-        if (MyApplication.currentFragment == MAIN_FRAGMENT) {
+
+        if (null != savedInstanceState){
+            fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(FRAGMENT_SETTING)).commitAllowingStateLoss();
+        }
+        else {
+            fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
+                    .add(R.id.container, fragmentList.get(FRAGMENT_SETTING)).commit();
+        }
+        if (currentFragment == MAIN_FRAGMENT) {
             currentFragment = MAIN_FRAGMENT;
             fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
                     .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
                     .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
-        } else if (MyApplication.currentFragment == ALLGAMES_FRAGMENT) {
+        } else if (currentFragment == ALLGAMES_FRAGMENT) {
             currentFragment = ALLGAMES_FRAGMENT;
             fragmentManager.beginTransaction().hide(fragmentList.get(MAIN_FRAGMENT))
                     .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
                     .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
-        } else if (MyApplication.currentFragment == BUILDTEAM_FRAGMENT) {
+        } else if (currentFragment == BUILDTEAM_FRAGMENT) {
             currentFragment = BUILDTEAM_FRAGMENT;
             fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
                     .hide(fragmentList.get(MAIN_FRAGMENT))
                     .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
-        } else if (MyApplication.currentFragment == FRAGMENT_SETTING) {
+        } else if (currentFragment == FRAGMENT_SETTING) {
             currentFragment = FRAGMENT_SETTING;
             fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
                     .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
                     .hide(fragmentList.get(MAIN_FRAGMENT)).commit();
         }
-/*        if (fragmentManager.findFragmentByTag("buildteamfragment") != null) {
-*//*            buildTeamFragment = new BuildTeamFragment();*//*
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, buildTeamFragment, "buildteamfragment").commit();
-        } else if (fragmentManager.findFragmentByTag("fragmentsetting") != null) {
-*//*            fragmentSetting = new FragmentSetting();*//*
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();
-        } else if (fragmentManager.findFragmentByTag("allgamefragment") != null) {
-            allGamesFragment = new AllGamesFragment();
-            fragmentManager.beginTransaction()
-                    .replace(R.id.container, allGamesFragment, "allgamefragment").commit();
-        } else {
-*//*            mainFragment = new MainFragment();*//*
-            currentFragment = MAIN_FRAGMENT;
-            fragmentManager.beginTransaction().hide(fragmentList.get(ALLGAMES_FRAGMENT))
-                    .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
-                    .hide(fragmentList.get(FRAGMENT_SETTING)).commit();
-*//*                    .replace(R.id.container, fragmentList.get(MAIN_FRAGMENT), "mainfragment").commit();*//*
-        }*/
     }
 
     void initMDrawer() {
@@ -233,7 +233,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
      * 设置actionbar的标题
      */
     void setActionBarTest(String test) {
-        TextView title = (TextView) view_actionbar.findViewById(R.id.title);
+        TextView title = (TextView) view_actionbar.findViewById(R.id.main_actionbar_title);
         title.setText(test);
     }
 
@@ -285,7 +285,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         bt_head.setBackgroundResource(R.drawable.head_moren);
 
         searchButton = (Button) findViewById(R.id.search_button);
-        actionsearch = (Button) view_actionbar.findViewById(R.id.action_search);
+        actionsearch = (Button) view_actionbar.findViewById(R.id.mian_action_search);
         actionsearch.setOnClickListener(this);
         searchButton.setOnClickListener(this);
 
@@ -305,7 +305,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         LinearLayout visitorSetting = (LinearLayout) findViewById(R.id.visitor_setting_btn);
 
         searchButton = (Button) findViewById(R.id.search_button);
-        actionsearch = (Button) view_actionbar.findViewById(R.id.action_search);
+        actionsearch = (Button) view_actionbar.findViewById(R.id.mian_action_search);
         actionsearch.setOnClickListener(this);
         searchButton.setOnClickListener(this);
 
@@ -344,6 +344,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                                 .show(fragmentList.get(FRAGMENT_SETTING)).commit();
 /*                                .replace(R.id.container, fragmentSetting, "fragmentsetting").commit();*/
                         currentFragment = FRAGMENT_SETTING;
+                        MyApplication.currentFragment = FRAGMENT_SETTING;
                     }
                 };
                 timer2.schedule(timerTask2, 200);
@@ -361,6 +362,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(BUILDTEAM_FRAGMENT)).commit();
                         currentFragment = BUILDTEAM_FRAGMENT;
+                        MyApplication.currentFragment = BUILDTEAM_FRAGMENT;
                     }
                 };
                 timer3.schedule(timerTask3, 200);
@@ -378,7 +380,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     }
                 };
                 timer4.schedule(timerTask4, 200);
-                setActionBarTest("我的队伍");
                 break;
 
             case R.id.bt_news:
@@ -407,6 +408,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(ALLGAMES_FRAGMENT)).commit();
                         currentFragment = ALLGAMES_FRAGMENT;
+                        MyApplication.currentFragment = ALLGAMES_FRAGMENT;
                     }
                 };
                 timer6.schedule(timerTask6, 200);
@@ -424,12 +426,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        MyApplication.currentFragment = MAIN_FRAGMENT;
                     }
                 };
                 timer9.schedule(timerTask9, 200);
                 setActionBarTest("热门赛事");
                 break;
-            case R.id.action_search:
+            case R.id.mian_action_search:
                 if (acState) {
                     searchLayout.setVisibility(View.VISIBLE);
                     acState = false;
@@ -451,6 +454,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(ALLGAMES_FRAGMENT)).commit();
                         currentFragment = ALLGAMES_FRAGMENT;
+                        MyApplication.currentFragment = ALLGAMES_FRAGMENT;
                     }
                 };
                 timer8.schedule(timerTask8, 200);
@@ -469,6 +473,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        MyApplication.currentFragment = MAIN_FRAGMENT;
                     }
                 };
                 timer10.schedule(timerTask10, 200);
@@ -487,6 +492,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(FRAGMENT_SETTING)).commit();
                         currentFragment = FRAGMENT_SETTING;
+                        MyApplication.currentFragment = FRAGMENT_SETTING;
                     }
                 };
                 timer7.schedule(timerTask7, 200);
@@ -539,6 +545,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        MyApplication.currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数
                     }
@@ -554,6 +561,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        MyApplication.currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数
                     }

@@ -32,6 +32,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="赵亮夜行队"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp"
                 android:textColor="@color/white_color"
                 android:textSize="7pt"/>
             <TextView
@@ -58,8 +60,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/textcolor_gray"
-            android:text="“南航E行”团队是一支充满激情、踏实肯干、有着创新精神的团队。这个队名也很朴实，我们赋予了她深深的感情。南航是我们的母校，是授以我们知识的地方，也是莘莘学子寻梦的地方。e行是我们参赛的态度，也是我们做人做事的信念。相信只要我们不放弃，不抛弃，走到最后我们还是e路通行。"
-            android:maxLines="3"
+            android:text="“我们是e路通行。"
+            android:lines="3"
             android:layout_marginRight="20dp"
             android:ellipsize="end"
             android:layout_marginTop="5dp"

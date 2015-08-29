@@ -14,7 +14,7 @@ import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.InviteNewMemActivity;
-import cn.sdu.online.findteam.activity.MyTeamActivity;
+import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.adapter.TeamMemberListViewAdapter;
 import cn.sdu.online.findteam.mob.TeamMemberListItem;
 
@@ -35,7 +35,7 @@ public class TeamMemberFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        if (TeamMemberFragment.this.getActivity().equals(MyTeamActivity.mContext)) {
+        if (TeamMemberFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
             view = inflater.inflate(R.layout.myteam_member_layout, container, false);
             myTeamMemInit();
         } else {

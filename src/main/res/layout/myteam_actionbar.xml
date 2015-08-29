@@ -5,7 +5,7 @@
     android:background="@color/blue_color">
 
     <Button
-        android:id="@+id/singlecp_return_bt"
+        android:id="@+id/myteam_return_btn"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/singlecompetition_backbt_bg"
@@ -15,13 +15,24 @@
         android:layout_marginLeft="8dp"/>
 
     <TextView
-        android:id="@+id/singleGame_actionbar_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="优衣库服装设计大赛"
+        android:text="我的队伍"
         android:textSize="18sp"
         android:textColor="@color/white_color"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
+    <LinearLayout
+        android:id="@+id/myteam_addTeam_layout"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/chat_setting_plus"/>
+    </LinearLayout>
 </RelativeLayout>
