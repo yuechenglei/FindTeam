@@ -2,10 +2,12 @@ package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -69,7 +71,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         convertView = inflater.inflate(R.layout.myteam_listgroup_item, null);
         TextView groupTv = (TextView) convertView.findViewById(R.id.myteam_group_tv);
-        groupTv.setText(groupName[groupPosition]);
+        groupTv.setText(groupName[groupPosition] + " (" + listItems.get(groupPosition).size() + ")");
         return convertView;
     }
 
@@ -83,6 +85,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
             myViewHolder.parentName = (TextView) convertView.findViewById(R.id.myteam_parentName);
             myViewHolder.teamHeader = (RoundImageView) convertView.findViewById(R.id.myteam_teamHeader);
             myViewHolder.teamIntroduce = (TextView) convertView.findViewById(R.id.myteam_teamIntroduce);
+            myViewHolder.parentLayout = (LinearLayout) convertView.findViewById(R.id.myteam_parent_layout);
             convertView.setTag(myViewHolder);
         }
         else {
@@ -92,6 +95,20 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         myViewHolder.teamName.setText(listItems.get(groupPosition).get(childPosition).teamName);
         myViewHolder.teamHeader.setImageResource(listItems.get(groupPosition).get(childPosition).header);
         myViewHolder.parentName.setText(listItems.get(groupPosition).get(childPosition).parent);
+        switch (childPosition % 4){
+            case 0:
+                myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#f3a1ab"));
+                break;
+            case 1:
+                myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#f1e6a9"));
+                break;
+            case 2:
+                myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#91dacb"));
+                break;
+            case 3:
+                myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#9fc7fe"));
+                break;
+        }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +124,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         public TextView teamIntroduce;
         public RoundImageView teamHeader;
         public TextView parentName;
+        public LinearLayout parentLayout;
     }
 
     @Override

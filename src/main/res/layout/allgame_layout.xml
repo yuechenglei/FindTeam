@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/low_gray">
 
     <RelativeLayout
         android:id="@+id/allgame_relayout"
@@ -9,7 +10,7 @@
         android:layout_height="50dp"
         android:orientation="horizontal"
         android:layout_alignParentTop="true"
-        android:paddingLeft="20dp">
+        android:background="@color/grey_color">
 
         <TextView
             android:id="@+id/allgame_class"
@@ -18,6 +19,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:text="分类"
+            android:layout_marginLeft="20dp"
             android:textColor="#000000"
             android:textSize="19sp" />
 

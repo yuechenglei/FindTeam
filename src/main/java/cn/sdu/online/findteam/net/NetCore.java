@@ -52,6 +52,8 @@ public class NetCore {
     public final static String getGamesTeam = ServerAddr + "team/listByCategory";
     // 列出某用户的队伍
     public final static String getUserTeam = ServerAddr + "team/listByUser";
+    // 加入队伍
+    public final static String joinTeam = ServerAddr + "team/join";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -174,7 +176,7 @@ public class NetCore {
      * 从网络获取结果数据
      */
     public String getResultFromNet(String url, List<NameValuePair> params)
-            throws ClientProtocolException, IOException {
+            throws IOException {
         HttpPost httpRequest = new HttpPost(url);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -335,6 +337,33 @@ public class NetCore {
         params.add(new BasicNameValuePair("user.id", userID + ""));
 
         HttpPost httpRequest = new HttpPost(getUserTeam);
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
+
+    public String joinTeam(String teamID) throws IOException {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("team.id", teamID));
+        HttpPost httpRequest = new HttpPost(joinTeam);
+        jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
+        Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
+        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+        List<Cookie> cookies = new ArrayList<Cookie>();
+        cookies.add(cookie);
+        cookieSpecBase.formatCookies(cookies);
+        httpRequest.setHeader(cookieSpecBase.formatCookies(cookies).get(0));
+
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
