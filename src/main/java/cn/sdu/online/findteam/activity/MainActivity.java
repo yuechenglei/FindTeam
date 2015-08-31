@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewStub;
 import android.widget.ActionMenuView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,6 +64,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private Long intentID;*/
     // 侧边栏用户名
     private TextView tv_text, tv_id;
+    EditText search_edit;
 
     MainFragment mainFragment;
     BuildTeamFragment buildTeamFragment;
@@ -146,13 +148,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         fragmentList.add(buildTeamFragment);
         fragmentList.add(fragmentSetting);
 
-        if (null != savedInstanceState){
+        if (null != savedInstanceState) {
             fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
                     .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
                     .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
                     .add(R.id.container, fragmentList.get(FRAGMENT_SETTING)).commitAllowingStateLoss();
-        }
-        else {
+        } else {
             fragmentManager.beginTransaction().replace(R.id.container, fragmentList.get(MAIN_FRAGMENT))
                     .add(R.id.container, fragmentList.get(ALLGAMES_FRAGMENT))
                     .add(R.id.container, fragmentList.get(BUILDTEAM_FRAGMENT))
@@ -284,6 +285,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Button bt_head = (Button) this.findViewById(R.id.bt_head);
         bt_head.setBackgroundResource(R.drawable.head_moren);
 
+        search_edit = (EditText) findViewById(R.id.main_searchtext);
         searchButton = (Button) findViewById(R.id.search_button);
         actionsearch = (Button) view_actionbar.findViewById(R.id.mian_action_search);
         actionsearch.setOnClickListener(this);
@@ -439,6 +441,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 } else {
                     searchLayout.setVisibility(View.GONE);
                     acState = true;
+                }
+                break;
+
+            case R.id.search_button:
+                if (search_edit.getText().toString().trim().length() != 0) {
+                    if (!mainFragment.isHidden()) {
+                        String str = search_edit.getText().toString();
+                        CharSequence constraint = str.subSequence(0, str.length());
+                        mainFragment.setFilter(constraint);
+                    } else if (!allGamesFragment.isHidden()) {
+                        String str = search_edit.getText().toString();
+                        CharSequence constraint = str.subSequence(0, str.length());
+                        allGamesFragment.setFilter(constraint);
+                    }
                 }
                 break;
 

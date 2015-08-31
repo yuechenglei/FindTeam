@@ -91,20 +91,7 @@ public class MainFragment extends Fragment implements
             listView.setRefreshTime(MyApplication.getInstance().getSharedPreferences("mainfragment_refreshtime", Context.MODE_PRIVATE).
                     getString("refreshtime", ""));
             list = new ArrayList<MainListViewItem>();
-            adapter = new ListViewAdapter(getActivity(), list);
-            listView.setAdapter(adapter);
             myThread(0);
-/*            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    // TODO Auto-generated method stub
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity(), SingleCompetitionActivity.class);
-                    startActivity(intent);
-                }
-            });*/
         }
     }
 
@@ -183,6 +170,10 @@ public class MainFragment extends Fragment implements
                     AndTools.showToast(MainFragment.this.getActivity(), "加载失败");
                     listView.stopLoadMore();
                     break;
+
+                case 5: // 筛选数据
+
+                    break;
             }
         }
 
@@ -259,6 +250,13 @@ public class MainFragment extends Fragment implements
     // 刷新完成调用
     private void refreshFinish() throws JSONException {
         list.clear();
+        if (refreshData == null){
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            AndTools.showToast(MainFragment.this.getActivity(), "加载失败！");
+            return;
+        }
         for (int i = 0; i < refreshData.length(); i++) {
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
@@ -266,7 +264,8 @@ public class MainFragment extends Fragment implements
             String id = temp.getString("id");
             list.add(i, new MainListViewItem(name, description, id));
         }
-        adapter.notifyDataSetChanged();
+        adapter = new ListViewAdapter(getActivity(), list);
+        listView.setAdapter(adapter);
         MyApplication.getInstance().getSharedPreferences("mainfragment_refreshtime", Context.MODE_PRIVATE).edit()
                 .putString("refreshtime", Time.getDate()).apply();
         listView.stopRefresh("mainfragment_refreshtime");
@@ -278,7 +277,6 @@ public class MainFragment extends Fragment implements
     // 加载更多调用
     private void loadMore() {
         try {
-            loadPageNum = loadPageNum + 1;
             String jsonData = new NetCore().pullRefreshGamesData(NetCore.getGamesAddr,
                     loadPageNum, 10);
             if (jsonData != null && !jsonData.equals("")) {
@@ -298,6 +296,14 @@ public class MainFragment extends Fragment implements
 
     // 加载完成调用
     private void loadFinish() throws JSONException {
+        if (refreshData == null){
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            AndTools.showToast(MainFragment.this.getActivity(), "加载失败！");
+            return;
+        }
+
         if (refreshData.length() == 0){
             handler.sendEmptyMessage(3);
             return;
@@ -310,6 +316,11 @@ public class MainFragment extends Fragment implements
             list.add(list.size(), new MainListViewItem(name, description, id));
         }
         adapter.notifyDataSetChanged();
+        loadPageNum = loadPageNum + 1;
         listView.stopLoadMore();
+    }
+
+    public void setFilter(CharSequence charSequence){
+        adapter.getFilter().filter(charSequence);
     }
 }

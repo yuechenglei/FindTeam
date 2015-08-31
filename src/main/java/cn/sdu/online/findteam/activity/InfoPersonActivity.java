@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.DrawableRes;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -411,6 +413,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         changeHeader.setHeaderImgAlbum();
+                        relativeLayout.setBackground(new BitmapDrawable(head.getBmp()));
                         break;
                 }
                 break;
@@ -432,6 +435,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 switch (resultCode) {
                     case Activity.RESULT_OK:
                         changeHeader.setHeaderImgCamera(data);
+                        relativeLayout.setBackground(new BitmapDrawable(head.getBmp()));
                         break;
                     case Activity.RESULT_CANCELED:
                         break;

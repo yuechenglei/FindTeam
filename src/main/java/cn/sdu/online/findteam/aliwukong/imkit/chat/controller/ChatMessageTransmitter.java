@@ -49,7 +49,7 @@ public class ChatMessageTransmitter extends Fragment {
     public static final int FACES_MODE = 3;
     private static int SELECT_ALBUM = 0; // 从相册选择图片
     private static int SELECT_CAMER = 1; // 用相机拍摄照片
-    private static String[] SELECT_ITEM = { "相册", "相机" };
+    private static String[] SELECT_ITEM = {"相册", "相机"};
     private View mFragmentView;
     private MessageBuilder mMessageBuilder;
     private Conversation mCurrentConeverstaion;
@@ -84,7 +84,6 @@ public class ChatMessageTransmitter extends Fragment {
     }
 
 
-
     private void initViews() {
         this.mInputAreaView = (LinearLayout) mFragmentView.findViewById(R.id.rl_input);
         this.load_camera = (ImageView) mFragmentView.findViewById(R.id.load_camera);
@@ -112,7 +111,7 @@ public class ChatMessageTransmitter extends Fragment {
                 toggleSendButtonStatus();
                 if (mCurrentMode != SEND_MODE && hasMessageContent()) {
                     switchToTextSendMode();
-                } else if(!hasMessageContent()) {
+                } else if (!hasMessageContent()) {
                     switchToVoiceSendMode();
                 }
             }
@@ -162,7 +161,6 @@ public class ChatMessageTransmitter extends Fragment {
                     Message message = mMessageBuilder.buildTextMessage(contString);
                     edtSendMsg.setText("");
                     message.sendTo(mCurrentConeverstaion, sendCallback);
-
                 }
             }
         });
@@ -181,7 +179,7 @@ public class ChatMessageTransmitter extends Fragment {
         initVoiceBtnListener();
     }
 
-    private void initVoiceBtnListener(){
+    private void initVoiceBtnListener() {
         //长按语音按键弹出录音控件
         btn_voice.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -221,12 +219,12 @@ public class ChatMessageTransmitter extends Fragment {
                 .setItems(SELECT_ITEM, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(SELECT_ALBUM == which){
+                        if (SELECT_ALBUM == which) {
                             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                             intent.addCategory(Intent.CATEGORY_OPENABLE);
                             intent.setType("image/*");
                             startActivityForResult(intent, SELECT_ALBUM);
-                        }else{
+                        } else {
                             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                             startActivityForResult(intent, SELECT_CAMER);
                         }
@@ -244,17 +242,17 @@ public class ChatMessageTransmitter extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Activity activity = getActivity();
-        if(resultCode == Activity.RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = activity.getContentResolver().query(uri, filePathColumn,null, null, null);
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = activity.getContentResolver().query(uri, filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String imgUrl = cursor.getString(columnIndex);
             cursor.close();
 
-            if(mMessageSender != null){
-                mMessageSender.sendAlbumImage(imgUrl,mCurrentConeverstaion,true);
+            if (mMessageSender != null) {
+                mMessageSender.sendAlbumImage(imgUrl, mCurrentConeverstaion, true);
             }
         }
     }
@@ -263,21 +261,21 @@ public class ChatMessageTransmitter extends Fragment {
         @Override
         public void onSuccess(Message message) {
 //            edtSendMsg.setText("");
-            if(onTransmitted!=null){
+            if (onTransmitted != null) {
                 onTransmitted.onSuccess(mChatMessageFactory.create(message));
             }
         }
 
         @Override
         public void onException(String s, String s2) {
-            if(onTransmitted!=null){
-                onTransmitted.onException(s,s2);
+            if (onTransmitted != null) {
+                onTransmitted.onException(s, s2);
             }
         }
 
         @Override
         public void onProgress(Message message, int i) {
-            if(onTransmitted!=null){
+            if (onTransmitted != null) {
                 onTransmitted.onProgress(mChatMessageFactory.create(message), i);
             }
         }

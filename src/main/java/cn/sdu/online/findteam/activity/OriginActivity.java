@@ -50,115 +50,36 @@ public class OriginActivity extends Activity {
                     startActivity(intent);
                     OriginActivity.this.finish();
                 } else {
-                    if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+                    if (!AuthService.getInstance().isLogin()) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("netError", "网络错误!");
+                        bundle.putString("fail", "未初始化聊天，请选择帐号登录");
                         Message message = new Message();
                         message.setData(bundle);
                         loginHandler.sendMessage(message);
                         intent = new Intent();
-                        intent.setClass(OriginActivity.this, StartActivity.class);
+                        intent.setClass(OriginActivity.this, LoginActivity.class);
                         startActivity(intent);
                         OriginActivity.this.finish();
                     } else {
-                        if (!AuthService.getInstance().isLogin()) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("fail", "未初始化聊天，请选择帐号登录");
-                            Message message = new Message();
-                            message.setData(bundle);
-                            loginHandler.sendMessage(message);
-                            intent = new Intent();
-                            intent.setClass(OriginActivity.this, LoginActivity.class);
-                            startActivity(intent);
-                            OriginActivity.this.finish();
-                        } else {
-                            Thread loginThread = new Thread(new LoginThread(loginName, loginPassword));
-                            loginThread.start();
+                        intent = new Intent();
+                        intent.setClass(OriginActivity.this, MainActivity.class);
+                        MyApplication.USER_OR_NOT = 1;
+                        startActivity(intent);
+                        OriginActivity.this.finish();
+                        if (StartActivity.startActivity != null) {
+                            StartActivity.startActivity.finish();
                         }
                     }
                 }
             }
         };
-        timer.schedule(timerTask, 1000);
-    }
-
-    class LoginThread implements Runnable {
-        String name, password;
-
-        public LoginThread(String name, String password) {
-            this.name = name;
-            this.password = password;
-        }
-
-        @Override
-        public void run() {
-            // TODO Auto-generated method stub
-            Bundle result = startLogin(name, password);
-            Message message = new Message();
-            message.setData(result);
-            loginHandler.sendMessage(message);
-        }
-
-    }
-
-
-    private Bundle startLogin(String name, String password) {
-        User user = new User();
-        user.setName(name);
-        user.setPassword(password);
-        String jsonResult = new NetCore().Login(user);
-
-        int codeResult = 404;
-        String messageResult = "";
-        try {
-            codeResult = new JSONObject(jsonResult).getInt("code");
-            messageResult = new JSONObject(jsonResult).getString("msg");
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        Bundle bundle = new Bundle();
-        bundle.putInt("code", codeResult);
-        bundle.putString("msg", messageResult);
-        return bundle;
+        timer.schedule(timerTask, 1200);
     }
 
     Handler loginHandler = new Handler() {
         public void handleMessage(Message message) {
             final Bundle bundle = message.getData();
-            if (bundle.getInt("code") == NetCore.LOGIN_ERROR) {
-                // 登录失败
-                Log.v("error", 0 + "");
-                Toast.makeText(OriginActivity.this,
-                        bundle.getString("msg"), Toast.LENGTH_SHORT)
-                        .show();
-                intent = new Intent();
-                intent.setClass(OriginActivity.this, StartActivity.class);
-                startActivity(intent);
-                OriginActivity.this.finish();
-            } else if (bundle.getInt("code") > NetCore.LOGIN_ERROR) {
-                // 登录成功
-                if (bundle.getString("msg").trim().length() == 0) {
-                    Toast.makeText(OriginActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
-                    intent = new Intent();
-                    intent.setClass(OriginActivity.this, StartActivity.class);
-                    startActivity(intent);
-                    OriginActivity.this.finish();
-                    return;
-                }
-
-                intent = new Intent();
-                intent.setClass(OriginActivity.this, MainActivity.class);
-/*                intent.putExtra("loginIdentity", "<##用户##>" + loginName);
-                intent.putExtra("loginID", loginID);*/
-                MyApplication.USER_OR_NOT = 1;
-                AndTools.showToast(OriginActivity.this, "登陆成功");
-                startActivity(intent);
-                OriginActivity.this.finish();
-                if (StartActivity.startActivity != null) {
-                    StartActivity.startActivity.finish();
-                }
-            } else if (bundle.getString("fail") != null) {
+            if (bundle.getString("fail") != null) {
                 Toast.makeText(OriginActivity.this, bundle.getString("fail"), Toast.LENGTH_SHORT).show();
             } else if (bundle.getString("netError") != null) {
                 Toast.makeText(OriginActivity.this, bundle.getString("netError"), Toast.LENGTH_SHORT).show();

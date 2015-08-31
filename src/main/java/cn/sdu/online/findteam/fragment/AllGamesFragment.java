@@ -126,8 +126,6 @@ public class AllGamesFragment extends Fragment implements
         listView.setRefreshTime(MyApplication.getInstance().getSharedPreferences("allgamesfragment_refreshtime", Context.MODE_PRIVATE).
                 getString("refreshtime", ""));
         list = new ArrayList<MainListViewItem>();
-        adapter = new ListViewAdapter(getActivity(), list);
-        listView.setAdapter(adapter);
         myThread(0);
 
         View popupView = AllGamesFragment.this.getActivity().
@@ -289,6 +287,13 @@ public class AllGamesFragment extends Fragment implements
     // 刷新完成调用
     private void refreshFinish() throws JSONException {
         list.clear();
+        if (refreshData == null){
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            AndTools.showToast(AllGamesFragment.this.getActivity(), "加载失败！");
+            return;
+        }
         for (int i = 0; i < refreshData.length(); i++) {
             JSONObject temp = (JSONObject) refreshData.get(i);
             String name = temp.getString("name");
@@ -296,7 +301,8 @@ public class AllGamesFragment extends Fragment implements
             String id = temp.getString("id");
             list.add(i, new MainListViewItem(name, description, id));
         }
-        adapter.notifyDataSetChanged();
+        adapter = new ListViewAdapter(getActivity(), list);
+        listView.setAdapter(adapter);
         MyApplication.getInstance().getSharedPreferences("allgamesfragment_refreshtime", Context.MODE_PRIVATE).edit()
                 .putString("refreshtime", Time.getDate()).apply();
         listView.stopRefresh("allgamesfragment_refreshtime");
@@ -308,7 +314,6 @@ public class AllGamesFragment extends Fragment implements
     // 加载更多调用
     private void loadMore() {
         try {
-            loadPageNum = loadPageNum + 1;
             String jsonData = new NetCore().pullRefreshGamesData(NetCore.getGamesAddr,
                     loadPageNum, 10);
             if (jsonData != null && !jsonData.equals("")) {
@@ -328,6 +333,14 @@ public class AllGamesFragment extends Fragment implements
 
     // 加载完成调用
     private void loadFinish() throws JSONException {
+        if (refreshData == null){
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            AndTools.showToast(AllGamesFragment.this.getActivity(), "加载失败！");
+            return;
+        }
+
         if (refreshData.length() == 0){
             handler.sendEmptyMessage(3);
             return;
@@ -340,6 +353,11 @@ public class AllGamesFragment extends Fragment implements
             list.add(list.size(), new MainListViewItem(name, description,id));
         }
         adapter.notifyDataSetChanged();
+        loadPageNum = loadPageNum + 1;
         listView.stopLoadMore();
+    }
+
+    public void setFilter(CharSequence charSequence){
+        adapter.getFilter().filter(charSequence);
     }
 }

@@ -2,13 +2,17 @@ package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
@@ -19,7 +23,9 @@ import cn.sdu.online.findteam.mob.MainListViewItem;
 
 public class ListViewAdapter extends BaseAdapter {
     Context mContext;
-    private List<MainListViewItem> mlist;
+    List<MainListViewItem> mlist;
+    List<MainListViewItem> mFilterlist;
+    NameFilter mNameFilter;
 
     public ListViewAdapter(Context context, List<MainListViewItem> list) {
         mContext = context;
@@ -85,4 +91,39 @@ public class ListViewAdapter extends BaseAdapter {
         TextView content;
         View view;
     }
+
+    public Filter getFilter() {
+        if (mNameFilter == null) {
+            mNameFilter = new NameFilter();
+        }
+        return mNameFilter;
+    }
+
+    //过滤数据
+    class NameFilter extends Filter {
+        //执行筛选
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            FilterResults filterResults = new FilterResults();
+            mFilterlist = new ArrayList<>();
+            for (int i = 0;i<mlist.size();i++) {
+                String name = mlist.get(i).name;
+                if (name.contains(charSequence) || charSequence.equals("")) {
+                    mFilterlist.add(mlist.get(i));
+                }
+            }
+            filterResults.values = mFilterlist;
+            return filterResults;
+        }
+
+        //筛选结果
+        @Override
+        protected void publishResults(CharSequence arg0, FilterResults results) {
+            mlist = (List<MainListViewItem>) results.values;
+            if (results.count > 0) {
+                notifyDataSetChanged();
+            } else {
+                notifyDataSetInvalidated();
+            }
+        }}
 }

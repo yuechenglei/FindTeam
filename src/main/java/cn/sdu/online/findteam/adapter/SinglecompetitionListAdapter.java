@@ -106,6 +106,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                             Message message = new Message();
                             message.setData(bundle);
                             loadteamHander.sendMessage(message);
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
