@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -24,32 +26,46 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.logging.LogRecord;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MainActivity;
+import cn.sdu.online.findteam.entity.User;
+import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.RoundImageView;
 import cn.sdu.online.findteam.resource.SwitchButton;
 import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 
 
 public class BuildTeamFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
-    public TextView bt_confirm;
+    public Button bt_confirm;
     public EditText text_teamname, text_introduction;
     public Button bt_changehead;
-    private Spinner spinner_number, spinner_year, spinner_month, spinner_day;
+    private Spinner spinner_number, spinner_year, spinner_month, spinner_day, spinner_parent, spinner_games;
     private final String[] number = {"请选择", "3", "4", "5", "6", "7", "8", "9", "10"};
+
     private final String[] year = {"年", "2015", "2016", "2017", "2018"};
     private final String[] month = {"月", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private final String[] day = {"日", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-    private ArrayAdapter<String> adapter_number, adapter_year, adapter_month, adapter_day;
+    private String[] parent = {"选择分类", "english"};
+    private String[] parentID = {"-1", "1"};
+    private String[] games = {"选择比赛", "CET6", "CET4"};
+    private String[] gamesID = {"-1", "2", "3"};
 
     private View view;
 
@@ -64,6 +80,8 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     public static final int CAMERA_REQUEST = 1002;
     public static final int CAMERA_CUT_REQUEST = 1003;
 
+    private Boolean logVisible, verify;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,46 +91,28 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.buildteam_layout, null);
 
-        initView();
+        init();
         return view;
     }
 
-    private void initView() {
+    private void init() {
+        logVisible = false;
+        verify = false;
+
         headerImg = (RoundImageView) view.findViewById(R.id.buildteam_head_img);
         text_teamname = (EditText) view.findViewById(R.id.text_teamname);
         text_introduction = (EditText) view.findViewById(R.id.text_introduction);
         bt_changehead = (Button) view.findViewById(R.id.bt_changehead);
         bt_changehead.setOnClickListener(this);
-        bt_confirm = (TextView) view.findViewById(R.id.bt_confirm);
+        bt_confirm = (Button) view.findViewById(R.id.bt_confirm);
         bt_confirm.setOnClickListener(this);
 
-        spinner_number = (Spinner) view.findViewById(R.id.spinnernumber);
-        adapter_number = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, number);
-        adapter_number.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_number.setAdapter(adapter_number);
-        spinner_number.setOnItemSelectedListener(new SpinnerSelectedListener_number());
-        spinner_number.setVisibility(View.VISIBLE);
-
-        spinner_year = (Spinner) view.findViewById(R.id.spinneryear);
-        adapter_year = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, year);
-        adapter_year.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_year.setAdapter(adapter_year);
-        spinner_year.setOnItemSelectedListener(new SpinnerSelectedListener_year());
-        spinner_year.setVisibility(View.VISIBLE);
-
-        spinner_month = (Spinner) view.findViewById(R.id.spinnermonth);
-        adapter_month = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, month);
-        adapter_month.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_month.setAdapter(adapter_month);
-        spinner_month.setOnItemSelectedListener(new SpinnerSelectedListener_month());
-        spinner_month.setVisibility(View.VISIBLE);
-
-        spinner_day = (Spinner) view.findViewById(R.id.spinnerday);
-        adapter_day = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, day);
-        adapter_day.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_day.setAdapter(adapter_day);
-        spinner_day.setOnItemSelectedListener(new SpinnerSelectedListener_day());
-        spinner_day.setVisibility(View.VISIBLE);
+        spinner_number = initSpinner(R.id.spinnernumber, number);
+        spinner_year = initSpinner(R.id.spinneryear, year);
+        spinner_month = initSpinner(R.id.spinnermonth, month);
+        spinner_day = initSpinner(R.id.spinnerday, day);
+        spinner_games = initSpinner(R.id.spinner_games, games, gamesID);
+        spinner_parent = initSpinner(R.id.spinner_parent, parent, parentID);
 
         switchButton1 = (SwitchButton) view.findViewById(R.id.switch_test);
         switchButton2 = (SwitchButton) view.findViewById(R.id.switch_see);
@@ -125,53 +125,64 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         switchButton3.setOnCheckedChangeListener(this);
     }
 
+    private Spinner initSpinner(int id, String[] content) {
+        Spinner spinner = (Spinner) view.findViewById(id);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, content);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new SpinnerSelectedListener(spinner, content));
+        return spinner;
+    }
+
+    private Spinner initSpinner(int id, String[] content, String[] contentID) {
+        Spinner spinner = (Spinner) view.findViewById(id);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, content);
+        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(new SpinnerSelectedListener(spinner, content, contentID));
+        return spinner;
+    }
+
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked == false) {
-            Toast.makeText(BuildTeamFragment.this.getActivity(),
-                    "您关闭了我", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(BuildTeamFragment.this.getActivity(),
-                    "您打开了我", Toast.LENGTH_SHORT).show();
-        }
+/*        switch (buttonView.getId()){
+            case R.id.switch_test:
+                if (!isChecked) {
+                    verify = false;
+                } else {
+                    verify = true;
+                }
+        }*/
+
     }
 
-    class SpinnerSelectedListener_number implements AdapterView.OnItemSelectedListener {
+    class SpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
+        Spinner spinner;
+        String[] content;
+        String[] contentID;
+
+        public SpinnerSelectedListener(Spinner spinners, String[] content) {
+            this.spinner = spinners;
+            this.content = content;
+        }
+
+        public SpinnerSelectedListener(Spinner spinners, String[] content, String[] contentID) {
+            this.spinner = spinners;
+            this.content = content;
+            this.contentID = contentID;
+        }
+
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            spinner_number.setTag(number[arg2]);
+            if (contentID != null) {
+                spinner.setTag(contentID[arg2]);
+            } else {
+                spinner.setTag(content[arg2]);
+            }
         }
 
         public void onNothingSelected(AdapterView<?> arg0) {
         }
     }
-
-    class SpinnerSelectedListener_year implements AdapterView.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            spinner_year.setTag(year[arg2]);
-        }
-
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    }
-
-    class SpinnerSelectedListener_month implements AdapterView.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            spinner_month.setTag(month[arg2]);
-        }
-
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    }
-
-    class SpinnerSelectedListener_day implements AdapterView.OnItemSelectedListener {
-        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-            spinner_day.setTag(day[arg2]);
-        }
-
-        public void onNothingSelected(AdapterView<?> arg0) {
-        }
-    }
-
 
     @Override
     public void onClick(View view) {
@@ -197,12 +208,132 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
                         }).show();
                 break;
             }
-            case R.id.bt_confirm: {
 
+            case R.id.bt_confirm: {
+                checkError();
+                String teamName = text_teamname.getText().toString();
+                String maxNum = (String) spinner_number.getTag();
+                String teamEndTime = (String)spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
+                String teamIntroduce = text_introduction.getText().toString();
+                String teamCategoryID = (String) spinner_games.getTag();
+                String logVisible = switchButton2.isChecked() + "";
+                String teamVerify = switchButton1.isChecked() + "";
+
+                new Thread(new BuildTeamRunnable(teamName, maxNum,
+                            teamEndTime, teamIntroduce,
+                            teamCategoryID, logVisible,
+                            teamVerify)).start();
                 break;
             }
         }
     }
+
+    private void checkError(){
+        if (text_teamname.getText().toString().trim().length() == 0){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍名不能为空！");
+            return;
+        }
+        else if (spinner_number.getTag().equals("请选择")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍人数不能为空！");
+            return;
+        }
+        else if (text_introduction.getText().toString().trim().length() == 0){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍简介不能为空！");
+            return;
+        }
+        else if (spinner_parent.getTag().equals("-1")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属分类不能为空！");
+            return;
+        }
+        else if (spinner_games.getTag().equals("-1")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属比赛不能为空！");
+            return;
+        }
+        else if (spinner_year.getTag().equals("年")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "年份不能为空！");
+            return;
+        }
+        else if (spinner_month.getTag().equals("月")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "月份不能为空！");
+            return;
+        }
+        else if (spinner_day.getTag().equals("日")){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "日期不能为空！");
+            return;
+        }
+        else if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+            AndTools.showToast(BuildTeamFragment.this.getActivity(), "网络错误！");
+            return;
+        }
+    }
+
+    class BuildTeamRunnable implements Runnable{
+        User user;
+
+        public BuildTeamRunnable(String teamName,
+                                 // 团队最大人数， 团队截至时间
+                                 String teamNum, String teamEndTime,
+                                 // 团队介绍， 团队分类ID
+                                 String teamIntroduce, String teamCategoryID,
+                                 // 日志是否可见， 是否需要审核
+                                 String logVisible, String teamVerify){
+            user = new User();
+            user.setTeamName(teamName);
+            user.setTeamCategoryID(teamCategoryID);
+            user.setTeamEndTime(teamEndTime);
+            user.setTeamIntroduce(teamIntroduce);
+            user.setTeamNum(teamNum);
+            user.setTeamVerify(teamVerify);
+            user.setLogVisible(logVisible);
+        }
+        @Override
+        public void run() {
+            try {
+                String jsonData = new NetCore().buildTeam(user);
+                Bundle bundle = new Bundle();
+                Message message = new Message();
+                if (jsonData == null){
+                    bundle.putInt("code", 1);
+                    message.setData(bundle);
+                    buildTeamHandler.sendMessage(message);
+                }
+                JSONObject jsonObject = new JSONObject(jsonData);
+                int code = jsonObject.getInt("code");
+                String msg = jsonObject.getString("msg");
+                bundle.putInt("code", code);
+                bundle.putString("msg", msg);
+                message.setData(bundle);
+                buildTeamHandler.sendMessage(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    Handler buildTeamHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            switch (bundle.getInt("code")){
+                case 1:
+                    AndTools.showToast(BuildTeamFragment.this.getActivity(), "创建失败！");
+                    break;
+
+                case 0:
+                    AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
+                    MainActivity.mainActivity.getSupportFragmentManager().beginTransaction().remove(MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).commit();
+                    MainActivity.mainActivity.getList().remove(MainActivity.BUILDTEAM_FRAGMENT);
+                    MainActivity.mainActivity.getList().add(MainActivity.BUILDTEAM_FRAGMENT, new BuildTeamFragment());
+                    MainActivity.mainActivity.getSupportFragmentManager().beginTransaction().add(R.id.container, MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).
+                            show(MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).commit();
+                default:
+                    AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
+                    break;
+            }
+        }
+    };
 
     // 调用系统相册，选择并调用裁切，并储存路径
     public void chooseAlbum() {
@@ -256,8 +387,8 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss", Locale.CHINESE); // 时间字符串格式
         // 团队头像名称是时间 + team + 创建人名字
         headerImgname = format.format(date) + "team" +
-            MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
-                getString("loginName", "");
+                MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).
+                        getString("loginName", "");
         MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).edit().
                 putString("headerImg", headerImgname).apply();
         File tempFile = new File(photo_path + "/" + headerImgname + ".jpg");

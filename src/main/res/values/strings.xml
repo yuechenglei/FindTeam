@@ -221,4 +221,7 @@
     <string name="add_new_member_error">添加会话成员失败</string>
     <string name="start_recording">开始录音</string>
     <string name="quiting">退群中...</string>
+
+    <string name="choose_parent">选择分类</string>
+    <string name="choose_games">选择比赛</string>
 </resources>

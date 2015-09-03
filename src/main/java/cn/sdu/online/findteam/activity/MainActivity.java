@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     BuildTeamFragment buildTeamFragment;
     FragmentSetting fragmentSetting;
     AllGamesFragment allGamesFragment;
-    private List<Fragment> fragmentList;
+    public List<Fragment> fragmentList;
 
     public final static int MAIN_FRAGMENT = 0;
     public final static int ALLGAMES_FRAGMENT = 1;
@@ -180,6 +180,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     .hide(fragmentList.get(BUILDTEAM_FRAGMENT))
                     .hide(fragmentList.get(MAIN_FRAGMENT)).commit();
         }
+    }
+
+    public ArrayList<Fragment> getList(){
+        return (ArrayList<Fragment>) fragmentList;
     }
 
     void initMDrawer() {

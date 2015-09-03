@@ -233,9 +233,7 @@
                     android:layout_height="wrap_content"
                     android:background="@color/white_color"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingBottom="20dp"
-                    android:paddingTop="20dp">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:id="@+id/choose"
@@ -250,6 +248,8 @@
                     <View
                         android:layout_width="2dp"
                         android:layout_height="28dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp"
                         android:background="@color/textcolor_gray" />
 
                     <LinearLayout
@@ -260,24 +260,23 @@
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <EditText
-                            android:id="@+id/text_choose1"
+                        <Spinner
+                            android:id="@+id/spinner_parent"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="35dp"
+                            android:layout_marginRight="15dp"
                             android:layout_weight="1"
                             android:background="@drawable/frame_black"
-                            android:paddingLeft="5dp"
-                            android:textSize="16sp" />
+                            android:gravity="center"/>
 
-                        <EditText
-                            android:id="@+id/text_choose2"
+                        <Spinner
+                            android:id="@+id/spinner_games"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="5dp"
+                            android:layout_height="35dp"
                             android:layout_weight="1"
+                            android:layout_marginLeft="5dp"
                             android:background="@drawable/frame_black"
-                            android:paddingLeft="5dp"
-                            android:textSize="16sp" />
+                            android:gravity="center" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -329,8 +328,7 @@
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="20dp"
                         android:background="@drawable/frame_black"
-                        android:gravity="center"
-                        android:paddingLeft="5dp" />
+                        android:gravity="center"/>
 
                     <Spinner
                         android:id="@+id/spinnermonth"
@@ -338,8 +336,7 @@
                         android:layout_height="35dp"
                         android:layout_marginRight="20dp"
                         android:background="@drawable/frame_black"
-                        android:gravity="center"
-                        android:paddingLeft="5dp" />
+                        android:gravity="center"/>
 
                     <Spinner
                         android:id="@+id/spinnerday"
@@ -347,8 +344,7 @@
                         android:layout_height="35dp"
                         android:layout_marginRight="15dp"
                         android:background="@drawable/frame_black"
-                        android:gravity="center"
-                        android:paddingLeft="5dp" />
+                        android:gravity="center"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -501,12 +497,11 @@
                 android:layout_height="15dp"
                 android:background="@color/white_color" />
 
-            <TextView
+            <Button
                 android:id="@+id/bt_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/simplecompetition_button_bg"
-                android:clickable="true"
                 android:gravity="center"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"

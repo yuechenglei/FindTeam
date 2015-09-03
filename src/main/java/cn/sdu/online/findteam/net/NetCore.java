@@ -49,11 +49,13 @@ public class NetCore {
     // 获取比赛信息
     public final static String getGamesAddr = ServerAddr + "category/listGame";
     // 获取某个比赛下的队伍
-    public final static String getGamesTeam = ServerAddr + "team/listByCategory";
+    public final static String getGamesTeamAddr = ServerAddr + "team/listByCategory";
     // 列出某用户的队伍
-    public final static String getUserTeam = ServerAddr + "team/listByUser";
+    public final static String getUserTeamAddr = ServerAddr + "team/listByUser";
     // 加入队伍
-    public final static String joinTeam = ServerAddr + "team/join";
+    public final static String joinTeamAddr = ServerAddr + "team/join";
+    // 创建队伍
+    public final static String buildTeamAddr = ServerAddr + "team/create";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -316,7 +318,7 @@ public class NetCore {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("category.id", gameID + ""));
 
-        HttpPost httpRequest = new HttpPost(getGamesTeam);
+        HttpPost httpRequest = new HttpPost(getGamesTeamAddr);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
@@ -336,7 +338,7 @@ public class NetCore {
         List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
         params.add(new BasicNameValuePair("user.id", userID + ""));
 
-        HttpPost httpRequest = new HttpPost(getUserTeam);
+        HttpPost httpRequest = new HttpPost(getUserTeamAddr);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);
@@ -355,7 +357,41 @@ public class NetCore {
     public String joinTeam(String teamID) throws IOException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("team.id", teamID));
-        HttpPost httpRequest = new HttpPost(joinTeam);
+        HttpPost httpRequest = new HttpPost(joinTeamAddr);
+        jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
+        Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
+        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+        List<Cookie> cookies = new ArrayList<Cookie>();
+        cookies.add(cookie);
+        cookieSpecBase.formatCookies(cookies);
+        httpRequest.setHeader(cookieSpecBase.formatCookies(cookies).get(0));
+
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            InputStream is = httpResponse.getEntity().getContent();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonData += line + "\r\n";
+            }
+        }
+        return jsonData;
+    }
+
+    public String buildTeam(User user) throws IOException {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("teamInfo.name", user.getTeamName()));
+        params.add(new BasicNameValuePair("teamInfo.num", user.getTeamNum()));
+        params.add(new BasicNameValuePair("teamInfo.endTime",  user.getTeamEndTime()));
+        params.add(new BasicNameValuePair("teamInfo.introduce", user.getTeamIntroduce()));
+        params.add(new BasicNameValuePair("teamInfo.categoryId", user.getTeamCategoryID()));
+        params.add(new BasicNameValuePair("teamInfo.logVisible", user.getLogVisible()));
+        params.add(new BasicNameValuePair("teamInfo.verify", user.getTeamVerify()));
+
+        HttpPost httpRequest = new HttpPost(buildTeamAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
         Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
         CookieSpecBase cookieSpecBase = new BrowserCompatSpec();

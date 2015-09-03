@@ -12,8 +12,14 @@ public class User implements Serializable{
             contact, introduce,
             // 学校学院，家庭住址
             school, address,
-            // 性别
-            sex;
+            // 性别, 队伍名
+            sex, teamName,
+            // 团队最大人数， 团队截至时间
+            teamNum, teamEndTime,
+            // 团队介绍， 团队分类ID
+            teamIntroduce, teamCategoryID,
+            // 日志是否可见， 是否需要审核
+            logVisible, teamVerify;
     private Long ID;
 
     public String getName(){
@@ -94,5 +100,47 @@ public class User implements Serializable{
 
     public String getSex(){
         return sex;
+    }
+
+    public String getTeamName(){return teamName;}
+
+    public void setTeamName(String teamName){
+        this.teamName = teamName;
+    }
+
+    public void setTeamNum(String teamNum){
+        this.teamNum = teamNum;
+    }
+
+    public String getTeamNum(){return teamNum;}
+
+    public String getTeamEndTime(){return teamEndTime;}
+
+    public void setTeamEndTime(String teamEndTime){
+        this.teamEndTime = teamEndTime;
+    }
+
+    public String getTeamIntroduce(){return teamIntroduce;}
+
+    public void setTeamIntroduce(String teamIntroduce){
+        this.teamIntroduce = teamIntroduce;
+    }
+
+    public String getTeamCategoryID(){return teamCategoryID;}
+
+    public void setTeamCategoryID(String teamCategoryID){
+        this.teamCategoryID = teamCategoryID;
+    }
+
+    public String getLogVisible(){return logVisible;}
+
+    public void setLogVisible(String logVisible){
+        this.logVisible = logVisible;
+    }
+
+    public String getTeamVerify(){return teamVerify;}
+
+    public void setTeamVerify(String teamVerify){
+        this.teamVerify = teamVerify;
     }
 }

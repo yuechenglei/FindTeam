@@ -126,6 +126,8 @@ public class AllGamesFragment extends Fragment implements
         listView.setRefreshTime(MyApplication.getInstance().getSharedPreferences("allgamesfragment_refreshtime", Context.MODE_PRIVATE).
                 getString("refreshtime", ""));
         list = new ArrayList<MainListViewItem>();
+        adapter = new ListViewAdapter(getActivity(), list);
+        listView.setAdapter(adapter);
         myThread(0);
 
         View popupView = AllGamesFragment.this.getActivity().
@@ -219,12 +221,14 @@ public class AllGamesFragment extends Fragment implements
                 // 加载没有更多数据
                 case 3:
                     AndTools.showToast(AllGamesFragment.this.getActivity(), "没有更多的数据了");
+                    loadPageNum = loadPageNum - 1;
                     listView.stopLoadMore();
                     break;
 
                 // 加载获取数据错误
                 case 4:
                     AndTools.showToast(AllGamesFragment.this.getActivity(), "加载失败");
+                    loadPageNum = loadPageNum - 1;
                     listView.stopLoadMore();
                     break;
             }
@@ -314,6 +318,7 @@ public class AllGamesFragment extends Fragment implements
     // 加载更多调用
     private void loadMore() {
         try {
+            loadPageNum = loadPageNum + 1;
             String jsonData = new NetCore().pullRefreshGamesData(NetCore.getGamesAddr,
                     loadPageNum, 10);
             if (jsonData != null && !jsonData.equals("")) {
@@ -353,7 +358,6 @@ public class AllGamesFragment extends Fragment implements
             list.add(list.size(), new MainListViewItem(name, description,id));
         }
         adapter.notifyDataSetChanged();
-        loadPageNum = loadPageNum + 1;
         listView.stopLoadMore();
     }
 
