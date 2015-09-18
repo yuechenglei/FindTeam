@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
@@ -15,6 +16,9 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.auth.ALoginParam;
 import com.alibaba.wukong.auth.AuthInfo;
 import com.alibaba.wukong.auth.AuthService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.UserService;
+import com.alibaba.wukong.im.utils.Utils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -103,6 +107,10 @@ public class OriginActivity extends Activity {
                 // 登录成功
                 if (bundle.getString("msg").trim().length() == 0) {
                     Toast.makeText(OriginActivity.this, "网络错误！", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setClass(OriginActivity.this, StartActivity.class);
+                    startActivity(intent);
+                    OriginActivity.this.finish();
                     return;
                 }
                 DemoUtil.getExecutor().execute(new Runnable() {
@@ -160,7 +168,23 @@ public class OriginActivity extends Activity {
             @Override
             public void onSuccess(AuthInfo authInfo) {
                 AuthService.getInstance().setNickname(nickname);
+                UserService userService = IMEngine.getIMService(UserService.class);
+                userService.updateNickname(new Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
 
+                    }
+
+                    @Override
+                    public void onException(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void onProgress(Void aVoid, int i) {
+
+                    }
+                }, nickname);
                 Intent intent = new Intent();
                 intent.setClass(OriginActivity.this, MainActivity.class);
 /*                intent.putExtra("loginIdentity", "<##用户##>" + myUser.getName());
@@ -176,6 +200,7 @@ public class OriginActivity extends Activity {
                 AndTools.showToast(OriginActivity.this, "登录失败" + "  " + reason);
                 Intent intent = new Intent();
                 intent.setClass(OriginActivity.this, StartActivity.class);
+                startActivity(intent);
                 OriginActivity.this.finish();
             }
 

@@ -47,7 +47,6 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
         notifyDataSetChanged();
     }
 
-
     @Override
     public int getCount() {
         return mList == null ? 0 : mList.size();

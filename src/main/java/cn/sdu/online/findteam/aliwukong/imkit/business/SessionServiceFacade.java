@@ -39,7 +39,7 @@ public class SessionServiceFacade {
     @Inject
     UserService mUserService;
 
-    public SessionServiceFacade(){
+    public SessionServiceFacade() {
         this.mConversationService = IMEngine.getIMService(ConversationService.class);
         this.mChatMessageFactory = new ChatMessageFactory();
         this.mUserService = IMEngine.getIMService(UserService.class);
@@ -156,7 +156,6 @@ public class SessionServiceFacade {
                 }
             }
         });
-        Log.v("ididididididd", "onRemoved "+SessionServiceFacade.mCurrentConversationId);
         return this;
     }
 
@@ -175,7 +174,6 @@ public class SessionServiceFacade {
 
             }
         });
-        Log.v("ididididididd", "oncreate " + SessionServiceFacade.mCurrentConversationId);
         return this;
     }
 
@@ -221,7 +219,6 @@ public class SessionServiceFacade {
                 doActionForSessionList(list, action);
             }
         });
-        Log.v("ididididididd", "unreadcountchange " + SessionServiceFacade.mCurrentConversationId);
         return this;
     }
 
@@ -232,7 +229,6 @@ public class SessionServiceFacade {
                 doActionForSessionList(list, action);
             }
         });
-        Log.v("ididididididd", "contentchange " + SessionServiceFacade.mCurrentConversationId);
         return this;
     }
 
@@ -244,7 +240,6 @@ public class SessionServiceFacade {
                 doActionForSessionList(list, action);
             }
         });
-        Log.v("ididididididd", "topchange " + SessionServiceFacade.mCurrentConversationId);
         return this;
     }
 

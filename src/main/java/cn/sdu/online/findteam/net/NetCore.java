@@ -56,6 +56,10 @@ public class NetCore {
     public final static String joinTeamAddr = ServerAddr + "team/join";
     // 创建队伍
     public final static String buildTeamAddr = ServerAddr + "team/create";
+    // 获取单只队伍
+    public final static String getOneTeamAddr = ServerAddr + "team/getOneTeam";
+    // 通过openID获取个人信息
+    public final static String getopenIDInfoAddr = ServerAddr + "user/userInfoByOpenId";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -180,6 +184,28 @@ public class NetCore {
     public String getResultFromNet(String url, List<NameValuePair> params)
             throws IOException {
         HttpPost httpRequest = new HttpPost(url);
+        httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+        DefaultHttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpRequest);
+        String jsonData = "";
+        HttpEntity entity = httpResponse.getEntity();
+        if (entity != null) {
+            jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+        }
+        return jsonData;
+    }
+
+    public String getResultWithCookies(String url, List<NameValuePair> params)
+            throws IOException {
+        HttpPost httpRequest = new HttpPost(url);
+        jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
+        Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
+        CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
+        List<Cookie> cookies = new ArrayList<Cookie>();
+        cookies.add(cookie);
+        cookieSpecBase.formatCookies(cookies);
+        httpRequest.setHeader(cookieSpecBase.formatCookies(cookies).get(0));
+
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpRequest);

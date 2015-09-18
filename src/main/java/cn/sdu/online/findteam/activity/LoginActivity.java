@@ -204,6 +204,23 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(AuthInfo authInfo) {
                 AuthService.getInstance().setNickname(nickname);
+                UserService userService = IMEngine.getIMService(UserService.class);
+                userService.updateNickname(new Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+
+                    @Override
+                    public void onException(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void onProgress(Void aVoid, int i) {
+
+                    }
+                }, nickname);
                 editor.putString("loginName", myUser.getName()).apply();
                 editor.putString("loginPassword", myUser.getPassword()).apply();
 

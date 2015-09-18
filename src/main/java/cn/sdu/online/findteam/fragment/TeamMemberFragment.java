@@ -1,7 +1,10 @@
 package cn.sdu.online.findteam.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +27,10 @@ import cn.sdu.online.findteam.activity.InviteNewMemActivity;
 import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.adapter.TeamMemberListViewAdapter;
 import cn.sdu.online.findteam.mob.TeamMemberListItem;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 
 public class TeamMemberFragment extends Fragment {
 
@@ -24,7 +38,9 @@ public class TeamMemberFragment extends Fragment {
     private String[] name = new String[]{"大师兄", "二师弟", "沙师弟"};
     private List<TeamMemberListItem> listItems;
     private Button invitemem;
+    private TeamMemberListViewAdapter teamMemberListViewAdapter;
     private View view;
+    Dialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,27 +51,70 @@ public class TeamMemberFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        if (TeamMemberFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
-            view = inflater.inflate(R.layout.myteam_member_layout, container, false);
-            myTeamMemInit();
-        } else {
-            view = inflater.inflate(R.layout.other_teammem_layout, null);
-            otherTeanMemInit();
-        }
+        dialog = DialogDefine.createLoadingDialog(TeamMemberFragment.this.getActivity(),
+                "加载中...");
 
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+            AndTools.showToast(TeamMemberFragment.this.getActivity(), "当前网络不可用！");
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            view = inflater.inflate(R.layout.other_teaminformation_layout, null);
+            return view;
+        } else {
+            if (MyApplication.IDENTITY.equals("游客")) {
+                view = inflater.inflate(R.layout.other_teammem_layout, container, false);
+                otherTeanMemInit();
+            } else {
+                view = inflater.inflate(R.layout.myteam_member_layout, container, false);
+                myTeamMemInit();
+            }
+
+            final String teamID = TeamMemberFragment.this.getActivity().getIntent().
+                    getExtras().getString("teamID");
+            new Thread() {
+                @Override
+                public void run() {
+                    List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("team.id", teamID));
+                    try {
+                        String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
+                                params);
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        JSONArray memList = new JSONArray(jsonObject.getString("member"));
+                        for (int i = 0; i < memList.length(); i++) {
+                            JSONObject jsonObject1 = memList.getJSONObject(i);
+                            String name = jsonObject1.getString("userName");
+                            String introduce = jsonObject1.getString("introduce");
+                            listItems.add(new TeamMemberListItem(name, introduce, R.id.teammem_listview_headbmp));
+                        }
+                        loadMem.sendEmptyMessage(0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();
+        }
         return view;
     }
+
+    Handler loadMem = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            teamMemberListViewAdapter.notifyDataSetChanged();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+        }
+    };
 
     private void myTeamMemInit() {
         listView = (ListView) view.findViewById(R.id.teammem_listview);
         listItems = new ArrayList<>();
-        String introduction = "孙悟空是中国最著名的神话角色之一，出自四大古典名著之《西游记》。相传他由开天辟地以来的仙石孕育而生，因带领群猴进入水帘洞而成为众猴之王，号称为 “美猴王”。后来在西牛贺洲拜菩提祖师为师学艺，得名孙悟空，学会地煞七十二变、筋斗云等高超的法术。";
-
-        for (int i = 0; i < name.length; i++) {
-            listItems.add(new TeamMemberListItem(name[i], introduction, R.id.teammem_listview_headbmp));
-        }
-
-        TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
+        teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
         listView.setAdapter(teamMemberListViewAdapter);
 
         invitemem = (Button) view.findViewById(R.id.invite_new_member);
@@ -72,13 +131,7 @@ public class TeamMemberFragment extends Fragment {
     private void otherTeanMemInit() {
         listView = (ListView) view.findViewById(R.id.other_teammem_listview);
         listItems = new ArrayList<>();
-        String introduction = "孙悟空是中国最著名的神话角色之一，出自四大古典名著之《西游记》。相传他由开天辟地以来的仙石孕育而生，因带领群猴进入水帘洞而成为众猴之王，号称为 “美猴王”。后来在西牛贺洲拜菩提祖师为师学艺，得名孙悟空，学会地煞七十二变、筋斗云等高超的法术。";
-
-        for (int i = 0; i < name.length; i++) {
-            listItems.add(new TeamMemberListItem(name[i], introduction, R.id.teammem_listview_headbmp));
-        }
-
-        TeamMemberListViewAdapter teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
+        teamMemberListViewAdapter = new TeamMemberListViewAdapter(TeamMemberFragment.this.getActivity().getApplicationContext(), listItems);
 
         listView.setAdapter(teamMemberListViewAdapter);
     }

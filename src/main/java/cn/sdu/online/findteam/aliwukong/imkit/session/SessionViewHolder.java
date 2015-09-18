@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.aliwukong.imkit.session;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,7 @@ public class SessionViewHolder extends ViewHolder {
         builder.append(draft);
         ForegroundColorSpan span = new ForegroundColorSpan(DRAFT_COLOR);
         builder.setSpan(span, 0, 4, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Log.v("hehehehehehhehehe", builder+"");
         sessionContentTxt.setText(builder);
     }
 

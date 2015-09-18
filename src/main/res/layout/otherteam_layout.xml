@@ -44,6 +44,7 @@
             android:src="@drawable/otherteam_headtmp" />
 
         <TextView
+            android:id="@+id/team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imageView"
@@ -51,6 +52,13 @@
             android:text="赵亮夜行队"
             android:textColor="@color/white_color"
             android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/team_introduce"
+            android:layout_below="@id/team_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"/>
     </RelativeLayout>
 
     <LinearLayout

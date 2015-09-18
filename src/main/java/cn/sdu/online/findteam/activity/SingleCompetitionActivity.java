@@ -54,7 +54,7 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
     private Button returnButton;
 
 
-    Dialog dialog;
+    public static Dialog dialog;
     View contentView;
     SingleCompetitionListAdapter Adapter;
 
@@ -129,13 +129,13 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
                     String teamName = team.getString("name");
                     String introduction = team.getString("introduce");
                     String teamID = team.getString("id");
-                    Log.v("hehehehehe", teamName);
-                    Log.v("hehehehehe", introduction);
+                    JSONObject teamUser = new JSONObject(team.getString("user"));
+                    long userOpenId = teamUser.getLong("openId");
                     listItems.add(new SingleCompetitionListItem(R.id.singlecp_item_img, teamName,
                             maxNum, R.id.singlecp_item_line1,
                             introduction, R.id.singlecp_item_line2,
                             R.id.singlecp_item_look, R.id.singlecp_item_join,
-                            teamID));
+                            teamID, userOpenId));
                 }
                 getGamesInfo.sendEmptyMessage(0);
             } catch (IOException e) {

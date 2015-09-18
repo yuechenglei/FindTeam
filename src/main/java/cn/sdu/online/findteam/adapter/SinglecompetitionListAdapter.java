@@ -5,32 +5,51 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.alibaba.wukong.im.Conversation;
+import com.alibaba.wukong.im.ConversationService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.MessageBuilder;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.MySingleTeamActivity;
+import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
 import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.DemoUtil;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
+
+import com.alibaba.wukong.Callback;
+import com.alibaba.wukong.im.MessageContent;
 
 public class SingleCompetitionListAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
     List<SingleCompetitionListItem> listItems;
+    long currentID;
 
     public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems) {
         inflater = LayoutInflater.from(mContext);
@@ -80,29 +99,83 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
         viewHolder.look.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
-                SingleCompetitionActivity.getContext().startActivity(intent);
+                SingleCompetitionActivity.dialog = DialogDefine.createLoadingDialog(SingleCompetitionActivity.getContext(),
+                        "");
+                SingleCompetitionActivity.dialog.show();
+
+                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+                    AndTools.showToast(SingleCompetitionActivity.getContext(), "当前网络不可用！");
+                    if (SingleCompetitionActivity.dialog != null) {
+                        SingleCompetitionActivity.dialog.dismiss();
+                    }
+                    return;
+                }
+
+                new Thread() {
+                    @Override
+                    public void run() {
+                        List<NameValuePair> params = new ArrayList<NameValuePair>();
+                        params.add(new BasicNameValuePair("team.id", listItems.get(position).teamID));
+                        try {
+                            String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
+                                    params);
+                            JSONObject jsonObject = new JSONObject(jsonData);
+                            JSONArray jsonArray = new JSONArray(jsonObject.getString("member"));
+                            Bundle bundle = new Bundle();
+                            Message message = new Message();
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject member = jsonArray.getJSONObject(i);
+                                if (member.getString("userName").
+                                        equals(MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""))) {
+                                    bundle.putString("msg", "队员");
+                                    bundle.putString("teamID", listItems.get(position).teamID);
+                                    message.setData(bundle);
+                                    loadteamHander.sendMessage(message);
+                                    return;
+                                }
+                            }
+                            bundle.putString("msg", "游客");
+                            bundle.putString("teamID", listItems.get(position).teamID);
+                            message.setData(bundle);
+                            loadteamHander.sendMessage(message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+
             }
         });
+
 
         viewHolder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+                SingleCompetitionActivity.dialog = DialogDefine.createLoadingDialog(SingleCompetitionActivity.getContext(),
+                        "");
+                SingleCompetitionActivity.dialog.show();
+
+                if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
                     AndTools.showToast(SingleCompetitionActivity.getContext(), "当前网络不可用！");
+                    if (SingleCompetitionActivity.dialog != null) {
+                        SingleCompetitionActivity.dialog.dismiss();
+                    }
                     return;
                 }
 
-                new Thread(){
+                currentID = listItems.get(position).userOpenID;
+                new Thread() {
                     @Override
                     public void run() {
                         try {
                             String jsonData = new NetCore().joinTeam(listItems.get(position).teamID);
                             JSONObject jsonObject = new JSONObject(jsonData);
                             Bundle bundle = new Bundle();
-                            bundle.putInt("code", jsonObject.getInt("code"));
                             bundle.putString("msg", jsonObject.getString("msg"));
+                            bundle.putString("name", listItems.get(position).teamname);
+                            bundle.putString("teamID", listItems.get(position).teamID);
                             Message message = new Message();
                             message.setData(bundle);
                             loadteamHander.sendMessage(message);
@@ -131,12 +204,86 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
         Button join;
     }
 
-    Handler loadteamHander = new Handler(){
+
+    Handler loadteamHander = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
             String jsonMsg = bundle.getString("msg", "出现异常错误！");
-            AndTools.showToast(SingleCompetitionActivity.getContext(), jsonMsg);
+            if (jsonMsg.equals("您的请求已通过")) {
+                AndTools.showToast(SingleCompetitionActivity.getContext(), jsonMsg);
+                if (SingleCompetitionActivity.dialog != null) {
+                    SingleCompetitionActivity.dialog.dismiss();
+                }
+            } else if (jsonMsg.equals("您的请求已申请")) {
+                String name = bundle.getString("name");
+                String teamID = bundle.getString("teamID");
+                String sysMsg = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", "");
+                String joinMsg = "<#$_*" + teamID + "*_$#>"+sysMsg + " " + "申请加入你的队伍" + " " + name;
+
+                final com.alibaba.wukong.im.Message message = IMEngine.getIMService(MessageBuilder.class).buildTextMessage(joinMsg);
+                IMEngine.getIMService(ConversationService.class).createConversation(new com.alibaba.wukong.Callback<Conversation>() {
+
+                    @Override
+                    public void onSuccess(Conversation conversation) {
+                        //ToDo 在这处理创建成功的会话： conversation
+                        message.sendTo(conversation, backMsg);
+                    }
+
+                    @Override
+                    public void onException(String code, String reason) {
+                        //会话创建失败异常处理
+                    }
+
+                    @Override
+                    public void onProgress(Conversation data, int progress) {
+                        // Do Nothing
+                    }
+                }, null, null, message, Conversation.ConversationType.CHAT, currentID);
+
+            } else if (jsonMsg.equals("队员")) {
+                String teamID = bundle.getString("teamID");
+                Intent intent = new Intent();
+                intent.setClass(SingleCompetitionActivity.getContext(), MySingleTeamActivity.class);
+                intent.putExtra("teamID", teamID);
+                MyApplication.IDENTITY = "队员";
+                if (SingleCompetitionActivity.dialog != null) {
+                    SingleCompetitionActivity.dialog.dismiss();
+                }
+                SingleCompetitionActivity.getContext().startActivity(intent);
+            } else if (jsonMsg.equals("游客")) {
+                String teamID = bundle.getString("teamID");
+                Intent intent = new Intent();
+                intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
+                intent.putExtra("teamID", teamID);
+                MyApplication.IDENTITY = "游客";
+                if (SingleCompetitionActivity.dialog != null) {
+                    SingleCompetitionActivity.dialog.dismiss();
+                }
+                SingleCompetitionActivity.getContext().startActivity(intent);
+            }
+        }
+    };
+
+    Callback<com.alibaba.wukong.im.Message> backMsg = new Callback<com.alibaba.wukong.im.Message>() {
+        @Override
+        public void onSuccess(com.alibaba.wukong.im.Message message) {
+            MessageContent msgContent = message.messageContent();
+            Log.v("TAG12313212313", "消息内容：" + msgContent.toString());
+            if (SingleCompetitionActivity.dialog != null) {
+                SingleCompetitionActivity.dialog.dismiss();
+            }
+            AndTools.showToast(SingleCompetitionActivity.getContext(), "您的请求已申请");
+        }
+
+        @Override
+        public void onException(String s, String s1) {
+            Log.v("TAG12313212313", "code=" + s + " reason=" + s1);
+        }
+
+        @Override
+        public void onProgress(com.alibaba.wukong.im.Message message, int i) {
+
         }
     };
 }

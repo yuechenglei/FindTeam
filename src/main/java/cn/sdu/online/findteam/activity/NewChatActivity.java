@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -91,7 +92,9 @@ public class NewChatActivity extends Activity {
         Long[] uids = list.toArray(new Long[size]);
 
         String sysMsg = getString(R.string.chat_create_sysmsg, DemoUtil.currentNickname());
+
         Message message = IMEngine.getIMService(MessageBuilder.class).buildTextMessage(sysMsg); //系统消息
+        Log.v("DemoUtilString", message+"");
         IMEngine.getIMService(ConversationService.class).createConversation(new Callback<Conversation>() {
             @Override
             public void onSuccess(Conversation conversation) {

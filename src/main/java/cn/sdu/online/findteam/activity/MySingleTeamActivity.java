@@ -1,9 +1,12 @@
 package cn.sdu.online.findteam.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -16,6 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +33,11 @@ import cn.sdu.online.findteam.adapter.OtherTeamFragmentAdapter;
 import cn.sdu.online.findteam.fragment.TeamInformationFragment;
 import cn.sdu.online.findteam.fragment.TeamLogFragment;
 import cn.sdu.online.findteam.fragment.TeamMemberFragment;
+import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
+import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.view.TeamPopWindow;
 
 public class MySingleTeamActivity extends FragmentActivity implements View.OnClickListener{
@@ -79,13 +91,62 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
      */
     private Button teamsetting;
 
+    private TextView mTeamName;
+
+    Dialog dialog;
+    String name;
+    View contentView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.otherteam_layout);
+        dialog = DialogDefine.createLoadingDialog(this,
+                "加载中...");
+        dialog.show();
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+            AndTools.showToast(this, "当前网络不可用！");
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            return;
+        }
+
+        contentView = View.inflate(this, R.layout.otherteam_layout, null);
+
         mContext = MySingleTeamActivity.this;
         findById();
+
+        final String teamID = MySingleTeamActivity.this.getIntent().
+                getExtras().getString("teamID");
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("team.id", teamID));
+                try {
+                    String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
+                            params);
+                    JSONObject jsonObject = new JSONObject(jsonData);
+                    name = jsonObject.getString("name");
+/*                    int maxNum = jsonObject.getInt("maxNum");
+                    int currentNum = jsonObject.getInt("currentNum");*/
+                    if (name.length() != 0) {
+                        Bundle bundle = new Bundle();
+                        Message message = new Message();
+                        message.setData(bundle);
+                        loadTeam.sendEmptyMessage(0);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
         init();
         initTabLineWidth();
         if (MyApplication.myTeam_CurrentPage == 0){
@@ -99,15 +160,29 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         }
     }
 
+    Handler loadTeam = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            mTeamName.setText(name);
+/*            mTeamIntroduce.setText();*/
+            if (dialog != null){
+                dialog.dismiss();
+            }
+            MySingleTeamActivity.this.setContentView(contentView);
+        }
+    };
+
     private void findById() {
-        mTeamLogTv = (TextView) this.findViewById(R.id.id_teamlog_tv);
-        mTeamInfoTv = (TextView) this.findViewById(R.id.id_teaminfo_tv);
-        mTeamMemTv = (TextView) this.findViewById(R.id.id_teammem_tv);
-        mTabLineIv = (ImageView) this.findViewById(R.id.id_tab_line_iv);
-        mPageVp = (ViewPager) this.findViewById(R.id.id_page_vp);
-        backimg = (ImageView) this.findViewById(R.id.otherteam_back_img);
-        join = (Button) this.findViewById(R.id.join_otherteam);
-        teamsetting = (Button) this.findViewById(R.id.team_setting_bt);
+        mTeamLogTv = (TextView) contentView.findViewById(R.id.id_teamlog_tv);
+        mTeamInfoTv = (TextView) contentView.findViewById(R.id.id_teaminfo_tv);
+        mTeamMemTv = (TextView) contentView.findViewById(R.id.id_teammem_tv);
+        mTabLineIv = (ImageView) contentView.findViewById(R.id.id_tab_line_iv);
+        mPageVp = (ViewPager) contentView.findViewById(R.id.id_page_vp);
+        backimg = (ImageView) contentView.findViewById(R.id.otherteam_back_img);
+        join = (Button) contentView.findViewById(R.id.join_otherteam);
+        teamsetting = (Button) contentView.findViewById(R.id.team_setting_bt);
+        mTeamName = (TextView) contentView.findViewById(R.id.team_name);
     }
 
     private void init() {
@@ -124,9 +199,9 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         mPageVp.setCurrentItem(0);
         mPageVp.setPageTransformer(true, new DepthPageTransformer());
 
-        teaminfo_ll = (LinearLayout) findViewById(R.id.id_teaminfo_ll);
-        teammem_ll = (LinearLayout) findViewById(R.id.id_teammem_ll);
-        teamlog_ll = (LinearLayout) findViewById(R.id.id_tab_teamlog_ll);
+        teaminfo_ll = (LinearLayout) contentView.findViewById(R.id.id_teaminfo_ll);
+        teammem_ll = (LinearLayout) contentView.findViewById(R.id.id_teammem_ll);
+        teamlog_ll = (LinearLayout) contentView.findViewById(R.id.id_tab_teamlog_ll);
 
         setVisible();
 

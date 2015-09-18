@@ -108,15 +108,16 @@ public class MyTeamActivity extends Activity {
                     JSONObject teamJson = (JSONObject) teamJsonList.get(i);
                     String status = teamJson.getString("status");
                     String name = teamJson.getString("name");
+                    String teamID = teamJson.getString("id");
                     String introduce = teamJson.getString("introduce");
                     JSONObject category = new JSONObject(teamJson.getString("category"));
                     String parentName = category.getString("name");
                     if (status.equals(NetCore.HAS_ENTERED)) {
-                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
                     } else if (status.equals(NetCore.HAS_OFFERED)) {
-                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
                     } else if (status.equals(NetCore.HAS_REFUSED)) {
-                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName));
+                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
                     }
                 }
                 loadTeamHandler.sendEmptyMessage(0);

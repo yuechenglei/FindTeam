@@ -13,12 +13,13 @@ public class SingleCompetitionListItem {
     public int look;
     public int join;
     public String teamID;
+    public long userOpenID;
 
     public SingleCompetitionListItem(int imageView, String teamname,
                                      int personnum, int line1,
                                      String content, int line2,
                                      int look, int join,
-                                     String teamID){
+                                     String teamID, long userOpenID){
         this.imageView = imageView;
         this.teamname = teamname;
         this.personnum = personnum;
@@ -28,5 +29,6 @@ public class SingleCompetitionListItem {
         this.look = look;
         this.join = join;
         this.teamID = teamID;
+        this.userOpenID = userOpenID;
     }
 }

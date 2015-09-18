@@ -62,7 +62,6 @@
                 android:gravity="center"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:text="我是个人简介或者叫个性签名"
                 android:hint="您还没有个性签名呦，快在此处编辑吧"
                 android:textColor="@color/underline1_gray"
                 android:maxLength="40"

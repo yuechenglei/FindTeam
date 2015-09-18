@@ -2,6 +2,8 @@ package cn.sdu.online.findteam.aliwukong.imkit.session.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +15,12 @@ import com.alibaba.wukong.im.Conversation;
 import com.alibaba.wukong.im.User;
 import com.alibaba.wukong.im.utils.Utils;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +31,7 @@ import cn.sdu.online.findteam.aliwukong.imkit.route.Router;
 import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.CustomGridView;
+import cn.sdu.online.findteam.net.NetCore;
 
 /**
  * Created by wn on 2015/8/14.
@@ -36,7 +45,7 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
     }
 
     @Override
-    public void showAvatar(Context context, String mediaIds, View view,ListView itemParent) {
+    public void showAvatar(Context context, String mediaIds, View view, ListView itemParent) {
         List<Long> openId = new ArrayList<Long>(1);
         try {
             openId.add(Long.parseLong(mediaIds));
@@ -44,7 +53,7 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
             Log.e("SingleSession", "NumberFormatException");
         }
 
-        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId,itemParent);
+        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);
     }
 
     @Override
@@ -81,7 +90,12 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
         if (latestMessage() == null) {
             contentView.setText("");
         } else {
-            contentView.setText(mServiceFacade.getSessionContent(this));
+            String text = mServiceFacade.getSessionContent(this);
+/*            if (text.startsWith("<#$_*")) {
+                int index = text.indexOf("*_$#>");
+                text = text.substring(index + 5);
+            }*/
+            contentView.setText(text);
         }
     }
 }

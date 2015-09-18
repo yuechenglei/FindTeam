@@ -15,8 +15,10 @@ import java.util.List;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
+import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.mob.MyTeamListItem;
 import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.share.MyApplication;
 
 /**
  * Created by wn on 2015/8/29.
@@ -76,7 +78,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         MyViewHolder myViewHolder;
         if (convertView == null){
             myViewHolder = new MyViewHolder();
@@ -112,8 +114,19 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MyTeamActivity.getInstance(), MySingleTeamActivity.class);
-                MyTeamActivity.getInstance().startActivity(intent);
+                if (groupPosition == 0){
+                    Intent intent = new Intent();
+                    intent.setClass(MyTeamActivity.getInstance(), MySingleTeamActivity.class);
+                    intent.putExtra("teamID", listItems.get(0).get(childPosition).teamID);
+                    MyApplication.IDENTITY = "队员";
+                    MyTeamActivity.getInstance().startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(MyTeamActivity.getInstance(), OtherTeamActivity.class);
+                    MyApplication.IDENTITY = "游客";
+                    intent.putExtra("teamID", listItems.get(groupPosition).get(childPosition).teamID);
+                    MyTeamActivity.getInstance().startActivity(intent);
+                }
             }
         });
         return convertView;

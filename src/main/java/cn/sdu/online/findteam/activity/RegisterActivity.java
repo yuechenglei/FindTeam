@@ -17,9 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.auth.ALoginParam;
 import com.alibaba.wukong.auth.AuthInfo;
 import com.alibaba.wukong.auth.AuthService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.UserService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -197,6 +200,23 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             @Override
             public void onSuccess(AuthInfo data) {
                 AuthService.getInstance().setNickname(nickname);
+                UserService userService = IMEngine.getIMService(UserService.class);
+                userService.updateNickname(new Callback<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+
+                    @Override
+                    public void onException(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void onProgress(Void aVoid, int i) {
+
+                    }
+                }, nickname);
                 editor.remove("loginName").apply();
                 editor.remove("loginPassword").apply();
                 editor.putString("loginName", user.getName()).apply();

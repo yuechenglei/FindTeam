@@ -67,19 +67,6 @@ public class ChatActivity extends Activity implements View.OnClickListener,View.
 
     private void initData() {
         list = new ArrayList<ChatActivityListItem>();
-/*        for (int i = 0; i < 13; i++) {
-            ChatActivityListItem item = new ChatActivityListItem();
-            if (i % 3 == 0) {
-                item.setMessage("呵呵又是你齐天大圣孙悟空，身如玄铁，火眼金睛，长生不老还有七十二变设计从来不需要高大上，更不需要多么复杂，用心表达，就足以。");
-                item.setImg(R.drawable.otherteam_headtmp);
-                item.setType(0);
-            } else {
-                item.setMessage("有是我怎么着");
-                item.setImg(R.drawable.singlecompetition_itemimg);
-                item.setType(1);
-            }
-            list.add(item);
-        }*/
     }
 
     @Override

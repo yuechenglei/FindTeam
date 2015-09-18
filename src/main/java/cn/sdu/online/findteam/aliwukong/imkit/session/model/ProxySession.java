@@ -95,6 +95,7 @@ public class ProxySession implements Conversation {
 
     @Override
     public String draftMessage() {
+
         return mConversation.draftMessage();
     }
 

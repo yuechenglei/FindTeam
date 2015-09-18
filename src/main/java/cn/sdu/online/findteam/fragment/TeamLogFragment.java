@@ -1,7 +1,9 @@
 package cn.sdu.online.findteam.fragment;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,6 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +33,10 @@ import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 import cn.sdu.online.findteam.adapter.TeamLogListViewAdapter;
 import cn.sdu.online.findteam.mob.TeamLogListViewItem;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 public class TeamLogFragment extends Fragment implements View.OnClickListener {
@@ -39,6 +50,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     TeamLogListViewAdapter teamLogListViewAdapter;
     private Button writelog;
     private PopupWindow popupWindow;
+    Dialog dialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,34 +59,59 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if (TeamLogFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
+        dialog = DialogDefine.createLoadingDialog(TeamLogFragment.this.getActivity(),
+                "加载中...");
+
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+            AndTools.showToast(TeamLogFragment.this.getActivity(), "当前网络不可用！");
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            view = inflater.inflate(R.layout.other_teamlog_layout, null);
+            return view;
+        } else {
             if (MyApplication.IDENTITY.equals("队长")) {
                 view = inflater.inflate(R.layout.myteam_teamlog_layout, null);
                 teamHeaderLog();
-            } else {
+            } else if (MyApplication.IDENTITY.equals("队员")) {
                 view = inflater.inflate(R.layout.myteam_teamlog_layout, null);
                 teamMemLog();
+            } else {
+                view = inflater.inflate(R.layout.other_teamlog_layout, null);
+                teamOtherLog();
             }
-        }
-        else {
-            view = inflater.inflate(R.layout.other_teamlog_layout,null);
-            teamOtherLog();
-        }
 
+/*            final String teamID = TeamInformationFragment.this.getActivity().getIntent().
+                    getExtras().getString("teamID");
+            new Thread(){
+                @Override
+                public void run() {
+                    List<NameValuePair> params = new ArrayList<NameValuePair>();
+                    params.add(new BasicNameValuePair("team.id", teamID));
+                    try {
+                        String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
+                                params);
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        introduce = jsonObject.getString("introduce");
+                        if (introduce.length() != 0) {
+                            Bundle bundle = new Bundle();
+                            Message message = new Message();
+                            message.setData(bundle);
+                            loadInfo.sendEmptyMessage(0);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }.start();*/
+        }
         return view;
     }
 
     private void initListView(ListView listView) {
         listViewItems = new ArrayList<TeamLogListViewItem>();
-        name = new String[]{"大师兄", "二师弟", "沙师弟"};
-        time = new String[]{"2015年7月23日 10:45", "2015年7月23日 11:45", "2015年7月23日 12:45"};
-        content = "我是严肃的日志~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-
-        for (int i = 0; i < name.length; i++) {
-            listViewItems.add(new TeamLogListViewItem(R.drawable.teammember_header,
-                    name[i], time[i], content));
-        }
-
         teamLogListViewAdapter = new TeamLogListViewAdapter(TeamLogFragment.this.getActivity().getApplicationContext(), listViewItems);
         listView.setAdapter(teamLogListViewAdapter);
 
@@ -82,11 +119,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                if (TeamLogFragment.this.getActivity().equals(OtherTeamActivity.getContext())) {
-                    intent.setClass(OtherTeamActivity.getContext(), TeamLogActivity.class);
-                } else if (TeamLogFragment.this.getActivity().equals(MySingleTeamActivity.mContext)) {
-                    intent.setClass(MySingleTeamActivity.mContext, TeamLogActivity.class);
-                }
+                intent.setClass(TeamLogFragment.this.getActivity(), TeamLogActivity.class);
                 TeamLogFragment.this.getActivity().startActivity(intent);
             }
         });
@@ -208,7 +241,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void addListItem(int headbmp, String name, String time, String content){
+    public void addListItem(int headbmp, String name, String time, String content) {
         listViewItems.add(new TeamLogListViewItem(headbmp, name, time, content));
         teamLogListViewAdapter.notifyDataSetChanged();
     }

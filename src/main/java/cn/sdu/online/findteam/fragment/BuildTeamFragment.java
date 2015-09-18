@@ -51,7 +51,7 @@ import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
 
-public class BuildTeamFragment extends Fragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class BuildTeamFragment extends Fragment implements View.OnClickListener{
 
     public Button bt_confirm;
     public EditText text_teamname, text_introduction;
@@ -80,8 +80,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     public static final int CAMERA_REQUEST = 1002;
     public static final int CAMERA_CUT_REQUEST = 1003;
 
-    private Boolean logVisible, verify;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +94,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
     }
 
     private void init() {
-        logVisible = false;
-        verify = false;
 
         headerImg = (RoundImageView) view.findViewById(R.id.buildteam_head_img);
         text_teamname = (EditText) view.findViewById(R.id.text_teamname);
@@ -120,9 +116,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         switchButton1.setChecked(false);
         switchButton2.setChecked(false);
         switchButton3.setChecked(false);
-        switchButton1.setOnCheckedChangeListener(this);
-        switchButton2.setOnCheckedChangeListener(this);
-        switchButton3.setOnCheckedChangeListener(this);
     }
 
     private Spinner initSpinner(int id, String[] content) {
@@ -141,19 +134,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         spinner.setAdapter(arrayAdapter);
         spinner.setOnItemSelectedListener(new SpinnerSelectedListener(spinner, content, contentID));
         return spinner;
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-/*        switch (buttonView.getId()){
-            case R.id.switch_test:
-                if (!isChecked) {
-                    verify = false;
-                } else {
-                    verify = true;
-                }
-        }*/
-
     }
 
     class SpinnerSelectedListener implements AdapterView.OnItemSelectedListener {
@@ -210,64 +190,59 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
             }
 
             case R.id.bt_confirm: {
-                checkError();
-                String teamName = text_teamname.getText().toString();
-                String maxNum = (String) spinner_number.getTag();
-                String teamEndTime = (String)spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
-                String teamIntroduce = text_introduction.getText().toString();
-                String teamCategoryID = (String) spinner_games.getTag();
-                String logVisible = switchButton2.isChecked() + "";
-                String teamVerify = switchButton1.isChecked() + "";
+                if (checkError()) {
+                    String teamName = text_teamname.getText().toString();
+                    String maxNum = (String) spinner_number.getTag();
+                    String teamEndTime = (String) spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
+                    String teamIntroduce = text_introduction.getText().toString();
+                    String teamCategoryID = (String) spinner_games.getTag();
+                    String logVisible = switchButton2.isChecked() + "";
+                    String teamVerify = switchButton1.isChecked() + "";
 
-                new Thread(new BuildTeamRunnable(teamName, maxNum,
+                    new Thread(new BuildTeamRunnable(teamName, maxNum,
                             teamEndTime, teamIntroduce,
                             teamCategoryID, logVisible,
                             teamVerify)).start();
-                break;
+                    break;
+                }
             }
         }
     }
 
-    private void checkError(){
-        if (text_teamname.getText().toString().trim().length() == 0){
+    private boolean checkError() {
+        if (text_teamname.getText().toString().trim().length() == 0) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍名不能为空！");
-            return;
-        }
-        else if (spinner_number.getTag().equals("请选择")){
+            return false;
+        } else if (spinner_number.getTag().equals("请选择")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍人数不能为空！");
-            return;
-        }
-        else if (text_introduction.getText().toString().trim().length() == 0){
+            return false;
+        } else if (text_introduction.getText().toString().trim().length() == 0) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍简介不能为空！");
-            return;
-        }
-        else if (spinner_parent.getTag().equals("-1")){
+            return false;
+        } else if (spinner_parent.getTag().equals("-1")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属分类不能为空！");
-            return;
-        }
-        else if (spinner_games.getTag().equals("-1")){
+            return false;
+        } else if (spinner_games.getTag().equals("-1")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属比赛不能为空！");
-            return;
-        }
-        else if (spinner_year.getTag().equals("年")){
+            return false;
+        } else if (spinner_year.getTag().equals("年")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "年份不能为空！");
-            return;
-        }
-        else if (spinner_month.getTag().equals("月")){
+            return false;
+        } else if (spinner_month.getTag().equals("月")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "月份不能为空！");
-            return;
-        }
-        else if (spinner_day.getTag().equals("日")){
+            return false;
+        } else if (spinner_day.getTag().equals("日")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "日期不能为空！");
-            return;
-        }
-        else if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+            return false;
+        } else if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "网络错误！");
-            return;
+            return false;
         }
+
+        return true;
     }
 
-    class BuildTeamRunnable implements Runnable{
+    class BuildTeamRunnable implements Runnable {
         User user;
 
         public BuildTeamRunnable(String teamName,
@@ -276,7 +251,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
                                  // 团队介绍， 团队分类ID
                                  String teamIntroduce, String teamCategoryID,
                                  // 日志是否可见， 是否需要审核
-                                 String logVisible, String teamVerify){
+                                 String logVisible, String teamVerify) {
             user = new User();
             user.setTeamName(teamName);
             user.setTeamCategoryID(teamCategoryID);
@@ -286,13 +261,14 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
             user.setTeamVerify(teamVerify);
             user.setLogVisible(logVisible);
         }
+
         @Override
         public void run() {
             try {
                 String jsonData = new NetCore().buildTeam(user);
                 Bundle bundle = new Bundle();
                 Message message = new Message();
-                if (jsonData == null){
+                if (jsonData == null) {
                     bundle.putInt("code", 1);
                     message.setData(bundle);
                     buildTeamHandler.sendMessage(message);
@@ -316,7 +292,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener,
         @Override
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
-            switch (bundle.getInt("code")){
+            switch (bundle.getInt("code")) {
                 case 1:
                     AndTools.showToast(BuildTeamFragment.this.getActivity(), "创建失败！");
                     break;
