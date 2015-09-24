@@ -21,10 +21,14 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +64,14 @@ public class NetCore {
     public final static String getOneTeamAddr = ServerAddr + "team/getOneTeam";
     // 通过openID获取个人信息
     public final static String getopenIDInfoAddr = ServerAddr + "user/userInfoByOpenId";
+    // 上传文件
+    public final static String upLoadInfoAddr = ServerAddr + "upload/upload";
+    // 加载图片
+    public final static String downloadAddr = ServerAddr + "download/imageDownload";
+    // 用户允许加入队伍
+    public final static String allowJoinAddr = ServerAddr + "team/allow";
+    // 用户拒绝加入队伍
+    public final static String refuseJoinAddr = ServerAddr + "team/deny";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -98,8 +110,10 @@ public class NetCore {
     public String Login(User user) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
+
         params.add(new BasicNameValuePair("login.username", user.getName()));
         params.add(new BasicNameValuePair("login.password", user.getPassword()));
+
         String jsonData = "";
         try {
             jsonData = loginAndGetCookies(LoginAddr, params);
@@ -119,7 +133,7 @@ public class NetCore {
      * 登录
      */
     public String loginAndGetCookies(String url, List<NameValuePair> params)
-            throws ClientProtocolException, IOException {
+            throws IOException {
         HttpPost httpRequest = new HttpPost(url);
         httpRequest.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
         DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -170,11 +184,6 @@ public class NetCore {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // Gson gson = new Gson();
-        // Map<String, Integer> map = new HashMap<String, Integer>();
-        // map = gson.fromJson(result, Map.class);
-        // double resultNum = map.get("result");
-        // System.out.println(resultNum);
         return result;
     }
 
@@ -233,10 +242,11 @@ public class NetCore {
     }
 
     /**
-     * 获取用户信息
+     * 通过openID获取用户信息
      */
     public String getUserInfo(String userId) throws IOException {
-        HttpPost httpPost = new HttpPost(getUserInfoAddr);
+/*        HttpPost httpPost = new HttpPost(getUserInfoAddr);*/
+        HttpPost httpPost = new HttpPost(getopenIDInfoAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
         Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
         CookieSpecBase cookieSpecBase = new BrowserCompatSpec();
@@ -282,6 +292,7 @@ public class NetCore {
         params.add(new BasicNameValuePair("usr.address", user.getAddress()));
         params.add(new BasicNameValuePair("usr.college", user.getSchool()));
         params.add(new BasicNameValuePair("usr.sex", user.getSex()));
+        params.add(new BasicNameValuePair("usr.imgPath", user.getImgPath()));
 
         HttpPost httpRequest = new HttpPost(modifyUserInfoAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
@@ -310,7 +321,7 @@ public class NetCore {
     /**
      * 下拉刷新比赛信息
      *
-     * @param pageNum  获取第几页的信息
+     * @param pageNum     获取第几页的信息
      * @param pageListNum 每页获取的记录数
      */
     public String pullRefreshGamesData(String url, int pageNum, int pageListNum) throws IOException {
@@ -337,7 +348,7 @@ public class NetCore {
     /**
      * 加载某个比赛下的队伍
      *
-     * @param gameID   分类id
+     * @param gameID 分类id
      */
 
     public String getGamesTeam(String gameID) throws IOException {
@@ -411,11 +422,12 @@ public class NetCore {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("teamInfo.name", user.getTeamName()));
         params.add(new BasicNameValuePair("teamInfo.num", user.getTeamNum()));
-        params.add(new BasicNameValuePair("teamInfo.endTime",  user.getTeamEndTime()));
+        params.add(new BasicNameValuePair("teamInfo.endTime", user.getTeamEndTime()));
         params.add(new BasicNameValuePair("teamInfo.introduce", user.getTeamIntroduce()));
         params.add(new BasicNameValuePair("teamInfo.categoryId", user.getTeamCategoryID()));
         params.add(new BasicNameValuePair("teamInfo.logVisible", user.getLogVisible()));
         params.add(new BasicNameValuePair("teamInfo.verify", user.getTeamVerify()));
+        params.add(new BasicNameValuePair("teamInfo.imgPath", user.getImgPath()));
 
         HttpPost httpRequest = new HttpPost(buildTeamAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.alibaba.wukong.im.Conversation;
+
 /**
  * Created by wn on 2015/8/14.
  */

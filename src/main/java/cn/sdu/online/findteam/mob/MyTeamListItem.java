@@ -10,12 +10,14 @@ public class MyTeamListItem {
     public String introduce;
     public String parent;
     public String teamID;
+    public String imgPath;
 
-    public MyTeamListItem(int header, String teamName, String introduce, String parent, String teamID){
+    public MyTeamListItem(int header, String teamName, String introduce, String parent, String teamID, String imgPath){
         this.header = header;
         this.teamName = teamName;
         this.introduce = introduce;
         this.parent = parent;
         this.teamID = teamID;
+        this.imgPath = imgPath;
     }
 }

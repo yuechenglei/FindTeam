@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.activity;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.util.AndTools;
 
 public class WriteActivity extends Activity implements View.OnClickListener {
 
@@ -26,6 +30,8 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     private Button back;
     private LinearLayout finishBtn;
     private Intent intent;
+
+    Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +92,13 @@ public class WriteActivity extends Activity implements View.OnClickListener {
     }
 
     private void editMsgFinish() {
+        if (!AndTools.isNetworkAvailable(MyApplication.getInstance())){
+            AndTools.showToast(WriteActivity.this, "当前网络不可用！");
+            return;
+        }
+        dialog = DialogDefine.createLoadingDialog(WriteActivity.this, "");
+        dialog.show();
+
         if (teamMsgEt.getText().toString().length() != 0) {
             intent = WriteActivity.this.getIntent();
             intent.putExtra("teaminfor", teamMsgEt.getText().toString());
@@ -96,6 +109,13 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             Toast.makeText(WriteActivity.this, "。您还未填写队伍信息！" , Toast.LENGTH_SHORT).show();
         }
     }
+
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
 
     private void writeLogFinish(){
         if (teamMsgEt.getText().toString().trim().length() != 0){

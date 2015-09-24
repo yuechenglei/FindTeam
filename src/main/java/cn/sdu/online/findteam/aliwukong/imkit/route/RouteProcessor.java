@@ -45,7 +45,6 @@ public class RouteProcessor {
 
     public synchronized static ViewHolder route(DisplayListItem<?> model,String category) {
         Class<?> clazz = model.getClass();
-        Log.v("hehehehehehheheh" , clazz+"");
         RouteViewBridge routeViewBridge =  RouteViewBridge.createRouteViewBridge(clazz, category);
         if (routeViewBridge != null) {
             return routeViewBridge.createViewHolder(model);

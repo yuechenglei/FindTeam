@@ -5,6 +5,8 @@ package cn.sdu.online.findteam.aliwukong.imkit.base;
  */
 import android.content.Context;
 
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
+
 
 /**
  * AdapterView  显示的某一项
@@ -18,6 +20,8 @@ public interface DisplayListItem<T extends ViewHolder> {
      * @param holder
      */
     public void onShow(Context context, T holder, String tag);
+
+    public void onJoinShow(Context context, T viewHolder, String tag);
 
     public String getId();
 

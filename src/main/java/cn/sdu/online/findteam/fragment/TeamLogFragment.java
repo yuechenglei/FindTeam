@@ -37,13 +37,12 @@ import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
-import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
     private View view;
     List<TeamLogListViewItem> listViewItems;
-    SingleCompetitionListView listView;
+    ListView listView;
     String name[];
     String time[];
     String content;
@@ -80,32 +79,6 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 view = inflater.inflate(R.layout.other_teamlog_layout, null);
                 teamOtherLog();
             }
-
-/*            final String teamID = TeamInformationFragment.this.getActivity().getIntent().
-                    getExtras().getString("teamID");
-            new Thread(){
-                @Override
-                public void run() {
-                    List<NameValuePair> params = new ArrayList<NameValuePair>();
-                    params.add(new BasicNameValuePair("team.id", teamID));
-                    try {
-                        String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
-                                params);
-                        JSONObject jsonObject = new JSONObject(jsonData);
-                        introduce = jsonObject.getString("introduce");
-                        if (introduce.length() != 0) {
-                            Bundle bundle = new Bundle();
-                            Message message = new Message();
-                            message.setData(bundle);
-                            loadInfo.sendEmptyMessage(0);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }.start();*/
         }
         return view;
     }
@@ -141,7 +114,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
      * 别人来的时候调用
      */
     private void teamOtherLog() {
-        listView = (SingleCompetitionListView) view.findViewById(R.id.teamlog_listview);
+        listView = (ListView) view.findViewById(R.id.teamlog_listview);
         initListView(listView);
     }
 
@@ -151,7 +124,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     private void teamMemLog() {
         writelog = (Button) view.findViewById(R.id.teammem_writelog);
         writelog.setOnClickListener(TeamLogFragment.this);
-        listView = (SingleCompetitionListView) view.findViewById(R.id.teammem_log_list);
+        listView = (ListView) view.findViewById(R.id.teammem_log_list);
         initListView(listView);
     }
 
@@ -161,7 +134,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     private void teamHeaderLog() {
         writelog = (Button) view.findViewById(R.id.teammem_writelog);
         writelog.setOnClickListener(TeamLogFragment.this);
-        listView = (SingleCompetitionListView) view.findViewById(R.id.teammem_log_list);
+        listView = (ListView) view.findViewById(R.id.teammem_log_list);
         initListView(listView);
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

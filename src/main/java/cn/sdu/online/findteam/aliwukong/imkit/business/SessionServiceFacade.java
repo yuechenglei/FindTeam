@@ -1,5 +1,6 @@
 package cn.sdu.online.findteam.aliwukong.imkit.business;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -22,7 +23,9 @@ import cn.sdu.online.findteam.aliwukong.imkit.listener.ConversationUpdateListene
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.GroupSession;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.SingleSession;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.UnKownSession;
 import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.share.MyApplication;
 
 /**
  * Created by wn on 2015/8/14.
@@ -62,8 +65,13 @@ public class SessionServiceFacade {
                 result = new SingleSession(source);
                 break;
             case Conversation.ConversationType.GROUP:
-                result = new GroupSession(source);
+                if (source.title() != null && source.title().startsWith("<#$_*/ + join + /*_$#>")) {
+                    result = new UnKownSession(source);
+                } else {
+                    result = new GroupSession(source);
+                }
                 break;
+
         }
         if (result != null) {
             result.setServiceFacade(this);

@@ -7,7 +7,9 @@ import com.alibaba.wukong.im.Conversation;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.ChatViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.SendViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
 import cn.sdu.online.findteam.share.DemoUtil;
 
 public class SendMessage extends ChatMessage {
@@ -100,6 +102,11 @@ public class SendMessage extends ChatMessage {
                 );
             }
         });
+    }
+
+    @Override
+    public void onJoinShow(Context context, ChatViewHolder viewHolder, String tag) {
+
     }
 }
 

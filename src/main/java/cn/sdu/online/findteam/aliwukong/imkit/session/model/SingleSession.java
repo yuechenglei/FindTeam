@@ -26,6 +26,7 @@ import java.util.List;
 
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ItemClick;
+import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.SingleChatActivity;
 import cn.sdu.online.findteam.aliwukong.imkit.route.Router;
 import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
@@ -91,10 +92,6 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
             contentView.setText("");
         } else {
             String text = mServiceFacade.getSessionContent(this);
-/*            if (text.startsWith("<#$_*")) {
-                int index = text.indexOf("*_$#>");
-                text = text.substring(index + 5);
-            }*/
             contentView.setText(text);
         }
     }

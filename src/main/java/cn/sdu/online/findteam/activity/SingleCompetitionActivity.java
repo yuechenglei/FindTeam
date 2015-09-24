@@ -17,6 +17,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +34,6 @@ import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
-import cn.sdu.online.findteam.view.SingleCompetitionListView;
 
 /**
  * 具体的单个比赛信息界面
@@ -85,7 +86,7 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
         contentView = View.inflate(SingleCompetitionActivity.this, R.layout.singlecompetition_layout, null);
         SingleCompetitionContext = SingleCompetitionActivity.this;
         introduce = (TextView) contentView.findViewById(R.id.singleGame_introduce);
-        singlelistView = (SingleCompetitionListView) contentView.findViewById(R.id.singlecplist);
+        singlelistView = (ListView) contentView.findViewById(R.id.singlecplist);
         gameName_tv = (TextView) contentView.findViewById(R.id.competition_name);
         actionbar_tv = (TextView) findViewById(R.id.singleGame_actionbar_tv);
         returnButton = (Button) findViewById(R.id.singlecp_return_bt);
@@ -126,16 +127,18 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
                 for (int i = 0; i < teamlist.length(); i++) {
                     JSONObject team = (JSONObject) teamlist.get(i);
                     int maxNum = team.getInt("maxNum");
+                    int currentNum = team.getInt("currentNum");
                     String teamName = team.getString("name");
                     String introduction = team.getString("introduce");
                     String teamID = team.getString("id");
+                    String imgPath = team.getString("imgPath");
                     JSONObject teamUser = new JSONObject(team.getString("user"));
                     long userOpenId = teamUser.getLong("openId");
                     listItems.add(new SingleCompetitionListItem(R.id.singlecp_item_img, teamName,
                             maxNum, R.id.singlecp_item_line1,
                             introduction, R.id.singlecp_item_line2,
                             R.id.singlecp_item_look, R.id.singlecp_item_join,
-                            teamID, userOpenId));
+                            teamID, userOpenId, currentNum, imgPath));
                 }
                 getGamesInfo.sendEmptyMessage(0);
             } catch (IOException e) {

@@ -35,7 +35,6 @@ import cn.sdu.online.findteam.util.AndTools;
 public class TeamMemberFragment extends Fragment {
 
     private ListView listView;
-    private String[] name = new String[]{"大师兄", "二师弟", "沙师弟"};
     private List<TeamMemberListItem> listItems;
     private Button invitemem;
     private TeamMemberListViewAdapter teamMemberListViewAdapter;
@@ -86,7 +85,8 @@ public class TeamMemberFragment extends Fragment {
                             JSONObject jsonObject1 = memList.getJSONObject(i);
                             String name = jsonObject1.getString("userName");
                             String introduce = jsonObject1.getString("introduce");
-                            listItems.add(new TeamMemberListItem(name, introduce, R.id.teammem_listview_headbmp));
+                            String imgPath = jsonObject1.getString("imgPath");
+                            listItems.add(new TeamMemberListItem(name, introduce, R.id.teammem_listview_headbmp, imgPath));
                         }
                         loadMem.sendEmptyMessage(0);
                     } catch (IOException e) {

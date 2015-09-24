@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.resource;
+package cn.sdu.online.findteam.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;

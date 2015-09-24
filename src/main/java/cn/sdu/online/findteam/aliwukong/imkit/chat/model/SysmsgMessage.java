@@ -6,8 +6,10 @@ import com.alibaba.wukong.im.MessageContent;
 
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.model.ChatMessage;
+import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.ChatViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.SysmsgViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.route.Router;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
 
 /**
  * Created by wn on 2015/8/14.
@@ -24,5 +26,10 @@ public class SysmsgMessage extends ChatMessage {
     public String getMessageContent() {
         MessageContent.TextContent msgContent = (MessageContent.TextContent) mMessage.messageContent();
         return msgContent.text();
+    }
+
+    @Override
+    public void onJoinShow(Context context, ChatViewHolder viewHolder, String tag) {
+
     }
 }

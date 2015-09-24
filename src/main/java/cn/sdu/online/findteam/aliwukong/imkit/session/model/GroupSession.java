@@ -20,6 +20,7 @@ import java.util.List;
 
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ItemClick;
+import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.SingleChatActivity;
 import cn.sdu.online.findteam.aliwukong.imkit.route.Router;
 import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
@@ -94,5 +95,10 @@ public class GroupSession extends Session implements ItemClick.OnItemClickListen
                 }
             }, latestMessage().senderId());
         }
+    }
+
+    @Override
+    public void onJoinShow(Context context, ViewHolder viewHolder, String tag) {
+
     }
 }

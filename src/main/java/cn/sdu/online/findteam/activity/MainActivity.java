@@ -5,7 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +26,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -32,6 +46,8 @@ import cn.sdu.online.findteam.fragment.AllGamesFragment;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 import cn.sdu.online.findteam.fragment.FragmentSetting;
 import cn.sdu.online.findteam.fragment.MainFragment;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.ActionBarDrawerToggle;
 import cn.sdu.online.findteam.view.DrawerArrowDrawable;
@@ -78,6 +94,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public final static int FRAGMENT_SETTING = 3;
     private int currentFragment = MAIN_FRAGMENT;
 
+    RoundImageView bt_head;
+    String imgPath, openId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mainActivity = MainActivity.this;
@@ -98,12 +117,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setActionBarLayout(view_actionbar);
         setContentView(R.layout.activity_main);
 
-/*        intentString = getIntent().getExtras().getString("loginIdentity");
-        intentID = getIntent().getExtras().getLong("loginID");*/
-
         searchLayout = (LinearLayout) findViewById(R.id.mainactivity_search_layout);
         acState = true;
-        if (/*intentString.startsWith("<##用户##>")*/MyApplication.USER_OR_NOT == 1) {
+        if (MyApplication.USER_OR_NOT == 1) {
+            // 用户登录
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.drawer_layout);
             viewStub.inflate();
@@ -113,7 +130,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             tv_text = (TextView) findViewById(R.id.tv_name);
             tv_id = (TextView) findViewById(R.id.tv_ID);
             tv_text.setText(MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""));
-            tv_id.setText("(聊天帐号:" + MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0) + ")");
+            openId = ""+MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0);
+            tv_id.setText("(聊天帐号:" + openId + ")");
+            new Thread(new loadUserInfo()).start();
         } else if (MyApplication.USER_OR_NOT == 0) {
             ViewStub viewStub = (ViewStub) findViewById(R.id.drawer_viewstub);
             viewStub.setLayoutResource(R.layout.visitor_drawer_layout);
@@ -123,7 +142,52 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             init_Visitor_Btn();
         }
         addFragment(savedInstanceState);
-        MyApplication.IDENTITY = "队长";
+    }
+
+    class loadUserInfo implements Runnable {
+        @Override
+        public void run() {
+            try {
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                // 必填
+                params.add(new BasicNameValuePair("usr.openId", openId));
+                String jsonData = new NetCore().getResultWithCookies(NetCore.getopenIDInfoAddr, params);
+
+                if (jsonData.trim().length() != 0) {
+                    imgPath = new JSONObject(jsonData).getString("imgPath");
+                    handler.sendEmptyMessage(0);
+                } else {
+                    imgPath = "";
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            loadBitmap(imgPath);
+        }
+    };
+
+    private void loadBitmap(String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                bt_head.setImageBitmap(bitmap);
+                mDrawerRelative.setBackground(new BitmapDrawable(bitmap));
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
     }
 
     @Override
@@ -182,7 +246,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
-    public ArrayList<Fragment> getList(){
+    public ArrayList<Fragment> getList() {
         return (ArrayList<Fragment>) fragmentList;
     }
 
@@ -286,7 +350,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         Button bt_my = (Button) this.findViewById(R.id.bt_my);
         Button bt_make = (Button) this.findViewById(R.id.bt_make);
         Button bt_hot = (Button) this.findViewById(R.id.bt_hot);
-        Button bt_head = (Button) this.findViewById(R.id.bt_head);
+        bt_head = (RoundImageView) this.findViewById(R.id.bt_head);
         bt_head.setBackgroundResource(R.drawable.head_moren);
 
         search_edit = (EditText) findViewById(R.id.main_searchtext);

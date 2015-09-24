@@ -19,7 +19,7 @@
             android:paddingLeft="25dp"
             android:paddingTop="8dp">
 
-            <cn.sdu.online.findteam.resource.RoundImageView
+            <cn.sdu.online.findteam.view.RoundImageView
                 android:id="@+id/buildteam_head_img"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
@@ -387,7 +387,7 @@
                         android:textColor="#000000"
                         android:textSize="16sp" />
 
-                    <cn.sdu.online.findteam.resource.SwitchButton
+                    <cn.sdu.online.findteam.view.SwitchButton
                         android:id="@+id/switch_test"
                         android:layout_width="50dp"
                         android:layout_height="26dp"
@@ -433,7 +433,7 @@
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
-                        <cn.sdu.online.findteam.resource.SwitchButton
+                        <cn.sdu.online.findteam.view.SwitchButton
                             android:id="@+id/switch_see"
                             android:layout_width="50dp"
                             android:layout_height="26dp"
@@ -481,7 +481,7 @@
                             android:textColor="#000000"
                             android:textSize="16sp" />
 
-                        <cn.sdu.online.findteam.resource.SwitchButton
+                        <cn.sdu.online.findteam.view.SwitchButton
                             android:id="@+id/switch_comment"
                             android:layout_width="50dp"
                             android:layout_height="26dp"

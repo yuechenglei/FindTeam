@@ -15,6 +15,8 @@ import com.alibaba.wukong.im.IMEngine;
 import com.alibaba.wukong.im.Message;
 import com.alibaba.wukong.im.MessageListener;
 import com.alibaba.wukong.im.MessageService;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
 import java.util.List;
 
@@ -45,6 +47,8 @@ public class MyApplication extends Application {
     // MainActivity需要加载的fragment
     public static int currentFragment = MainActivity.MAIN_FRAGMENT;
 
+    private static RequestQueue queues;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -57,6 +61,12 @@ public class MyApplication extends Application {
         registerMessageListener();
         registerAuthReceiver();
         RouteRegister.bootwrapped();
+
+        queues = Volley.newRequestQueue(getApplicationContext());
+    }
+
+    public static RequestQueue getQueues(){
+        return queues;
     }
 
     /**

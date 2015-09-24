@@ -18,14 +18,15 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import cn.sdu.online.findteam.resource.RoundImageView;
+
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 
 public class ChangeHeader {
 
     RoundImageView headerImg;
 
-    public final String photo_path = getSDPath() + "/FindTeam";
+    public final static String photo_path = getSDPath() + "/FindTeam";
     public String headerImgname;
 
     public static final int PHOTO_REQUEST = 1001;
@@ -115,7 +116,7 @@ public class ChangeHeader {
         return tempFile;
     }
 
-    public String getSDPath() {
+    public static String getSDPath() {
         File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState()
                 .equals(android.os.Environment.MEDIA_MOUNTED); //判断sd卡是否存在
@@ -126,17 +127,19 @@ public class ChangeHeader {
     }
 
     //从相册中选中的照片设置头像
-    public void setHeaderImgAlbum() {
+    public String setHeaderImgAlbum() {
         if (headerClass == TEAMHEADER) {
             headerImgname = MyApplication.getInstance().getSharedPreferences("teamHeader", Context.MODE_PRIVATE).
                     getString("headerImg", "");
-        }else if (headerClass == PERSONHEADER){
+        } else if (headerClass == PERSONHEADER) {
             headerImgname = MyApplication.getInstance().getSharedPreferences("personHeader", Context.MODE_PRIVATE).
                     getString("headerImg", "");
         }
         Bitmap header = BitmapFactory.decodeFile(photo_path + "/" + headerImgname + ".jpg");
         /*BitmapDrawable bd = new BitmapDrawable(header);*/
+
         headerImg.setImageBitmap(header);
+        return headerImgname;
     }
 
     //从相机中选中照片设置头像

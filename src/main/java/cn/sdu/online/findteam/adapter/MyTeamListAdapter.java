@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
@@ -17,7 +22,7 @@ import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.mob.MyTeamListItem;
-import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 
 /**
@@ -95,8 +100,9 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         }
         myViewHolder.teamIntroduce.setText(listItems.get(groupPosition).get(childPosition).introduce);
         myViewHolder.teamName.setText(listItems.get(groupPosition).get(childPosition).teamName);
-        myViewHolder.teamHeader.setImageResource(listItems.get(groupPosition).get(childPosition).header);
+        myViewHolder.teamHeader.setImageResource(R.drawable.head_moren);
         myViewHolder.parentName.setText(listItems.get(groupPosition).get(childPosition).parent);
+        loadBitmap(listItems.get(groupPosition).get(childPosition).imgPath, myViewHolder.teamHeader);
         switch (childPosition % 4){
             case 0:
                 myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#f3a1ab"));
@@ -114,14 +120,13 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (groupPosition == 0){
+                if (groupPosition == 0) {
                     Intent intent = new Intent();
                     intent.setClass(MyTeamActivity.getInstance(), MySingleTeamActivity.class);
                     intent.putExtra("teamID", listItems.get(0).get(childPosition).teamID);
                     MyApplication.IDENTITY = "队员";
                     MyTeamActivity.getInstance().startActivity(intent);
-                }
-                else {
+                } else {
                     Intent intent = new Intent(MyTeamActivity.getInstance(), OtherTeamActivity.class);
                     MyApplication.IDENTITY = "游客";
                     intent.putExtra("teamID", listItems.get(groupPosition).get(childPosition).teamID);
@@ -130,6 +135,21 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
             }
         });
         return convertView;
+    }
+
+    private void loadBitmap(String imgPath, final RoundImageView imageView) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
     }
 
     class MyViewHolder{

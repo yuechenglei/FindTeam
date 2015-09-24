@@ -3,7 +3,9 @@ package cn.sdu.online.findteam.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,8 +18,13 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -36,6 +43,7 @@ import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.view.TeamPopWindow;
@@ -94,8 +102,11 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
     private TextView mTeamName;
 
     Dialog dialog;
-    String name;
+    String name, imgPath;
     View contentView;
+
+    RoundImageView imageView;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +142,7 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
                             params);
                     JSONObject jsonObject = new JSONObject(jsonData);
                     name = jsonObject.getString("name");
+                    imgPath = jsonObject.getString("imgPath");
 /*                    int maxNum = jsonObject.getInt("maxNum");
                     int currentNum = jsonObject.getInt("currentNum");*/
                     if (name.length() != 0) {
@@ -165,6 +177,7 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             mTeamName.setText(name);
+            loadBitmap(imgPath);
 /*            mTeamIntroduce.setText();*/
             if (dialog != null){
                 dialog.dismiss();
@@ -172,6 +185,22 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
             MySingleTeamActivity.this.setContentView(contentView);
         }
     };
+
+    private void loadBitmap(String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+                relativeLayout.setBackground(new BitmapDrawable(bitmap));
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
+    }
 
     private void findById() {
         mTeamLogTv = (TextView) contentView.findViewById(R.id.id_teamlog_tv);
@@ -183,6 +212,8 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         join = (Button) contentView.findViewById(R.id.join_otherteam);
         teamsetting = (Button) contentView.findViewById(R.id.team_setting_bt);
         mTeamName = (TextView) contentView.findViewById(R.id.team_name);
+        imageView = (RoundImageView) contentView.findViewById(R.id.imageView);
+        relativeLayout = (RelativeLayout) contentView.findViewById(R.id.otherteam_head_background);
     }
 
     private void init() {

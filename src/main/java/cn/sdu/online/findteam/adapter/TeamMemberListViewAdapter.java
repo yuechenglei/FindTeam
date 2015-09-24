@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.TeamMemberListItem;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class TeamMemberListViewAdapter extends BaseAdapter{
 
@@ -56,8 +62,24 @@ public class TeamMemberListViewAdapter extends BaseAdapter{
         }
         viewholder.nametv.setText(listItems.get(position).name);
         viewholder.introductiontv.setText(listItems.get(position).introduction);
+        loadBitmap(listItems.get(position).imgPath, viewholder.headerbmp);
 
         return convertView;
+    }
+
+    private void loadBitmap(String imgPath, final ImageView imageView) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
     }
 
     public class Viewholder{

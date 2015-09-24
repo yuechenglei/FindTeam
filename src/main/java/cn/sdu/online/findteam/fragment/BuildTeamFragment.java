@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.fragment;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,17 +14,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -34,24 +32,25 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.LogRecord;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.entity.User;
+import cn.sdu.online.findteam.net.FormFile;
 import cn.sdu.online.findteam.net.NetCore;
-import cn.sdu.online.findteam.resource.RoundImageView;
-import cn.sdu.online.findteam.resource.SwitchButton;
+import cn.sdu.online.findteam.net.SocketHttpRequester;
+import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.view.RoundImageView;
+import cn.sdu.online.findteam.view.SwitchButton;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
 
-public class BuildTeamFragment extends Fragment implements View.OnClickListener{
+public class BuildTeamFragment extends Fragment implements View.OnClickListener {
 
     public Button bt_confirm;
     public EditText text_teamname, text_introduction;
@@ -80,6 +79,12 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
     public static final int CAMERA_REQUEST = 1002;
     public static final int CAMERA_CUT_REQUEST = 1003;
 
+
+    protected final int UPLOAD_SUCCESS = 1;
+    protected final int UPLOAD_ERROR = 2;
+    protected final int BUILD_SECCESS = 0;
+    Dialog dialog;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +99,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
     }
 
     private void init() {
-
         headerImg = (RoundImageView) view.findViewById(R.id.buildteam_head_img);
         text_teamname = (EditText) view.findViewById(R.id.text_teamname);
         text_introduction = (EditText) view.findViewById(R.id.text_introduction);
@@ -191,18 +195,47 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
 
             case R.id.bt_confirm: {
                 if (checkError()) {
-                    String teamName = text_teamname.getText().toString();
-                    String maxNum = (String) spinner_number.getTag();
-                    String teamEndTime = (String) spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
-                    String teamIntroduce = text_introduction.getText().toString();
-                    String teamCategoryID = (String) spinner_games.getTag();
-                    String logVisible = switchButton2.isChecked() + "";
-                    String teamVerify = switchButton1.isChecked() + "";
+                    dialog = DialogDefine.createLoadingDialog(BuildTeamFragment.this.getActivity(),
+                            "");
+                    dialog.show();
 
-                    new Thread(new BuildTeamRunnable(teamName, maxNum,
-                            teamEndTime, teamIntroduce,
-                            teamCategoryID, logVisible,
-                            teamVerify)).start();
+                    if (headerImgname != null) {
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                super.run();
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("filename", headerImgname + ".jpg");
+                                Message message = new Message();
+                                Bundle bundle = new Bundle();
+                                try {
+                                    //取得上传文件的名称
+                                    File uploadFile = new File(photo_path + "/" + headerImgname + ".jpg");
+                                    //文件上传JavaBean ，通过New调用构造方法（此处是调用第二个构造函数，以输入、输出流上传），audio/mpeg为Mp3文件的内容类型
+                                    //如果不知道上传文件的内容类型，可以在IE浏览器上传一个文件测试，在后台观察源码（通过HttpWatch）
+                                    FormFile formfile = new FormFile(headerImgname + ".jpg", uploadFile, "file", "image/jpeg");
+                                    boolean flag = SocketHttpRequester.post(NetCore.upLoadInfoAddr, params, formfile);
+                                    if (flag) {
+                                        bundle.putInt("code", UPLOAD_SUCCESS);
+                                        bundle.putString("imgPath", NetCore.downloadAddr + "?filename=" + headerImgname + ".jpg");
+                                        message.setData(bundle);
+                                        handler.sendMessage(message);
+                                    } else {
+                                        bundle.putInt("code", UPLOAD_ERROR);
+                                        message.setData(bundle);
+                                        handler.sendMessage(message);
+                                    }
+                                } catch (Exception e) {
+                                    bundle.putInt("code", UPLOAD_ERROR);
+                                    message.setData(bundle);
+                                    handler.sendMessage(message);
+                                }
+                            }
+                        }.start();
+                    } else {
+                        Toast.makeText(BuildTeamFragment.this.getActivity(), "上传的文件路径出错", Toast.LENGTH_LONG).show();
+                    }
+
                     break;
                 }
             }
@@ -251,7 +284,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
                                  // 团队介绍， 团队分类ID
                                  String teamIntroduce, String teamCategoryID,
                                  // 日志是否可见， 是否需要审核
-                                 String logVisible, String teamVerify) {
+                                 String logVisible, String teamVerify, String imgPath) {
             user = new User();
             user.setTeamName(teamName);
             user.setTeamCategoryID(teamCategoryID);
@@ -260,10 +293,12 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
             user.setTeamNum(teamNum);
             user.setTeamVerify(teamVerify);
             user.setLogVisible(logVisible);
+            user.setImgPath(imgPath);
         }
 
         @Override
         public void run() {
+
             try {
                 String jsonData = new NetCore().buildTeam(user);
                 Bundle bundle = new Bundle();
@@ -298,6 +333,9 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
                     break;
 
                 case 0:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                     AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
                     MainActivity.mainActivity.getSupportFragmentManager().beginTransaction().remove(MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).commit();
                     MainActivity.mainActivity.getList().remove(MainActivity.BUILDTEAM_FRAGMENT);
@@ -452,5 +490,59 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener{
                 + ".jpg");// 赋值给新头像容器
         headerImg.setImageBitmap(headerBmp);// 反应于界面
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            int code = bundle.getInt("code");
+            switch (code) {
+                case UPLOAD_SUCCESS:
+                    //通过Map构造器传参
+                    String imgPath = bundle.getString("imgPath");
+                    String teamName = text_teamname.getText().toString();
+                    String maxNum = (String) spinner_number.getTag();
+                    String teamEndTime = (String) spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
+                    String teamIntroduce = text_introduction.getText().toString();
+                    String teamCategoryID = (String) spinner_games.getTag();
+                    String logVisible = switchButton2.isChecked() ? "1" : "0";
+                    String teamVerify = switchButton1.isChecked() ? "1" : "0";
+                    new Thread(new BuildTeamRunnable(teamName, maxNum,
+                            teamEndTime, teamIntroduce,
+                            teamCategoryID, logVisible,
+                            teamVerify, imgPath)).start();
+                    break;
+
+                case BUILD_SECCESS:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+
+                    AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
+                    MainActivity.mainActivity.getSupportFragmentManager().beginTransaction().remove(MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).commit();
+                    MainActivity.mainActivity.getList().remove(MainActivity.BUILDTEAM_FRAGMENT);
+                    MainActivity.mainActivity.getList().add(MainActivity.BUILDTEAM_FRAGMENT, new BuildTeamFragment());
+                    MainActivity.mainActivity.getSupportFragmentManager().beginTransaction().add(R.id.container, MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).
+                            show(MainActivity.mainActivity.getList().get(MainActivity.BUILDTEAM_FRAGMENT)).commit();
+                    break;
+
+                case UPLOAD_ERROR:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    Toast.makeText(MainActivity.mainActivity, "上传失败！", Toast.LENGTH_LONG).show();
+                    break;
+
+                default:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+
+    };
 }
 

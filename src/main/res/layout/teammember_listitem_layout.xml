@@ -10,7 +10,7 @@
         android:id="@+id/teammem_listview_headbmp"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@drawable/teammember_header"
+        android:src="@drawable/head_moren"
         android:scaleType="centerCrop"/>
 
     <RelativeLayout

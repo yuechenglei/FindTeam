@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.resource;
+package cn.sdu.online.findteam.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,6 +17,7 @@ import android.view.ViewParent;
 import android.widget.CheckBox;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.resource.FrameAnimationController;
 
 public class SwitchButton extends CheckBox {
     private Paint mPaint;

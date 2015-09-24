@@ -12,9 +12,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.DrawableRes;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,19 +23,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.entity.User;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
+import cn.sdu.online.findteam.net.FormFile;
 import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.net.SocketHttpRequester;
 import cn.sdu.online.findteam.resource.DialogDefine;
-import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.ChangeHeader;
@@ -54,12 +59,19 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     private RelativeLayout relativeLayout;
     private RoundImageView head;
 
+    public String bmpName;
+
     private ChangeHeader changeHeader;
     Dialog dialog;
     View contentView;
     JSONObject person;
     String gender = "男";
     private final int maxNun = 40;
+
+    String openId;
+
+    protected final int UPLOAD_SUCCESS = 3;
+    protected final int UPLOAD_ERROR = 4;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,8 +80,14 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
 
         dialog = DialogDefine.createLoadingDialog(InfoPersonActivity.this,
                 "加载中...");
-        isEdited = false;
         dialog.show();
+        isEdited = false;
+        if (getIntent().getExtras() != null) {
+            openId = getIntent().getExtras().getString("openId");
+        } else {
+            openId = "";
+        }
+
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
             dialog.dismiss();
             AndTools.showToast(InfoPersonActivity.this, "当前网络不可用！");
@@ -85,19 +103,14 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         @Override
         public void run() {
             try {
-                String info = new NetCore().getUserInfo("");
-                if (!info.equals("")) {
-                    JSONTokener jsonParser = new JSONTokener(info);
-                    try {
-                        person = (JSONObject) jsonParser.nextValue();
-                        if (person != null) {
-                            handler.sendEmptyMessage(0);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                String info = new NetCore().getUserInfo(openId);
+                if (info.trim().length() != 0) {
+                    person = new JSONObject(info);
+                    handler.sendEmptyMessage(0);
                 }
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
@@ -110,7 +123,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         ModifyUserInfo(String name, String contact,
                        String password, String introduce,
                        String address, String school,
-                       String sex) {
+                       String sex, String imgPath) {
             user = new User();
             user.setName(name);
             user.setPassword(password);
@@ -119,6 +132,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
             user.setAddress(address);
             user.setSchool(school);
             user.setSex(sex);
+            user.setImgPath(imgPath);
         }
 
         @Override
@@ -142,7 +156,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                     message.setData(bundle);
                     modifyHandler.sendMessage(message);
                 } else {
-                    AndTools.showToast(InfoPersonActivity.this, "未知错误");
+                    AndTools.showToast(InfoPersonActivity.this, "未知错误！");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -156,12 +170,24 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
             switch (bundle.getInt("code")) {
+                case UPLOAD_SUCCESS:
+                    Log.v("UploadUtil122", "上传成功");
+                    String filename = bundle.getString("filename");
+                    Log.v("UploadUtil122", NetCore.downloadAddr + "?filename=" + filename);
+                    modifyInfo(NetCore.downloadAddr + "?filename=" + filename);
+                    break;
+
+                case UPLOAD_ERROR:
+                    Log.v("UploadUtil1", "上传失败");
+                    AndTools.showToast(InfoPersonActivity.this, "未知错误！");
+                    break;
+
                 case NetCore.MODIFY_SUCCESS:
                     if (dialog != null) {
                         dialog.dismiss();
                     }
                     if (bundle.getString("msg") == null || bundle.getString("msg").trim().equals("")) {
-                        AndTools.showToast(InfoPersonActivity.this, "未知错误");
+                        AndTools.showToast(InfoPersonActivity.this, "未知错误！");
                         return;
                     }
                     AndTools.showToast(InfoPersonActivity.this, bundle.getString("msg"));
@@ -185,26 +211,51 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            try {
-                text_phonenumber.setText(person.getString("contact"));
-                text_nickname.setText(person.getString("username"));
-                text_introduction.setText(person.getString("introduce"));
-                text_email.setText(person.getString("mail"));
-                text_realname.setText(person.getString("realName"));
-                text_gender.setText(person.getString("sex"));
-                text_address.setText(person.getString("address"));
-                text_school.setText(person.getString("college"));
-                text_ID.setText(person.getString("id"));
-                text_openID.setText(person.getString("openId"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            switch (msg.what) {
+                case 0:
+                    String imgPath = "";
+                    try {
+                        text_phonenumber.setText(person.getString("contact"));
+                        text_nickname.setText(person.getString("username"));
+                        text_introduction.setText(person.getString("introduce"));
+                        text_email.setText(person.getString("mail"));
+                        text_realname.setText(person.getString("realName"));
+                        text_gender.setText(person.getString("sex"));
+                        text_address.setText(person.getString("address"));
+                        text_school.setText(person.getString("college"));
+                        text_ID.setText(person.getString("id"));
+                        text_openID.setText(person.getString("openId"));
+                        imgPath = person.getString("imgPath");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    loadBitmap(imgPath);
+                    relativeLayout.setBackground(head.getDrawable());
+                    InfoPersonActivity.this.setContentView(contentView);
+                    break;
             }
-            if (dialog != null) {
-                dialog.dismiss();
-            }
-            InfoPersonActivity.this.setContentView(contentView);
+
         }
     };
+
+    private void loadBitmap(String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                head.setImageBitmap(bitmap);
+                relativeLayout.setBackground(new BitmapDrawable(bitmap));
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
+    }
 
     private void findview() {
         contentView = View.inflate(InfoPersonActivity.this, R.layout.activity_info_person, null);
@@ -240,7 +291,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
         gender = checkedId == R.id.sex_man ? "男" : "女";
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -258,16 +308,45 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                         AndTools.showToast(InfoPersonActivity.this, "亲，最多只能输入40个字哦！");
                         return;
                     }
+                    dialog = DialogDefine.createLoadingDialog(InfoPersonActivity.this, "");
                     dialog.show();
-                    new Thread(new ModifyUserInfo(
-                            text_realname.getText().toString(),
-                            text_phonenumber.getText().toString(),
-                            MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginPassword", ""),
-                            text_introduction.getText().toString(),
-                            text_address.getText().toString(),
-                            text_school.getText().toString(),
-                            gender))
-                            .start();
+                    if (bmpName != null) {
+                        Log.v("UploadUtil1", bmpName);
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("filename", bmpName + ".jpg");
+                                Message message = new Message();
+                                Bundle bundle = new Bundle();
+                                try {
+                                    //取得上传文件的名称
+                                    File uploadFile = new File(ChangeHeader.photo_path + "/" + bmpName + ".jpg");
+                                    FormFile formfile = new FormFile(bmpName + ".jpg", uploadFile, "file", "image/jpeg");
+                                    boolean flag = SocketHttpRequester.post(NetCore.upLoadInfoAddr, params, formfile);
+                                    if (flag) {
+                                        Log.v("UploadUtil122", flag + "");
+                                        bundle.putInt("code", UPLOAD_SUCCESS);
+                                        bundle.putString("filename", bmpName + ".jpg");
+                                        message.setData(bundle);
+                                        modifyHandler.sendMessage(message);
+                                    } else {
+                                        Log.v("UploadUtil122", "错！！");
+                                        bundle.putInt("code", UPLOAD_ERROR);
+                                        message.setData(bundle);
+                                        modifyHandler.sendMessage(message);
+                                    }
+                                } catch (Exception e) {
+                                    bundle.putInt("code", UPLOAD_ERROR);
+                                    message.setData(bundle);
+                                    modifyHandler.sendMessage(message);
+                                }
+                            }
+                        }.start();
+
+                    } else {
+                        modifyInfo("");
+                    }
                 }
                 break;
 
@@ -327,6 +406,18 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                 }
                 break;
         }
+    }
+
+    private void modifyInfo(String filename) {
+        new Thread(new ModifyUserInfo(
+                text_realname.getText().toString(),
+                text_phonenumber.getText().toString(),
+                MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginPassword", ""),
+                text_introduction.getText().toString(),
+                text_address.getText().toString(),
+                text_school.getText().toString(),
+                gender, filename))
+                .start();
     }
 
     private void editInfo() {
@@ -412,7 +503,7 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
             case BuildTeamFragment.PHOTO_REQUEST:// 相册返回
                 switch (resultCode) {
                     case Activity.RESULT_OK:
-                        changeHeader.setHeaderImgAlbum();
+                        bmpName = changeHeader.setHeaderImgAlbum();
                         relativeLayout.setBackground(new BitmapDrawable(head.getBmp()));
                         break;
                 }

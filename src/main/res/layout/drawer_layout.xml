@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:background="@drawable/headphoto_background"
+    android:background="@drawable/head_moren"
     android:clickable="true">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC4090ff" />
+        android:background="#B24090ff" />
 
     <LinearLayout
         android:id="@+id/linear_top"
@@ -21,12 +21,12 @@
         android:layout_marginTop="12dp"
         android:orientation="vertical">
 
-        <Button
+        <cn.sdu.online.findteam.view.RoundImageView
             android:id="@+id/bt_head"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/headphoto" />
+            android:src="@drawable/head_moren" />
 
         <LinearLayout
             android:layout_width="match_parent"

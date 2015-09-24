@@ -2,7 +2,10 @@ package cn.sdu.online.findteam.activity;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,11 +13,24 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.alibaba.wukong.Callback;
+import com.alibaba.wukong.im.Conversation;
+import com.alibaba.wukong.im.ConversationService;
+import com.alibaba.wukong.im.IMEngine;
+import com.alibaba.wukong.im.MessageBuilder;
+import com.alibaba.wukong.im.MessageContent;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -33,10 +49,11 @@ import cn.sdu.online.findteam.fragment.TeamMemberFragment;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DepthPageTransformer;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
-public class OtherTeamActivity extends FragmentActivity {
+public class OtherTeamActivity extends FragmentActivity implements View.OnClickListener {
     public static Context mContext;
 
     private List<Fragment> mFragmentList = new ArrayList<Fragment>();
@@ -77,9 +94,15 @@ public class OtherTeamActivity extends FragmentActivity {
      * 返回按钮
      */
     private ImageView backimg;
+    private Button join_btn;
     View contentView;
     Dialog dialog;
-    String introduce, name;
+    String imgPath, name;
+    String teamID;
+    long userOpenID;
+
+    RoundImageView imageView;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +113,7 @@ public class OtherTeamActivity extends FragmentActivity {
         dialog.show();
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
             AndTools.showToast(this, "当前网络不可用！");
-            if (dialog != null){
+            if (dialog != null) {
                 dialog.dismiss();
             }
             return;
@@ -98,26 +121,27 @@ public class OtherTeamActivity extends FragmentActivity {
         contentView = View.inflate(this, R.layout.otherteam_layout, null);
 /*        setContentView(R.layout.otherteam_layout);*/
         mContext = OtherTeamActivity.this;
+        teamID = OtherTeamActivity.this.getIntent().
+                getExtras().getString("teamID");
+        userOpenID = OtherTeamActivity.this.getIntent().
+                getExtras().getLong("userOpenId");
         findById();
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 super.run();
-                final String teamID = OtherTeamActivity.this.getIntent().
-                        getExtras().getString("teamID");
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("team.id", teamID));
                 try {
                     String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
                             params);
+                    Log.v("UploadUtil122", jsonData);
                     JSONObject jsonObject = new JSONObject(jsonData);
                     name = jsonObject.getString("name");
+                    imgPath = jsonObject.getString("imgPath");
 /*                    int maxNum = jsonObject.getInt("maxNum");
                     int currentNum = jsonObject.getInt("currentNum");*/
                     if (name.length() != 0) {
-                        Bundle bundle = new Bundle();
-                        Message message = new Message();
-                        message.setData(bundle);
                         loadTeam.sendEmptyMessage(0);
                     }
                 } catch (IOException e) {
@@ -139,18 +163,36 @@ public class OtherTeamActivity extends FragmentActivity {
         }
     }
 
-    Handler loadTeam = new Handler(){
+    Handler loadTeam = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             mTeamName.setText(name);
+            loadBitmap(imgPath);
 /*            mTeamIntroduce.setText();*/
-            if (dialog != null){
+            if (dialog != null) {
                 dialog.dismiss();
             }
             OtherTeamActivity.this.setContentView(contentView);
+
         }
     };
+
+    private void loadBitmap(String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+                relativeLayout.setBackground(new BitmapDrawable(bitmap));
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
+    }
 
     private void findById() {
         mTeamName = (TextView) contentView.findViewById(R.id.team_name);
@@ -160,13 +202,12 @@ public class OtherTeamActivity extends FragmentActivity {
         mTeamMemTv = (TextView) contentView.findViewById(R.id.id_teammem_tv);
         mTabLineIv = (ImageView) contentView.findViewById(R.id.id_tab_line_iv);
         mPageVp = (ViewPager) contentView.findViewById(R.id.id_page_vp);
+        imageView = (RoundImageView) contentView.findViewById(R.id.imageView);
+        relativeLayout = (RelativeLayout) contentView.findViewById(R.id.otherteam_head_background);
         backimg = (ImageView) contentView.findViewById(R.id.otherteam_back_img);
-        backimg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OtherTeamActivity.this.finish();
-            }
-        });
+        backimg.setOnClickListener(OtherTeamActivity.this);
+        join_btn = (Button) contentView.findViewById(R.id.join_otherteam);
+        join_btn.setOnClickListener(OtherTeamActivity.this);
     }
 
     private void init() {
@@ -294,32 +335,137 @@ public class OtherTeamActivity extends FragmentActivity {
     }
 
     private void setTabListener() {
-        teaminfo_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(0);
-                MyApplication.ohterTeam_CurrentPage = 0;
-            }
-        });
+        teaminfo_ll.setOnClickListener(OtherTeamActivity.this);
 
-        teammem_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(1);
-                MyApplication.ohterTeam_CurrentPage = 1;
-            }
-        });
+        teammem_ll.setOnClickListener(OtherTeamActivity.this);
 
-        teamlog_ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPageVp.setCurrentItem(2);
-                MyApplication.ohterTeam_CurrentPage = 3;
-            }
-        });
+        teamlog_ll.setOnClickListener(OtherTeamActivity.this);
     }
 
     public static Context getContext() {
         return mContext;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.otherteam_back_img:
+                OtherTeamActivity.this.finish();
+                break;
+
+            case R.id.join_otherteam:
+                dialog = DialogDefine.createLoadingDialog(OtherTeamActivity.this, "");
+                dialog.show();
+
+                new Thread(){
+                    @Override
+                    public void run() {
+                        String jsonData = null;
+                        try {
+                            jsonData = new NetCore().joinTeam(teamID);
+                            JSONObject jsonObject = new JSONObject(jsonData);
+                            Bundle bundle = new Bundle();
+                            bundle.putString("msg", jsonObject.getString("msg"));
+                            Message message = new Message();
+                            message.setData(bundle);
+                            jointeamHander.sendMessage(message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }.start();
+                break;
+
+            case R.id.id_teaminfo_ll:
+                mPageVp.setCurrentItem(0);
+                MyApplication.ohterTeam_CurrentPage = 0;
+                break;
+
+            case R.id.id_teammem_ll:
+                mPageVp.setCurrentItem(1);
+                MyApplication.ohterTeam_CurrentPage = 1;
+                break;
+
+            case R.id.id_tab_teamlog_ll:
+                mPageVp.setCurrentItem(2);
+                MyApplication.ohterTeam_CurrentPage = 3;
+                break;
+        }
+    }
+
+    Handler jointeamHander = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            String jsonMsg = bundle.getString("msg", "出现异常错误！");
+            if (jsonMsg.equals("您的请求已通过")) {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(OtherTeamActivity.this, jsonMsg);
+                Intent intent = new Intent(OtherTeamActivity.this, MyTeamActivity.class);
+                intent.putExtra("teamID", teamID);
+                MyApplication.IDENTITY = "队员";
+                OtherTeamActivity.this.startActivity(intent);
+                overridePendingTransition(0, 0);
+                OtherTeamActivity.this.finish();
+            } else if (jsonMsg.equals("您的请求已申请")) {
+                String sysMsg = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", "");
+                String joinMsg = sysMsg + "  " + "申请加入你的队伍" + "  " + name;
+
+                final com.alibaba.wukong.im.Message message = IMEngine.getIMService(MessageBuilder.class).buildTextMessage(joinMsg);
+
+                IMEngine.getIMService(ConversationService.class).createConversation(new com.alibaba.wukong.Callback<Conversation>() {
+
+                    @Override
+                    public void onSuccess(Conversation conversation) {
+                        //ToDo 在这处理创建成功的会话： conversation
+                        message.sendTo(conversation, backMsg);
+                        conversation.removeAndClearMessage();
+                    }
+
+                    @Override
+                    public void onException(String code, String reason) {
+                        //会话创建失败异常处理
+                    }
+
+                    @Override
+                    public void onProgress(Conversation data, int progress) {
+                        // Do Nothing
+                    }
+                }, "<#$_*/ + join + /*_$#>"+teamID, null, message, Conversation.ConversationType.GROUP, userOpenID);
+            }
+            else {
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                AndTools.showToast(OtherTeamActivity.this, jsonMsg);
+            }
+        }
+    };
+
+    Callback<com.alibaba.wukong.im.Message> backMsg = new Callback<com.alibaba.wukong.im.Message>() {
+        @Override
+        public void onSuccess(com.alibaba.wukong.im.Message message) {
+            MessageContent msgContent = message.messageContent();
+            Log.v("TAG12313212313", "消息内容：" + msgContent.toString());
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            AndTools.showToast(OtherTeamActivity.this, "您的请求已申请");
+        }
+
+        @Override
+        public void onException(String s, String s1) {
+            Log.v("TAG12313212313", "code=" + s + " reason=" + s1);
+        }
+
+        @Override
+        public void onProgress(com.alibaba.wukong.im.Message message, int i) {
+
+        }
+    };
 }

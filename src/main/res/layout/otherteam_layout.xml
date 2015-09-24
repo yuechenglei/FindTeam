@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.15"
-        android:background="@drawable/otherteam_headtmp">
+        android:background="@drawable/head_moren">
 
         <ImageView
             android:layout_width="match_parent"
@@ -35,19 +35,19 @@
             android:background="@drawable/team_setting_bt"
             android:visibility="gone" />
 
-        <cn.sdu.online.findteam.resource.RoundImageView
+        <cn.sdu.online.findteam.view.RoundImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/otherteam_headtmp" />
+            android:src="@drawable/head_moren" />
 
         <TextView
             android:id="@+id/team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageView"
+            android:layout_below="@id/imageView"
             android:layout_centerHorizontal="true"
             android:text="赵亮夜行队"
             android:textColor="@color/white_color"

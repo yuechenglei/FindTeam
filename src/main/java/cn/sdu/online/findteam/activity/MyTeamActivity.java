@@ -110,14 +110,15 @@ public class MyTeamActivity extends Activity {
                     String name = teamJson.getString("name");
                     String teamID = teamJson.getString("id");
                     String introduce = teamJson.getString("introduce");
+                    String imgPath = teamJson.getString("imgPath");
                     JSONObject category = new JSONObject(teamJson.getString("category"));
                     String parentName = category.getString("name");
                     if (status.equals(NetCore.HAS_ENTERED)) {
-                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
+                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     } else if (status.equals(NetCore.HAS_OFFERED)) {
-                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
+                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     } else if (status.equals(NetCore.HAS_REFUSED)) {
-                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID));
+                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     }
                 }
                 loadTeamHandler.sendEmptyMessage(0);
@@ -129,11 +130,11 @@ public class MyTeamActivity extends Activity {
         }
     }
 
-    Handler loadTeamHandler = new Handler(){
+    Handler loadTeamHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             adapter.notifyDataSetChanged();
-            if (dialog != null){
+            if (dialog != null) {
                 dialog.dismiss();
             }
             MyTeamActivity.this.setContentView(contentView);

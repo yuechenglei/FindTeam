@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.ChatActivityListItem;
-import cn.sdu.online.findteam.resource.RoundImageView;
+import cn.sdu.online.findteam.view.RoundImageView;
 
 public class ChatActivity extends Activity implements View.OnClickListener,View.OnTouchListener {
     private ListView mListView;

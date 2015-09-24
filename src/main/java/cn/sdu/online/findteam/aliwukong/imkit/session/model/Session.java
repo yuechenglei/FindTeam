@@ -16,14 +16,15 @@ import com.alibaba.wukong.im.Message;
 import cn.sdu.online.findteam.aliwukong.imkit.base.DisplayListItem;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ItemMenuAdapter;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ListItemDelete;
+import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.business.SessionServiceFacade;
 import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
 
 /**
  * Created by wn on 2015/8/14.
  */
-public abstract class Session extends ProxySession implements DisplayListItem<SessionViewHolder>
-       /* ItemMenuAdapter.onMenuListener, ListItemDelete*/ {
+public abstract class Session extends ProxySession implements DisplayListItem<ViewHolder>{
+/* ItemMenuAdapter.onMenuListener, ListItemDelete*/
 
     public static final String DOMAIN_CATEGORY = "session_list";
 
@@ -83,16 +84,76 @@ public abstract class Session extends ProxySession implements DisplayListItem<Se
     }
 
     @Override
-    public void onShow(Context context, SessionViewHolder viewHolder, String tag) {
+    public void onShow(Context context, ViewHolder viewHolder, String tag) {
+
         if (TextUtils.isEmpty((tag))) {
 
-            refreshAll(context, viewHolder);
+            refreshAll(context, (SessionViewHolder) viewHolder);
 
         } else if ("unread".equals(tag)) {
-            refreshUnreadCount(viewHolder);
+            refreshUnreadCount((SessionViewHolder) viewHolder);
         } else if ("content".equals(tag)) {
-            refreshContent(viewHolder);
+            refreshContent((SessionViewHolder) viewHolder);
         }
+    }
+
+    @Override
+    public void onJoinShow(Context context, ViewHolder viewHolder, String tag) {
+        if (TextUtils.isEmpty((tag))) {
+
+            refreshAll(context, (JoinViewHolder) viewHolder);
+
+        } else if ("unread".equals(tag)) {
+            refreshUnreadCount((JoinViewHolder) viewHolder);
+        } else if ("content".equals(tag)) {
+            refreshContent((JoinViewHolder) viewHolder);
+        }
+    }
+
+    private void refreshAll(Context context, JoinViewHolder viewHolder) {
+        refreshTime(viewHolder);
+        refreshUnreadCount(viewHolder);
+        refreshSilence(viewHolder);
+        refreshContent(viewHolder);
+        refreshAvatar(context, viewHolder);
+    }
+
+    protected void refreshTime(JoinViewHolder viewHolder) {
+        viewHolder.showTime(getLastMessageCreateTime());
+    }
+
+    protected void refreshSilence(JoinViewHolder viewHolder) {
+        int silenceImgVisibility = isNotificationEnabled() ? View.GONE : View.VISIBLE;
+        viewHolder.sessionSilenceImgView.setVisibility(silenceImgVisibility);
+    }
+
+    protected void refreshUnreadCount(JoinViewHolder viewHolder) {
+        viewHolder.showSessionUnread(unreadMessageCount());
+    }
+
+    protected void refreshContent(JoinViewHolder viewHolder) {
+        if (latestMessage() == null || latestMessage().messageContent() == null) {
+            viewHolder.sessionContentTxt.setText("");
+            return;
+        }
+        //显示状态之前应该处理一下是否是发送中的消息
+        Message msg = latestMessage();
+        // 发送状态
+        if (msg.status() == Message.MessageStatus.OFFLINE) {
+            viewHolder.showSessionStatusFail();
+        } else if (msg.status() == Message.MessageStatus.SENDING) {
+            viewHolder.showSessionStatusSending();
+        } else {
+            viewHolder.mMessageStatus.setVisibility(View.GONE);
+        }
+//            viewHolder.sessionContentTxt.setText(getContent());
+        setSessionContent(viewHolder.sessionContentTxt);
+    }
+
+    protected void refreshAvatar(Context context, JoinViewHolder viewHolder) {
+        int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
+        viewHolder.sessionIconView.setVisibility(iconVisibility);
+        showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));
     }
 
     private void refreshAll(Context context, SessionViewHolder viewHolder) {

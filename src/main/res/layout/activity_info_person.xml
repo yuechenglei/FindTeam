@@ -14,7 +14,7 @@
             android:id="@+id/info_person_headlayout"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:background="@drawable/otherteam_headtmp">
+            android:background="@drawable/head_moren">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -29,13 +29,13 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/singlecompetition_backbt_bg" />
 
-            <cn.sdu.online.findteam.resource.RoundImageView
+            <cn.sdu.online.findteam.view.RoundImageView
                 android:id="@+id/head"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_centerInParent="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/otherteam_headtmp" />
+                android:src="@drawable/head_moren" />
 
             <TextView
                 android:id="@+id/text_nickname"

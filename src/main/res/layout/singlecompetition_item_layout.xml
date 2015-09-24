@@ -4,7 +4,7 @@
     android:layout_height="140dp"
     android:orientation="horizontal">
 
-    <cn.sdu.online.findteam.resource.RoundImageView
+    <cn.sdu.online.findteam.view.RoundImageView
         android:id="@+id/singlecp_item_img"
         android:layout_width="100dp"
         android:layout_height="100dp"

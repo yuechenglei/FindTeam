@@ -11,7 +11,7 @@
         android:layout_weight="1"
         android:orientation="horizontal">
 
-        <cn.sdu.online.findteam.resource.RoundImageView
+        <cn.sdu.online.findteam.view.RoundImageView
             android:id="@+id/myteam_teamHeader"
             android:layout_width="80dp"
             android:layout_height="80dp"

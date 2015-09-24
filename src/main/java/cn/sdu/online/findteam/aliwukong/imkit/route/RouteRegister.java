@@ -12,12 +12,14 @@ import cn.sdu.online.findteam.aliwukong.imkit.chat.model.TextSendMessage;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.GroupSession;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.SingleSession;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.UnKownSession;
 
 public class RouteRegister {
 
     public static void bootwrapped() {
         reg(GroupSession.class, Session.DOMAIN_CATEGORY);
         reg(SingleSession.class, Session.DOMAIN_CATEGORY);
+        reg(UnKownSession.class, Session.DOMAIN_CATEGORY);
         reg(TextReceiveMessage.class, ChatMessage.DOMAIN_CATEGORY);
         reg(TextSendMessage.class, ChatMessage.DOMAIN_CATEGORY);
         reg(SysmsgMessage.class, ChatMessage.DOMAIN_CATEGORY);

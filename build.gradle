@@ -37,7 +37,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.ikimuhendis:ldrawer:0.1'
     compile 'com.nineoldandroids:library:2.4.0+'
-    compile files('libs/badgeview.jar')
     compile(name: 'wukongim_1.2.3', ext: 'aar')
     compile(name: 'doraemon-multimedia-1.9.1', ext: 'aar')
     provided 'com.squareup.dagger:dagger-compiler:1.2.2'

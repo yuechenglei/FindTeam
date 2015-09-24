@@ -125,7 +125,6 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
         TeamInformationFragment.this.getActivity().startActivityForResult(intent, 1);
     }
 
-
     public void setInfor(String infor){
         inforTv.setText(infor);
     }

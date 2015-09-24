@@ -19,7 +19,9 @@ public class User implements Serializable{
             // 团队介绍， 团队分类ID
             teamIntroduce, teamCategoryID,
             // 日志是否可见， 是否需要审核
-            logVisible, teamVerify;
+            logVisible, teamVerify,
+            // 头像路径
+            imgPath;
     private Long ID;
 
     public String getName(){
@@ -142,5 +144,13 @@ public class User implements Serializable{
 
     public void setTeamVerify(String teamVerify){
         this.teamVerify = teamVerify;
+    }
+
+    public void setImgPath(String imgPath){
+        this.imgPath = imgPath;
+    }
+
+    public String getImgPath(){
+        return imgPath;
     }
 }

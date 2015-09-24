@@ -7,7 +7,9 @@ import android.widget.ListView;
 
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.ChatViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.ReceiveViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
 import cn.sdu.online.findteam.aliwukong.user.UserProfileActivity;
 
 /**
@@ -42,5 +44,10 @@ public class ReceiveMessage extends ChatMessage{
                 context.startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onJoinShow(Context context, ChatViewHolder viewHolder, String tag) {
+
     }
 }

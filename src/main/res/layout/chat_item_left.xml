@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <cn.sdu.online.findteam.resource.RoundImageView
+    <cn.sdu.online.findteam.view.RoundImageView
         android:id="@+id/img_userimgleft"
         android:layout_width="45dp"
         android:layout_height="45dp"

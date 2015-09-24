@@ -2,6 +2,7 @@ package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.alibaba.wukong.im.Conversation;
@@ -32,18 +31,20 @@ import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.MySingleTeamActivity;
-import cn.sdu.online.findteam.activity.MyTeamActivity;
 import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
 import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
-import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
 import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.MessageContent;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 
 public class SingleCompetitionListAdapter extends BaseAdapter {
 
@@ -77,7 +78,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = inflater.inflate(R.layout.singlecompetition_item_layout, null);
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.singlecp_item_img);
+            viewHolder.imageView = (RoundImageView) convertView.findViewById(R.id.singlecp_item_img);
             viewHolder.teamname = (TextView) convertView.findViewById(R.id.singlecp_item_teamname);
             viewHolder.personnum = (TextView) convertView.findViewById(R.id.singlecp_item_personnum);
             viewHolder.line1 = convertView.findViewById(R.id.singlecp_item_line1);
@@ -91,11 +92,16 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         viewHolder.teamname.setText(listItems.get(position).teamname);
-        viewHolder.personnum.setText("缺" + listItems.get(position).personnum + "人");
+        viewHolder.personnum.setText("缺" + (listItems.get(position).maxNum - listItems.get(position).currentNum) + "人");
         viewHolder.content.setText(listItems.get(position).content);
+        viewHolder.imageView.setImageResource(R.drawable.head_moren);
+        if (listItems.get(position).imgPath.trim().length() != 0) {
+            loadBitmap(viewHolder.imageView, listItems.get(position).imgPath);
+        }
         viewHolder.look.setTag(position);
         viewHolder.join.setTag(position);
 
+        currentID = listItems.get(position).userOpenID;
         viewHolder.look.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +114,20 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     if (SingleCompetitionActivity.dialog != null) {
                         SingleCompetitionActivity.dialog.dismiss();
                     }
+                    return;
+                }
+
+                if (MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE)
+                        .getLong("loginID", 0) == currentID) {
+                    Log.v("UploadUtil", currentID + "");
+                    Intent intent = new Intent();
+                    intent.setClass(SingleCompetitionActivity.getContext(), MySingleTeamActivity.class);
+                    intent.putExtra("teamID", listItems.get(position).teamID);
+                    MyApplication.IDENTITY = "队长";
+                    if (SingleCompetitionActivity.dialog != null) {
+                        SingleCompetitionActivity.dialog.dismiss();
+                    }
+                    SingleCompetitionActivity.getContext().startActivity(intent);
                     return;
                 }
 
@@ -149,7 +169,6 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
             }
         });
 
-
         viewHolder.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,7 +184,6 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     return;
                 }
 
-                currentID = listItems.get(position).userOpenID;
                 new Thread() {
                     @Override
                     public void run() {
@@ -194,7 +212,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        ImageView imageView;
+        RoundImageView imageView;
         TextView teamname;
         TextView personnum;
         View line1;
@@ -204,6 +222,20 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
         Button join;
     }
 
+    private void loadBitmap(final RoundImageView imageView, String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
+    }
 
     Handler loadteamHander = new Handler() {
         @Override
@@ -219,15 +251,17 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                 String name = bundle.getString("name");
                 String teamID = bundle.getString("teamID");
                 String sysMsg = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", "");
-                String joinMsg = "<#$_*" + teamID + "*_$#>"+sysMsg + " " + "申请加入你的队伍" + " " + name;
+                String joinMsg = sysMsg + "  " + "申请加入你的队伍" + "  " + name;
 
                 final com.alibaba.wukong.im.Message message = IMEngine.getIMService(MessageBuilder.class).buildTextMessage(joinMsg);
+
                 IMEngine.getIMService(ConversationService.class).createConversation(new com.alibaba.wukong.Callback<Conversation>() {
 
                     @Override
                     public void onSuccess(Conversation conversation) {
                         //ToDo 在这处理创建成功的会话： conversation
                         message.sendTo(conversation, backMsg);
+                        conversation.removeAndClearMessage();
                     }
 
                     @Override
@@ -239,7 +273,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     public void onProgress(Conversation data, int progress) {
                         // Do Nothing
                     }
-                }, null, null, message, Conversation.ConversationType.CHAT, currentID);
+                }, "<#$_*/ + join + /*_$#>" + teamID, null, message, Conversation.ConversationType.GROUP, currentID);
 
             } else if (jsonMsg.equals("队员")) {
                 String teamID = bundle.getString("teamID");
@@ -256,6 +290,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                 Intent intent = new Intent();
                 intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
                 intent.putExtra("teamID", teamID);
+                intent.putExtra("userOpenId", currentID);
                 MyApplication.IDENTITY = "游客";
                 if (SingleCompetitionActivity.dialog != null) {
                     SingleCompetitionActivity.dialog.dismiss();

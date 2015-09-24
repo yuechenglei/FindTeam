@@ -69,12 +69,15 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     public static BadgeView badgeView;
 
+    private static Context instance;
+
 /*    private static Bundle savedInstanceState;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 /*        this.savedInstanceState = savedInstanceState;*/
         super.onCreate(savedInstanceState);
+        instance = this;
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         setActionBarLayout(R.layout.mymessage_actionbar);
         setContentView(R.layout.mymessageactivity_layout);
@@ -88,9 +91,9 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
         }
     }
 
-/*    public static Bundle getSavedInstanceState() {
-        return savedInstanceState;
-    }*/
+    public static Context getInstance() {
+        return instance;
+    }
 
     private void initTabLine() {
         mTabline = (ImageView) findViewById(R.id.id_invite_tabline);

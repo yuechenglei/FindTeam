@@ -93,7 +93,7 @@
                 android:layout_height="1dp"
                 android:background="@color/underline1_gray" />
 
-            <cn.sdu.online.findteam.view.SingleCompetitionListView
+            <ListView
                 android:id="@+id/singlecplist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
