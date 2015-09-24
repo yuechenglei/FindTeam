@@ -74,23 +74,23 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            viewHolder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.singlecompetition_item_layout, null);
-            viewHolder.imageView = (RoundImageView) convertView.findViewById(R.id.singlecp_item_img);
-            viewHolder.teamname = (TextView) convertView.findViewById(R.id.singlecp_item_teamname);
-            viewHolder.personnum = (TextView) convertView.findViewById(R.id.singlecp_item_personnum);
-            viewHolder.line1 = convertView.findViewById(R.id.singlecp_item_line1);
-            viewHolder.content = (TextView) convertView.findViewById(R.id.singlecp_item_content);
-            viewHolder.line2 = convertView.findViewById(R.id.singlecp_item_line2);
-            viewHolder.look = (Button) convertView.findViewById(R.id.singlecp_item_look);
-            viewHolder.join = (Button) convertView.findViewById(R.id.singlecp_item_join);
-
+        ViewHolder viewHolder;/*
+        if (convertView == null) {*/
+        viewHolder = new ViewHolder();
+        convertView = inflater.inflate(R.layout.singlecompetition_item_layout, null);
+        viewHolder.imageView = (RoundImageView) convertView.findViewById(R.id.singlecp_item_img);
+        viewHolder.teamname = (TextView) convertView.findViewById(R.id.singlecp_item_teamname);
+        viewHolder.personnum = (TextView) convertView.findViewById(R.id.singlecp_item_personnum);
+        viewHolder.line1 = convertView.findViewById(R.id.singlecp_item_line1);
+        viewHolder.content = (TextView) convertView.findViewById(R.id.singlecp_item_content);
+        viewHolder.line2 = convertView.findViewById(R.id.singlecp_item_line2);
+        viewHolder.look = (Button) convertView.findViewById(R.id.singlecp_item_look);
+        viewHolder.join = (Button) convertView.findViewById(R.id.singlecp_item_join);
+/*
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-        }
+        }*/
         viewHolder.teamname.setText(listItems.get(position).teamname);
         viewHolder.personnum.setText("缺" + (listItems.get(position).maxNum - listItems.get(position).currentNum) + "人");
         viewHolder.content.setText(listItems.get(position).content);
@@ -117,20 +117,6 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     return;
                 }
 
-                if (MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE)
-                        .getLong("loginID", 0) == currentID) {
-                    Log.v("UploadUtil", currentID + "");
-                    Intent intent = new Intent();
-                    intent.setClass(SingleCompetitionActivity.getContext(), MySingleTeamActivity.class);
-                    intent.putExtra("teamID", listItems.get(position).teamID);
-                    MyApplication.IDENTITY = "队长";
-                    if (SingleCompetitionActivity.dialog != null) {
-                        SingleCompetitionActivity.dialog.dismiss();
-                    }
-                    SingleCompetitionActivity.getContext().startActivity(intent);
-                    return;
-                }
-
                 new Thread() {
                     @Override
                     public void run() {
@@ -140,6 +126,21 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                             String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
                                     params);
                             JSONObject jsonObject = new JSONObject(jsonData);
+                            JSONObject userObj = new JSONObject(jsonObject.getString("user"));
+                            if (userObj.getString("userName").
+                                    equals(MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", "")
+                                    )) {
+                                Intent intent = new Intent();
+                                intent.setClass(SingleCompetitionActivity.getContext(), MySingleTeamActivity.class);
+                                intent.putExtra("teamID", listItems.get(position).teamID);
+                                MyApplication.IDENTITY = "队长";
+                                if (SingleCompetitionActivity.dialog != null) {
+                                    SingleCompetitionActivity.dialog.dismiss();
+                                }
+                                SingleCompetitionActivity.getContext().startActivity(intent);
+                                return;
+                            }
+
                             JSONArray jsonArray = new JSONArray(jsonObject.getString("member"));
                             Bundle bundle = new Bundle();
                             Message message = new Message();

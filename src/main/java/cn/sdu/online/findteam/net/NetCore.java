@@ -72,6 +72,12 @@ public class NetCore {
     public final static String allowJoinAddr = ServerAddr + "team/allow";
     // 用户拒绝加入队伍
     public final static String refuseJoinAddr = ServerAddr + "team/deny";
+    // 修改队伍信息
+    public final static String modifyTeamAddr = ServerAddr + "team/modify";
+    // 增加队伍日志
+    public final static String createTeamLogAddr = ServerAddr + "teamlog/create";
+    // 获取队伍日志
+    public final static String getTeamLogAddr = ServerAddr + "teamlog/listTeam";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -126,7 +132,6 @@ public class NetCore {
         // JsonObject jo=new JsonObject();
         // jo.get
         return jsonData;
-        // gson.
     }
 
     /**

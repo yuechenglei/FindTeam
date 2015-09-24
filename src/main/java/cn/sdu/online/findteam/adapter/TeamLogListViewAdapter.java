@@ -1,6 +1,7 @@
 package cn.sdu.online.findteam.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +9,16 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.TeamLogListViewItem;
+import cn.sdu.online.findteam.share.MyApplication;
+import cn.sdu.online.findteam.view.RoundImageView;
 
 /**
  * Created by wn on 2015/7/23.
@@ -59,12 +66,27 @@ public class TeamLogListViewAdapter extends BaseAdapter {
         else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        viewHolder.headbmp.setBackgroundResource(listViewItems.get(position).headbmp);
+        loadBitmap(viewHolder.headbmp, listViewItems.get(position).imgPath);
         viewHolder.name.setText(listViewItems.get(position).name);
         viewHolder.time.setText(listViewItems.get(position).time);
         viewHolder.content.setText(listViewItems.get(position).content);
 
         return convertView;
+    }
+
+    private void loadBitmap(final ImageView imageView, String imgPath) {
+        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        MyApplication.getQueues().add(request);
     }
 
     public class ViewHolder{

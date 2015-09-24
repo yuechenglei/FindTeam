@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,11 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
 
     Dialog dialog;
     String introduce;
+
+    String teamID;
+    String verify;
+    String logVisible;
+    String allowComment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,7 +82,7 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
                 inforTv = (TextView) view.findViewById(R.id.otherteam_info_tv);
             }
 
-            final String teamID = TeamInformationFragment.this.getActivity().getIntent().
+            teamID = TeamInformationFragment.this.getActivity().getIntent().
                     getExtras().getString("teamID");
             new Thread(){
                 @Override
@@ -88,6 +94,9 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
                                 params);
                         JSONObject jsonObject = new JSONObject(jsonData);
                         introduce = jsonObject.getString("introduce");
+                        verify = jsonObject.getString("verify");
+                        logVisible = jsonObject.getString("logVisible");
+                        allowComment = jsonObject.getString("allowComment");
                         if (introduce.length() != 0) {
                             Bundle bundle = new Bundle();
                             Message message = new Message();
@@ -122,6 +131,10 @@ public class TeamInformationFragment extends Fragment implements View.OnClickLis
         Intent intent = new Intent();
         intent.setClass(TeamInformationFragment.this.getActivity(), WriteActivity.class);
         intent.putExtra("sign", "编辑队伍信息");
+        intent.putExtra("teamId", teamID);
+        intent.putExtra("verify", verify);
+        intent.putExtra("allowComment", allowComment);
+        intent.putExtra("logVisible", logVisible);
         TeamInformationFragment.this.getActivity().startActivityForResult(intent, 1);
     }
 

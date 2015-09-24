@@ -390,10 +390,7 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
 
             case 2:
                 if (data.getExtras() != null){
-                    mTeamLogFg.addListItem(R.drawable.teammember_header,
-                        MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", ""),
-                        "2015年8月5日 21:36",
-                        data.getExtras().getString("teamlog"));
+                    mTeamLogFg.loadLog();
                     Toast.makeText(MySingleTeamActivity.this, "日志填写成功！", Toast.LENGTH_SHORT).show();
                 }
                 break;

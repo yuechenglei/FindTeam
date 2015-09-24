@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -17,8 +18,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
+import com.laiwang.idl.service.SRemote;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,6 +55,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     private PopupWindow popupWindow;
     Dialog dialog;
 
+    String teamID;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,9 +85,70 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 view = inflater.inflate(R.layout.other_teamlog_layout, null);
                 teamOtherLog();
             }
+
+            teamID = TeamLogFragment.this.getActivity().getIntent().
+                    getExtras().getString("teamID");
+            loadLog();
         }
         return view;
     }
+
+    public void loadLog(){
+        new Thread() {
+            @Override
+            public void run() {
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("log.team.id", teamID));
+                params.add(new BasicNameValuePair("page", "1"));
+                params.add(new BasicNameValuePair("pagelistnum", "30"));
+                try {
+                    String jsonData = new NetCore().getResultWithCookies(NetCore.getTeamLogAddr,
+                            params);
+                    if (jsonData.trim().length() != 0) {
+                        JSONArray jsonArray = new JSONArray(jsonData);
+                        for (int i = 0;i<jsonArray.length();i++){
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            JSONObject userObj = new JSONObject(jsonObject.getString("user"));
+                            String name = userObj.getString("username");
+                            String imgPath = userObj.getString("imgPath");
+                            String content = jsonObject.getString("content");
+                            String time = jsonObject.getString("time");
+                            addListItem(name, time, content, imgPath);
+                        }
+                        handler.sendEmptyMessage(0);
+                    }
+                    else {
+                        handler.sendEmptyMessage(1);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    teamLogListViewAdapter.notifyDataSetChanged();
+                    break;
+
+                case 1:
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    AndTools.showToast(TeamLogFragment.this.getActivity(), "获取队伍日志失败");
+            }
+        }
+    };
 
     private void initListView(ListView listView) {
         listViewItems = new ArrayList<TeamLogListViewItem>();
@@ -105,7 +172,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent();
                 intent.setClass(TeamLogFragment.this.getActivity(), WriteActivity.class);
                 intent.putExtra("sign", "写日志");
-                TeamLogFragment.this.getActivity().startActivityForResult(intent, 1);
+                TeamLogFragment.this.getActivity().startActivityForResult(intent, 2);
                 break;
         }
     }
@@ -214,9 +281,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public void addListItem(int headbmp, String name, String time, String content) {
-        listViewItems.add(new TeamLogListViewItem(headbmp, name, time, content));
-        teamLogListViewAdapter.notifyDataSetChanged();
+    public void addListItem(String name, String time, String content, String imgPath) {
+        listViewItems.add(new TeamLogListViewItem(name, time, content, imgPath));
     }
 }
 

@@ -18,7 +18,7 @@ import cn.sdu.online.findteam.R;
 
 public class TeamLogActivity extends Activity implements View.OnClickListener {
 
-    private Button back/*addview,*/, push;
+    private Button back, push;
     private LinearLayout discuss_item;
     private EditText editText;
     private ScrollView scrollView;
