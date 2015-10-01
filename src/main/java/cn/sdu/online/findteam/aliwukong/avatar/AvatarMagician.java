@@ -5,6 +5,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import java.util.List;
+import java.util.Map;
 
 import cn.sdu.online.findteam.aliwukong.imkit.widget.CustomGridView;
 
@@ -52,6 +53,8 @@ public interface AvatarMagician {
 //    public void setConversationAvatar(Map<Long,ImageView> viewMap);
 //    public void setConversationAvatar(ImageView view,Long... openids);
     public void setConversationAvatar(CustomGridView gridView,List<Long> openids,AbsListView listView);
+
+    public void setConversationAvatar(final Map<Long,ImageView> viewMap,AbsListView listView);
 
     /**
      * 设置Avatar的形状，设置完成后，应用内所有头像将使用该形状。

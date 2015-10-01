@@ -2,6 +2,9 @@ package cn.sdu.online.findteam.aliwukong.imkit.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -9,12 +12,20 @@ import android.widget.ImageView;
 
 import com.alibaba.doraemon.image.ImageDecoder;
 import com.alibaba.doraemon.image.ImageMagician;
+import com.android.volley.toolbox.ImageLoader;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarImageDecoder;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
 /**
@@ -30,6 +41,9 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
     private static final int KEY_URL = 2015011319;
     private static final String VALUE_NIL = "NIL";
     private static final String TAG = "AvatarMagician";
+
+    String imgPath;
+    ImageView item;
 
     public MultiAvatarAdapter(Context context, AbsListView parent){
         super(context);
@@ -88,7 +102,7 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView item = (ImageView) convertView;
+        item = (ImageView) convertView;
         if(item == null){
             item = new ImageView(mContext);
 
@@ -99,12 +113,24 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
             }
         }
 
-        String url = getItem(position);
+        final String url = getItem(position);
         String urlTag = (String)item.getTag(KEY_URL);
-
         item.setImageBitmap(mDefaultAvatar);
-        item.setTag(KEY_URL, VALUE_NIL);
-
+        new Thread(){
+            @Override
+            public void run() {
+                try {
+                    String data = new NetCore().getUserInfo(url);
+                    JSONObject jsonObject = new JSONObject(data);
+                    imgPath = jsonObject.getString("imgPath");
+                    handler.sendEmptyMessage(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
 //        if(TextUtils.isEmpty(url) && (TextUtils.isEmpty(urlTag))){
 //            item.setImageBitmap(mDefaultAvatar);
 //            item.setTag(KEY_URL, VALUE_NIL);
@@ -115,4 +141,15 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
 
         return item;
     }
+
+    Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+            ImageLoader.ImageListener imageListener = imageLoader.getImageListener(item, R.drawable.teammember_header,
+                    R.drawable.teammember_header);
+            imageLoader.get(imgPath, imageListener);
+        }
+    };
 }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class TeamMemberListViewAdapter extends BaseAdapter{
     }
 
     private void loadBitmap(String imgPath, final ImageView imageView) {
-        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+/*        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);
@@ -79,7 +80,11 @@ public class TeamMemberListViewAdapter extends BaseAdapter{
 
             }
         });
-        MyApplication.getQueues().add(request);
+        MyApplication.getQueues().add(request);*/
+        ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+        ImageLoader.ImageListener imageListener = imageLoader.getImageListener(imageView, R.drawable.head_moren,
+                R.drawable.head_moren);
+        imageLoader.get(imgPath, imageListener);
     }
 
     public class Viewholder{

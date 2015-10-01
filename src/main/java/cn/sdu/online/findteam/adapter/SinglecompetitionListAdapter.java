@@ -36,6 +36,7 @@ import cn.sdu.online.findteam.activity.SingleCompetitionActivity;
 import cn.sdu.online.findteam.mob.SingleCompetitionListItem;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.util.BitmapCache;
 import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
@@ -44,6 +45,7 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.MessageContent;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 
 public class SingleCompetitionListAdapter extends BaseAdapter {
@@ -94,10 +96,10 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
         viewHolder.teamname.setText(listItems.get(position).teamname);
         viewHolder.personnum.setText("缺" + (listItems.get(position).maxNum - listItems.get(position).currentNum) + "人");
         viewHolder.content.setText(listItems.get(position).content);
-        viewHolder.imageView.setImageResource(R.drawable.head_moren);
         if (listItems.get(position).imgPath.trim().length() != 0) {
             loadBitmap(viewHolder.imageView, listItems.get(position).imgPath);
         }
+
         viewHolder.look.setTag(position);
         viewHolder.join.setTag(position);
 
@@ -224,7 +226,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
     }
 
     private void loadBitmap(final RoundImageView imageView, String imgPath) {
-        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
+/*        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);
@@ -235,7 +237,11 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
 
             }
         });
-        MyApplication.getQueues().add(request);
+        MyApplication.getQueues().add(request);*/
+        ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+        ImageLoader.ImageListener imageListener = imageLoader.getImageListener(imageView, R.drawable.head_moren,
+                R.drawable.head_moren);
+        imageLoader.get(imgPath, imageListener);
     }
 
     Handler loadteamHander = new Handler() {

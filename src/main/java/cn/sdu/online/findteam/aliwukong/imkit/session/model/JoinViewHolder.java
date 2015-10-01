@@ -38,7 +38,6 @@ import cn.sdu.online.findteam.util.AndTools;
  */
 public class JoinViewHolder extends ViewHolder {
 
-    public CustomGridView sessionIconView;
     public TextView sessionUnreadTxt, sessionGmtTxt, sessionContentTxt;
     public ImageView sessionSilenceImgView, mMessageStatus;
     public Button agree, refuse;
@@ -47,7 +46,6 @@ public class JoinViewHolder extends ViewHolder {
     protected void initView(View view) {
         sessionContentTxt = (TextView) view.findViewById(R.id.session_join_content);
         sessionGmtTxt = (TextView) view.findViewById(R.id.session_join_gmt);
-        sessionIconView = (CustomGridView) view.findViewById(R.id.session_join_icon);
         sessionSilenceImgView = (ImageView) view.findViewById(R.id.session_join_silence);
         sessionUnreadTxt = (TextView) view.findViewById(R.id.session_join_unread);
         mMessageStatus = (ImageView) view.findViewById(R.id.chat_join_notsuccess_iv);

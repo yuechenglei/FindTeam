@@ -11,9 +11,8 @@ import java.util.List;
 
 /**
  * 自定义X宫格适配器
- *
  */
-public abstract class CustomGridAdapter<T>  extends BaseAdapter {
+public abstract class CustomGridAdapter<T> extends BaseAdapter {
 
     protected List<T> mList;
     protected CustomGridView mView;
@@ -30,8 +29,8 @@ public abstract class CustomGridAdapter<T>  extends BaseAdapter {
     //设置列的个数
     protected int mCloumnNum = 2;
 
-    protected String         imageLoaderKey;
-    protected boolean          isFromFlow;
+    protected String imageLoaderKey;
+    protected boolean isFromFlow;
 
     public CustomGridAdapter() {
     }
@@ -48,9 +47,10 @@ public abstract class CustomGridAdapter<T>  extends BaseAdapter {
         mView = observer;
     }
 
-    public void setList(List<T> itemlist){
+    public void setList(List<T> itemlist) {
         this.mList = itemlist;
     }
+
     public List<T> getList() {
         return this.mList;
     }

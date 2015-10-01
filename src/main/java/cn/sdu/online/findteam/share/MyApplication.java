@@ -26,6 +26,7 @@ import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.MessageSenderImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.ChatWindowManager;
 import cn.sdu.online.findteam.aliwukong.imkit.route.RouteRegister;
+import cn.sdu.online.findteam.util.BitmapCache;
 
 public class MyApplication extends Application {
     // 个人身份，队长还是队员
@@ -49,6 +50,8 @@ public class MyApplication extends Application {
 
     private static RequestQueue queues;
 
+    public static BitmapCache bitmapCache;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,6 +66,7 @@ public class MyApplication extends Application {
         RouteRegister.bootwrapped();
 
         queues = Volley.newRequestQueue(getApplicationContext());
+        bitmapCache = new BitmapCache();
     }
 
     public static RequestQueue getQueues(){

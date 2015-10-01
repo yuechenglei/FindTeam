@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -14,16 +15,22 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.Conversation;
 import com.alibaba.wukong.im.User;
 import com.alibaba.wukong.im.utils.Utils;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ItemClick;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
@@ -33,6 +40,7 @@ import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.CustomGridView;
 import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.share.MyApplication;
 
 /**
  * Created by wn on 2015/8/14.
@@ -53,7 +61,6 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
         } catch (NumberFormatException e) {
             Log.e("SingleSession", "NumberFormatException");
         }
-
         AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);
     }
 

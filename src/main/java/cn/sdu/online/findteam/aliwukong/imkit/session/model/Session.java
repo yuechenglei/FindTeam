@@ -151,9 +151,9 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
     }
 
     protected void refreshAvatar(Context context, JoinViewHolder viewHolder) {
-        int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
+/*        int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
         viewHolder.sessionIconView.setVisibility(iconVisibility);
-        showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));
+        showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));*/
     }
 
     private void refreshAll(Context context, SessionViewHolder viewHolder) {
@@ -212,6 +212,7 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
         int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
         viewHolder.sessionIconView.setVisibility(iconVisibility);
         showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));
+
     }
 
     public abstract void showAvatar(Context context, String mediaIds, View view, ListView itemParent);

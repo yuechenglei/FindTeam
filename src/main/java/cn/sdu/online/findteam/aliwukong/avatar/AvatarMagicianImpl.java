@@ -3,6 +3,8 @@ package cn.sdu.online.findteam.aliwukong.avatar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.AbsListView;
@@ -15,7 +17,12 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.IMEngine;
 import com.alibaba.wukong.im.User;
 import com.alibaba.wukong.im.UserService;
+import com.android.volley.toolbox.ImageLoader;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +32,8 @@ import java.util.Map;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.CustomGridView;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.MultiAvatarAdapter;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class AvatarMagicianImpl implements AvatarMagician {
     private Context mContext;
@@ -42,6 +51,9 @@ public class AvatarMagicianImpl implements AvatarMagician {
     private static final String IMAGE_DEFAULT_KEY = TAG+"_default.jpg";
 
     private volatile static AvatarMagician sSingleton;
+
+    String imgPath;
+    MultiAvatarAdapter adapter;
 
     private static class InstanceHolder {
         public static AvatarMagician sInstance = new AvatarMagicianImpl();
@@ -123,7 +135,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
      * @param viewMap    显示会话icon的view
      * @param listView 用于显示会话icon的用户id
      */
-//    @Override
+    @Override
     public void setConversationAvatar(final Map<Long,ImageView> viewMap,AbsListView listView) {
         if(viewMap == null || viewMap.isEmpty()){
             return;
@@ -175,12 +187,11 @@ public class AvatarMagicianImpl implements AvatarMagician {
 
 
     @Override
-    public void setConversationAvatar(final CustomGridView gridView,List<Long> openids,AbsListView listView){
+    public void setConversationAvatar(final CustomGridView gridView, final List<Long> openids,AbsListView listView){
         if(gridView == null || openids == null){
             return;
         }
 
-        final MultiAvatarAdapter adapter;
         if(gridView.getAdapter() == null) {
             adapter = new MultiAvatarAdapter(mContext, null);
             adapter.setListView(listView);
@@ -203,12 +214,18 @@ public class AvatarMagicianImpl implements AvatarMagician {
         } else {
             new ArrayList<String>(2);
             String[] nilUrl = new String[count];
+            for (int i = 0;i<nilUrl.length;i++){
+                nilUrl[i] = openids.get(i)+"";
+            }
             setGridColumn(gridView, count);
+            List<String> list = new ArrayList<>();
+            list.add(0, imgPath);
             adapter.setList(Arrays.asList(nilUrl));
             adapter.displayBlocks();
+
         }
 
-        mUserService.listUsers(new Callback<List<User>>() {
+/*        mUserService.listUsers(new Callback<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {
                 List<String> urls = new ArrayList<String>();
@@ -231,7 +248,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
             @Override
             public void onProgress(List<User> users, int progress) {
             }
-        },openids);
+        },openids);*/
     }
 
     /**
@@ -311,10 +328,8 @@ public class AvatarMagicianImpl implements AvatarMagician {
 //                    return url;
 //                }
 //            });
-        }else{
-            //mDefaultAvatar = ThumbnailUtil.defaultAvatar();
         }
-        mDefaultAvatar = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.avatar_in_active);
+        mDefaultAvatar = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.teammember_header);
 
     }
 

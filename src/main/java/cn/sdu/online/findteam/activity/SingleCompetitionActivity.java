@@ -34,6 +34,7 @@ import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
+import cn.sdu.online.findteam.util.BitmapCache;
 
 /**
  * 具体的单个比赛信息界面
@@ -74,6 +75,7 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
             AndTools.showToast(this, "当前网络不可用！");
             return;
         }
+
         initView();
         initListView();
         setIntentData();

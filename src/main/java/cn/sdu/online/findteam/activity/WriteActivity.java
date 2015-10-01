@@ -212,7 +212,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             params.add(new BasicNameValuePair("log.content", teamMsgEt.getText().toString()));
             try {
                 String jsonData = new NetCore().getResultWithCookies(NetCore.createTeamLogAddr, params);
-                Log.v("UploadUtil122", jsonData);
                 if (jsonData.trim().length() != 0) {
                     JSONObject jsonObject = new JSONObject(jsonData);
                     int code = jsonObject.getInt("code");

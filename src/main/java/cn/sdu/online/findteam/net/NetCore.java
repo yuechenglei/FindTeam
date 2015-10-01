@@ -270,7 +270,15 @@ public class NetCore {
                 jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
             }
         } else {
-
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            // 必填
+            params.add(new BasicNameValuePair("usr.openId", userId));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpEntity entity = httpResponse.getEntity();
+            if (entity != null) {
+                jsonData = EntityUtils.toString(entity, HTTP.UTF_8);
+            }
         }
         return jsonData;
     }
