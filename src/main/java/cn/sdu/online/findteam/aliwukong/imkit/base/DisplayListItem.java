@@ -23,6 +23,8 @@ public interface DisplayListItem<T extends ViewHolder> {
 
     public void onJoinShow(Context context, T viewHolder, String tag);
 
+    public void onAddShow(Context context, T viewHolder, String tag);
+
     public String getId();
 
     /**

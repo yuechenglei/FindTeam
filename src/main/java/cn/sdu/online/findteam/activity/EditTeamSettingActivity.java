@@ -14,7 +14,7 @@ import android.widget.Button;
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.BuildTeamFragment;
 
-public class EditTeamSettingActivity extends FragmentActivity implements View.OnClickListener{
+public class EditTeamSettingActivity extends BaseFragmentActivity implements View.OnClickListener{
 
     private BuildTeamFragment buildTeamFragment;
     Button back_Btn;
@@ -66,21 +66,6 @@ public class EditTeamSettingActivity extends FragmentActivity implements View.On
                         break;
                 }
                 break;
-        }
-    }
-
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
         }
     }
 

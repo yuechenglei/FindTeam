@@ -3,6 +3,7 @@ package cn.sdu.online.findteam.activity;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -10,18 +11,26 @@ import android.view.View;
 import android.widget.ActionMenuView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import cn.sdu.online.findteam.R;
+import com.android.volley.toolbox.ImageLoader;
 
-public class TeamLogActivity extends Activity implements View.OnClickListener {
+import org.w3c.dom.Text;
+
+import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.share.MyApplication;
+
+public class TeamLogActivity extends BaseActivity implements View.OnClickListener {
 
     private Button back, push;
     private LinearLayout discuss_item;
     private EditText editText;
     private ScrollView scrollView;
+    private ImageView header;
+    private TextView name, time, content;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,31 +38,38 @@ public class TeamLogActivity extends Activity implements View.OnClickListener {
         setActionBarLayout(R.layout.teamlog_actionbar);
         setContentView(R.layout.teamlog_content_layout);
 
-        /*addview = (Button) findViewById(R.id.add_view);*/
+        findById();
+        setData();
+    }
+
+    private void findById(){
         back = (Button) findViewById(R.id.teamlog_back_bt);
         discuss_item = (LinearLayout) findViewById(R.id.discuss_item_linearlayout);
         editText = (EditText) findViewById(R.id.write_discuss);
         push = (Button) findViewById(R.id.push_discuss);
         scrollView = (ScrollView) findViewById(R.id.teamlog_scrollview);
+        header = (ImageView) findViewById(R.id.teamlog_userhead);
+        name = (TextView) findViewById(R.id.teamlog_username_tv);
+        content = (TextView) findViewById(R.id.teamlog_content_tv);
+        time = (TextView) findViewById(R.id.teamlog_time_tv);
 
         back.setOnClickListener(this);
         push.setOnClickListener(this);
-
     }
 
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
-        }
+    private void setData(){
+        String imgPath = getIntent().getStringExtra("imgPath");
+        String nameStr = getIntent().getStringExtra("name");
+        String timeStr = getIntent().getStringExtra("time");
+        String contentStr = getIntent().getStringExtra("content");
+
+        ImageLoader.ImageListener imageListener = MyApplication.imageLoader.getImageListener(
+                header, R.drawable.head_moren, R.drawable.head_moren
+        );
+        MyApplication.imageLoader.get(imgPath, imageListener);
+        name.setText(nameStr);
+        content.setText(contentStr);
+        time.setText(timeStr);
     }
 
     @Override

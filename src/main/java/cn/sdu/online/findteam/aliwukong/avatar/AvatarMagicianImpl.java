@@ -48,7 +48,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
     private static final String VALUE_NIL = "NIL";
     private static final int GRID_MAX_COUNT = 9;
     private static final String TAG = "AvatarMagician";
-    private static final String IMAGE_DEFAULT_KEY = TAG+"_default.jpg";
+    private static final String IMAGE_DEFAULT_KEY = TAG + "_default.jpg";
 
     private volatile static AvatarMagician sSingleton;
 
@@ -68,15 +68,15 @@ public class AvatarMagicianImpl implements AvatarMagician {
     }
 
     @Override
-    public void init(Context context){
+    public void init(Context context) {
         Log.d("avatar", "gouzao");
         this.mContext = context.getApplicationContext();
 
-        if(mUserService == null) {
+        if (mUserService == null) {
             mUserService = IMEngine.getIMService(UserService.class);
         }
 
-        if(mImageMagician == null) {
+        if (mImageMagician == null) {
             mImageMagician = (ImageMagician) Doraemon.getArtifact(ImageMagician.IMAGE_ARTIFACT);
         }
     }
@@ -84,24 +84,24 @@ public class AvatarMagicianImpl implements AvatarMagician {
     /**
      * 设置用户头像
      *
-     * @param imageView   显示头像的view
-     * @param openid 用户id
+     * @param imageView 显示头像的view
+     * @param openid    用户id
      */
     @Override
-    public void setUserAvatar(final ImageView imageView,final long openid,final AbsListView listView) {
-        if(imageView == null){
+    public void setUserAvatar(final ImageView imageView, final long openid, final AbsListView listView) {
+        if (imageView == null) {
             return;
         }
 
         //设置默认图片
-        final String urlTag = (String)imageView.getTag(KEY_URL);
-        if(TextUtils.isEmpty(urlTag)) {
+        final String urlTag = (String) imageView.getTag(KEY_URL);
+        if (TextUtils.isEmpty(urlTag)) {
             imageView.setImageBitmap(mDefaultAvatar);
             imageView.setTag(KEY_URL, VALUE_NIL);
         }
 
-        if(mImageDecoder != null) {
-            imageView.setTag(KEY_TAG,TAG);   //用于在url2key中区别其他地方的view
+        if (mImageDecoder != null) {
+            imageView.setTag(KEY_TAG, TAG);   //用于在url2key中区别其他地方的view
             // TODO WKNEW
             imageView.setTag(AvatarImageDecoder.SELFDECODERTAG, mImageDecoder);
 
@@ -112,7 +112,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
         mUserService.getUser(new Callback<User>() {
             @Override
             public void onSuccess(User user) {
-                if(user != null && !TextUtils.isEmpty(user.avatar()) && !user.avatar().equals(urlTag)) {
+                if (user != null && !TextUtils.isEmpty(user.avatar()) && !user.avatar().equals(urlTag)) {
                     mImageMagician.setImageDrawable(imageView, user.avatar(), listView);
                     imageView.setTag(KEY_URL, user.avatar());
                 }
@@ -120,24 +120,24 @@ public class AvatarMagicianImpl implements AvatarMagician {
 
             @Override
             public void onException(String code, String reason) {
-                Log.e(TAG,"Get user from server fail");
+                Log.e(TAG, "Get user from server fail");
             }
 
             @Override
             public void onProgress(User user, int progress) {
             }
-        },openid);
+        }, openid);
     }
 
     /**
      * 设置会话icon
      *
-     * @param viewMap    显示会话icon的view
+     * @param viewMap  显示会话icon的view
      * @param listView 用于显示会话icon的用户id
      */
     @Override
-    public void setConversationAvatar(final Map<Long,ImageView> viewMap,AbsListView listView) {
-        if(viewMap == null || viewMap.isEmpty()){
+    public void setConversationAvatar(final Map<Long, ImageView> viewMap, AbsListView listView) {
+        if (viewMap == null || viewMap.isEmpty()) {
             return;
         }
 
@@ -145,17 +145,17 @@ public class AvatarMagicianImpl implements AvatarMagician {
         viewMap.keySet().toArray(openids);
         List<Long> openidList = Arrays.asList(openids);
 
-        if(viewMap.size() == 1){
-            setUserAvatar(viewMap.get(openids[0]),openids[0],listView);
+        if (viewMap.size() == 1) {
+            setUserAvatar(viewMap.get(openids[0]), openids[0], listView);
             return;
         }
 
 
         //设置Decoder和默认图片
         Collection<ImageView> collection = viewMap.values();
-        for(ImageView imageView:collection){
-            if(mImageDecoder != null) {
-                imageView.setTag(KEY_TAG,TAG);   //用于在url2key中区别其他地方的view
+        for (ImageView imageView : collection) {
+            if (mImageDecoder != null) {
+                imageView.setTag(KEY_TAG, TAG);   //用于在url2key中区别其他地方的view
                 // TODO WKNEW
                 imageView.setTag(AvatarImageDecoder.SELFDECODERTAG, mImageDecoder);
             }
@@ -166,7 +166,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
         mUserService.listUsers(new Callback<List<User>>() {
             @Override
             public void onSuccess(List<User> users) {
-                for(User user : users) {
+                for (User user : users) {
                     if (!TextUtils.isEmpty(user.avatar())) {
                         mImageMagician.setImageDrawable(viewMap.get(user.openId()), user.avatar(), null);
                     }
@@ -175,24 +175,22 @@ public class AvatarMagicianImpl implements AvatarMagician {
 
             @Override
             public void onException(String code, String reason) {
-                Log.e(TAG,"Get users from server fail");
+                Log.e(TAG, "Get users from server fail");
             }
 
             @Override
             public void onProgress(List<User> users, int progress) {
             }
-        },openidList);
+        }, openidList);
     }
 
-
-
     @Override
-    public void setConversationAvatar(final CustomGridView gridView, final List<Long> openids,AbsListView listView){
-        if(gridView == null || openids == null){
+    public void setConversationAvatar(final CustomGridView gridView, String icon, AbsListView listView) {
+        if (gridView == null /*|| icon == null*/) {
             return;
         }
 
-        if(gridView.getAdapter() == null) {
+        if (gridView.getAdapter() == null) {
             adapter = new MultiAvatarAdapter(mContext, null);
             adapter.setListView(listView);
             adapter.setImageDecoder(mImageDecoder);
@@ -200,17 +198,17 @@ public class AvatarMagicianImpl implements AvatarMagician {
             adapter.setImageMagician(mImageMagician);
             adapter.setDefaultDrawable(mDefaultAvatar);
             gridView.setAdapter(adapter);
-        }else {
+        } else {
             adapter = (MultiAvatarAdapter) gridView.getAdapter();
         }
 
-        int count = openids.size() > 9 ? 9 : openids.size();
-        if (count == 0) {
-            String[] nilUrl = new String[1];
-            setGridColumn(gridView, 1);
-            adapter.setList(Arrays.asList(nilUrl));
-            adapter.displayBlocks();
-            return;
+/*        if (count == 0) {*/
+        String[] nilUrl = new String[1];
+        setGridColumn(gridView, 1);
+        nilUrl[0] = icon;
+        adapter.setList(Arrays.asList(nilUrl));
+        adapter.displayBlocks();
+/*            return;
         } else {
             new ArrayList<String>(2);
             String[] nilUrl = new String[count];
@@ -223,7 +221,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
             adapter.setList(Arrays.asList(nilUrl));
             adapter.displayBlocks();
 
-        }
+        }*/
 
 /*        mUserService.listUsers(new Callback<List<User>>() {
             @Override
@@ -251,6 +249,71 @@ public class AvatarMagicianImpl implements AvatarMagician {
         },openids);*/
     }
 
+    @Override
+    public void setConversationAvatar(final CustomGridView gridView, final List<Long> openids, AbsListView listView) {
+        if (gridView == null || openids == null) {
+            return;
+        }
+
+        if (gridView.getAdapter() == null) {
+            adapter = new MultiAvatarAdapter(mContext, null);
+            adapter.setListView(listView);
+            adapter.setImageDecoder(mImageDecoder);
+//            mImageMagician.setDecoder(mImageDecoder);
+            adapter.setImageMagician(mImageMagician);
+            adapter.setDefaultDrawable(mDefaultAvatar);
+            gridView.setAdapter(adapter);
+        } else {
+            adapter = (MultiAvatarAdapter) gridView.getAdapter();
+        }
+
+        int count = openids.size() > 9 ? 9 : openids.size();
+        if (count == 0) {
+            String[] nilUrl = new String[1];
+            setGridColumn(gridView, 1);
+            adapter.setList(Arrays.asList(nilUrl));
+            adapter.displayBlocks();
+            return;
+        } else {
+            new ArrayList<String>(2);
+            String[] nilUrl = new String[count];
+            for (int i = 0; i < nilUrl.length; i++) {
+                nilUrl[i] = openids.get(i) + "";
+            }
+            setGridColumn(gridView, count);
+            List<String> list = new ArrayList<>();
+            list.add(0, imgPath);
+            adapter.setList(Arrays.asList(nilUrl));
+            adapter.displayBlocks();
+
+        }
+
+        mUserService.listUsers(new Callback<List<User>>() {
+            @Override
+            public void onSuccess(List<User> users) {
+                List<String> urls = new ArrayList<String>();
+                for (User user : users) {
+                    urls.add(user.avatar());
+                }
+
+                //todo: show icon first
+                if (!urls.isEmpty() && gridView.isAttachedToWindow()) {
+                    adapter.setList(urls);
+                    adapter.displayBlocks();
+                }
+            }
+
+            @Override
+            public void onException(String code, String reason) {
+                Log.e(TAG, "Get users from server fail");
+            }
+
+            @Override
+            public void onProgress(List<User> users, int progress) {
+            }
+        }, openids);
+    }
+
     /**
      * 设置Avatar的形状，设置完成后，应用内所有头像将使用该形状。
      *
@@ -259,10 +322,10 @@ public class AvatarMagicianImpl implements AvatarMagician {
      */
     @Override
     public void setAvatarShape(int shape) {
-        Log.d("avatar","setAvatarShape");
+        Log.d("avatar", "setAvatarShape");
         if (ROUNDRECT_AVATAR_SHAPE == shape) {
             mShaper = new RoundRectAvatarShaper();
-        } else if(CIRCLE_AVATAR_SHAPE == shape){
+        } else if (CIRCLE_AVATAR_SHAPE == shape) {
             mShaper = new CircleAvatarShaper();
         }
 
@@ -290,7 +353,7 @@ public class AvatarMagicianImpl implements AvatarMagician {
     public AvatarMask getAvatarMask(int shape) throws Throwable {
         AvatarMask avatarMask = null;
 
-        switch (shape){
+        switch (shape) {
             case CIRCLE_AVATAR_SHAPE:
                 avatarMask = new CircleAvatarMask();
                 break;
@@ -307,8 +370,8 @@ public class AvatarMagicianImpl implements AvatarMagician {
     /**
      * 如果未设置mShaper则不做任何处理
      */
-    private void initialize(){
-        if(mShaper != null) {
+    private void initialize() {
+        if (mShaper != null) {
             //初始化DefaultAvatar
             mDefaultAvatar = mShaper.defaultAvatar(mContext);
 
@@ -329,19 +392,20 @@ public class AvatarMagicianImpl implements AvatarMagician {
 //                }
 //            });
         }
-        mDefaultAvatar = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.teammember_header);
+        mDefaultAvatar = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.head_moren);
 
     }
 
-    private void setGridColumn(CustomGridView gridView,int count){
-        if(count == 0)
+    private void setGridColumn(CustomGridView gridView, int count) {
+        if (count == 0)
             return;
 
-        switch (count){
+        switch (count) {
             case 1:     //单个
                 gridView.setNumColumns(1);
                 break;
-            case 3: case 4: //4宫格
+            case 3:
+            case 4: //4宫格
                 gridView.setNumColumns(2);
                 break;
             default:        //9宫格

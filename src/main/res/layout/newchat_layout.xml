@@ -10,7 +10,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <cn.sdu.online.findteam.aliwukong.widget.ClearableEditText
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="20dp"
+            android:textSize="17sp"
+            android:text="@string/chat_create_tips"
+            android:textColor="#000" />
+
+        <cn.sdu.online.findteam.view.ClearableEditText
             android:id="@+id/et_create_chat"
             style="@style/edittext_style"
             android:layout_marginTop="10dp"
@@ -28,18 +38,11 @@
             android:id="@+id/btn_create_chat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/simplecompetition_button_bg"
+            android:textColor="@color/singlecompetiton_buttontext_bg"
             android:minHeight="48dp"
             android:text="@string/btn_ok" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="20dp"
-            android:text="@string/chat_create_tips"
-            android:textColor="@color/gray" />
 
     </LinearLayout>
 

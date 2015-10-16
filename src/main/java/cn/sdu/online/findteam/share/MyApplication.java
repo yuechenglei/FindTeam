@@ -2,7 +2,10 @@ package cn.sdu.online.findteam.share;
 
 import android.app.Application;
 import android.content.IntentFilter;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.alibaba.wukong.AuthConstants;
 import com.alibaba.wukong.Callback;
@@ -16,9 +19,26 @@ import com.alibaba.wukong.im.Message;
 import com.alibaba.wukong.im.MessageListener;
 import com.alibaba.wukong.im.MessageService;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.LogRecord;
 
 import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagician;
@@ -26,6 +46,8 @@ import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.base.MessageSenderImpl;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.ChatWindowManager;
 import cn.sdu.online.findteam.aliwukong.imkit.route.RouteRegister;
+import cn.sdu.online.findteam.net.NetCore;
+import cn.sdu.online.findteam.util.AndTools;
 import cn.sdu.online.findteam.util.BitmapCache;
 
 public class MyApplication extends Application {
@@ -51,6 +73,11 @@ public class MyApplication extends Application {
     private static RequestQueue queues;
 
     public static BitmapCache bitmapCache;
+    public static ImageLoader imageLoader;
+
+    public static Map<String, String> parent; // key: parent name; value: parent id
+    public static Map<String, Map<String, String>> gameMapList; // key: parent id; value: game Map
+    // game Map:  key: game name; value: game id
 
     @Override
     public void onCreate() {
@@ -64,14 +91,98 @@ public class MyApplication extends Application {
         registerMessageListener();
         registerAuthReceiver();
         RouteRegister.bootwrapped();
-
         queues = Volley.newRequestQueue(getApplicationContext());
         bitmapCache = new BitmapCache();
+        imageLoader = new ImageLoader(getQueues(), bitmapCache);
+
+        parent = new HashMap<>();
+        gameMapList = new HashMap<>();
+
+        Timer timer = new Timer(false);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (AndTools.isNetworkAvailable(MyApplication.getInstance())) {
+                    loadParentList();
+                }
+            }
+        }, 0, 300000);
     }
 
-    public static RequestQueue getQueues(){
+    public static RequestQueue getQueues() {
         return queues;
     }
+
+    private void loadParentList() {
+        try {
+            String jsonData = new NetCore().loginOut(NetCore.getTopListAddr);
+            JSONArray jsonArray = new JSONArray(jsonData);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String name = jsonObject.getString("name");
+                String id = jsonObject.getInt("id") + "";
+                parent.put(name, id);
+            }
+            handler.sendEmptyMessage(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadGameList() {
+        List<String> key = new ArrayList<>();
+        Iterator<String> iter = parent.keySet().iterator();
+        while (iter.hasNext()) {
+            String next = iter.next();
+            key.add(next);
+        }
+        for (int i = 0; i < key.size(); i++) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.clear();
+            params.add(new BasicNameValuePair("page", "1"));
+            params.add(new BasicNameValuePair("pagelistnum", "0"));
+            params.add(new BasicNameValuePair("cate.id", parent.get(key.get(i))));
+            HashMap<String, String> gameMap = new HashMap<>();
+            try {
+                String data = new NetCore().getResultFromNet(NetCore.getChildAddr, params);
+                JSONArray jsonArray = new JSONArray(data);
+                for (int j = 0; j < jsonArray.length(); j++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(j);
+                    String id = jsonObject.getInt("id") + "";
+                    String name = jsonObject.getString("name");
+                    gameMap.put(name, id);
+                }
+                gameMapList.put(parent.get(key.get(i)), gameMap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        handler.sendEmptyMessage(1);
+    }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case 0:
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            loadGameList();
+                        }
+                    }.start();
+                    break;
+
+                case 1:
+                    Log.v("MyApplication", "更新列表成功！");
+                    break;
+            }
+        }
+    };
 
     /**
      * 初始化 Wukong IM

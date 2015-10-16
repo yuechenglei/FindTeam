@@ -86,7 +86,7 @@
     <string name="btn_cancel">取消</string>
 
     <string name="chat_create_title">发起聊天</string>
-    <string name="chat_create_openIdHint">请输入openId，空格分隔</string>
+    <string name="chat_create_openIdHint">请输入好友的id</string>
     <string name="chat_create_invalid_openId">请输入有效的openId</string>
     <string name="chat_create_doing">正在创建会话...</string>
     <string name="chat_create_fail">会话创建失败</string>
@@ -94,8 +94,7 @@
     <string name="chat_create_sysmsg">%1$s&#160;&#160;发起了群聊</string>
     <string name="chat_create_single_msg">%1$s&#160;&#160;发起了聊天</string>
 
-    <string name="chat_create_tips">输入单个openId可发起单聊，输入多个openId可发起群聊</string>
-
+    <string name="chat_create_tips">要添加的好友id号</string>
 
     <string name="actionbar_tab_conversation">聊天</string>
     <string name="actionbar_tab_contact">通讯录</string>

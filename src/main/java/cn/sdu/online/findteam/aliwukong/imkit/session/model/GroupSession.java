@@ -38,7 +38,7 @@ public class GroupSession extends Session implements ItemClick.OnItemClickListen
 
     @Override
     public void showAvatar(Context context, String mediaId, View view, ListView itemParent) {
-        String[] openIdArr = mediaId.split(":");
+/*        String[] openIdArr = mediaId.split(":");
         List<Long> openIds = new ArrayList<Long>();
         for (int i = 0; i < openIdArr.length; ++i) {
             try {
@@ -47,7 +47,7 @@ public class GroupSession extends Session implements ItemClick.OnItemClickListen
 //                Log.e("GroupSession", "NumberFormatException:请查看群聊icon是否由openid和:构成的");
             }
         }
-        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openIds, itemParent);
+        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openIds, itemParent);*/
     }
 
     @Override
@@ -95,6 +95,11 @@ public class GroupSession extends Session implements ItemClick.OnItemClickListen
                 }
             }, latestMessage().senderId());
         }
+    }
+
+    @Override
+    public void setSessionContent(TextView name, TextView con, TextView team) {
+
     }
 
     @Override

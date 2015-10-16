@@ -13,6 +13,8 @@ import android.graphics.drawable.NinePatchDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.android.volley.toolbox.NetworkImageView;
+
 /**
  * 圆形ImageView，可设置最多两个宽度不同且颜色不同的圆形边框。
  *
@@ -43,6 +45,11 @@ public class RoundImageView extends ImageView {
     public RoundImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mContext = context;
+    }
+
+    @Override
+    public Drawable getDrawable() {
+        return super.getDrawable();
     }
 
     @Override

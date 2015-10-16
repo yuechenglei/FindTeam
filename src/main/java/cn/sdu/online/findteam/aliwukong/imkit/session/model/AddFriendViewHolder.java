@@ -6,36 +6,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.activity.MyMessageActivity;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.CustomGridView;
 import cn.sdu.online.findteam.aliwukong.imkit.widget.DateUtil;
 
 /**
- * Created by wn on 2015/9/19.
+ * Created by wn on 2015/10/13.
  */
-public class JoinViewHolder extends ViewHolder {
+public class AddFriendViewHolder extends ViewHolder {
 
-    public TextView sessionUnreadTxt, sessionGmtTxt, sessionContentTxt, sessionContentName, sessionContentTeam;
+    public TextView sessionUnreadTxt, sessionGmtTxt, sessionTitleName;
     public ImageView sessionSilenceImgView, mMessageStatus;
     public Button agree, refuse;
+    public CustomGridView mHeader;
 
     @Override
     protected void initView(View view) {
-        sessionContentTxt = (TextView) view.findViewById(R.id.session_join_content_con);
-        sessionGmtTxt = (TextView) view.findViewById(R.id.session_join_gmt);
-        sessionContentName = (TextView) view.findViewById(R.id.session_join_content_name);
-        sessionContentTeam = (TextView) view.findViewById(R.id.session_join_content_team);
-        sessionSilenceImgView = (ImageView) view.findViewById(R.id.session_join_silence);
-        sessionUnreadTxt = (TextView) view.findViewById(R.id.session_join_unread);
-        mMessageStatus = (ImageView) view.findViewById(R.id.chat_join_notsuccess_iv);
-        agree = (Button) view.findViewById(R.id.agree_join);
-        refuse = (Button) view.findViewById(R.id.refuse_join);
+        sessionTitleName = (TextView) view.findViewById(R.id.session_title_name);
+        sessionGmtTxt = (TextView) view.findViewById(R.id.session_gmt);
+        sessionSilenceImgView = (ImageView) view.findViewById(R.id.session_silence);
+        sessionUnreadTxt = (TextView) view.findViewById(R.id.session_unread);
+        mMessageStatus = (ImageView) view.findViewById(R.id.chatting_notsuccess_iv);
+        agree = (Button) view.findViewById(R.id.session_btn_agree);
+        refuse = (Button) view.findViewById(R.id.session_btn_refuse);
+        mHeader = (CustomGridView) view.findViewById(R.id.session_icon);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.session_item_join;
+        return R.layout.session_item_add;
     }
 
     public void showSessionStatusFail() {
@@ -67,8 +66,7 @@ public class JoinViewHolder extends ViewHolder {
             sessionGmtTxt.setVisibility(View.GONE);
         } else {
             sessionGmtTxt.setVisibility(View.VISIBLE);
-            sessionGmtTxt.setText(DateUtil.formatRimetShowTime(sessionContentTxt.getContext(), time, false));
+            sessionGmtTxt.setText(DateUtil.formatRimetShowTime(sessionTitleName.getContext(), time, false));
         }
     }
 }
-

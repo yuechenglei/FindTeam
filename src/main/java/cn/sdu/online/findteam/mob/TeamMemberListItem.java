@@ -5,11 +5,15 @@ public class TeamMemberListItem {
     public String introduction;
     public int headerbmp;
     public String imgPath;
+    public String openID;
+    public String id;
 
-    public TeamMemberListItem(String name, String introduction, int headerbmp, String imgPath){
+    public TeamMemberListItem(String name, String introduction, int headerbmp, String imgPath, String openID, String id){
         this.name = name;
         this.introduction = introduction;
         this.headerbmp = headerbmp;
         this.imgPath = imgPath;
+        this.openID = openID;
+        this.id = id;
     }
 }

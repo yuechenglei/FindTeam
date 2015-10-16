@@ -153,12 +153,6 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
             @Override
             public void onSuccess(List<Message> messages) {
                 if (messages != null && messages.size() > 0) {
-//                    Collections.sort(messages, new Comparator<Message>() {
-//                        @Override
-//                        public int compare(Message lhs, Message rhs) {
-//                            return lhs.createdAt() > rhs.createdAt() ? 1 : -1;
-//                        }
-//                    });
                     List<ChatMessage> list = mChatMessageFactory.createList(messages);
                     bindMessageListView(list);
                     mChatAdapter.setList(list);
@@ -241,7 +235,12 @@ public class ChatFragment extends ListFragment implements SwipeRefreshLayout.OnR
                         isRefresh = false;
                         swipeRefreshLayout.setRefreshing(false);
                     } else {
-                        refreshData(((ChatMessage) mChatAdapter.getItem(0)).getMessage());
+                        if (mChatAdapter.getCount() == 0 || mChatAdapter.getItem(0) == null) {
+                            isRefresh = false;
+                            swipeRefreshLayout.setRefreshing(false);
+                        } else {
+                            refreshData(((ChatMessage) mChatAdapter.getItem(0)).getMessage());
+                        }
                     }
                 }
             }, 500);

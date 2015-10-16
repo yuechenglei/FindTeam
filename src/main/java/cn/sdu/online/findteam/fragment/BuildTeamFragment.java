@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -61,10 +65,8 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
     private final String[] year = {"年", "2015", "2016", "2017", "2018"};
     private final String[] month = {"月", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
     private final String[] day = {"日", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-    private String[] parent = {"选择分类", "english"};
-    private String[] parentID = {"-1", "1"};
-    private String[] games = {"选择比赛", "CET6", "CET4"};
-    private String[] gamesID = {"-1", "2", "3"};
+
+    List<String> parentList, gameList;
 
     private View view;
 
@@ -107,12 +109,15 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         bt_confirm = (Button) view.findViewById(R.id.bt_confirm);
         bt_confirm.setOnClickListener(this);
 
+        parentList = new ArrayList<>();
+        gameList = new ArrayList<>();
+
         spinner_number = initSpinner(R.id.spinnernumber, number);
         spinner_year = initSpinner(R.id.spinneryear, year);
         spinner_month = initSpinner(R.id.spinnermonth, month);
         spinner_day = initSpinner(R.id.spinnerday, day);
-        spinner_games = initSpinner(R.id.spinner_games, games, gamesID);
-        spinner_parent = initSpinner(R.id.spinner_parent, parent, parentID);
+        spinner_parent = initSpinner(R.id.spinner_parent, 0);
+        spinner_games = initSpinner(R.id.spinner_games, 1);
 
         switchButton1 = (SwitchButton) view.findViewById(R.id.switch_test);
         switchButton2 = (SwitchButton) view.findViewById(R.id.switch_see);
@@ -131,12 +136,50 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         return spinner;
     }
 
-    private Spinner initSpinner(int id, String[] content, String[] contentID) {
+    private Spinner initSpinner(int id, int type) { // type 0是parent，1是game
         Spinner spinner = (Spinner) view.findViewById(id);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(), android.R.layout.simple_spinner_item, content);
-        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(new SpinnerSelectedListener(spinner, content, contentID));
+        ArrayAdapter<String> arrayAdapter;
+        switch (type) {
+            case 0:
+                if (MyApplication.parent == null || MyApplication.parent.size() == 0) {
+                    parentList.add("暂无");
+                } else {
+                    Iterator<String> it = MyApplication.parent.keySet().iterator();
+                    while (it.hasNext()) {
+                        String next = it.next();
+                        parentList.add(next);
+                    }
+                }
+                arrayAdapter = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(),
+                        android.R.layout.simple_spinner_dropdown_item, parentList);
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(arrayAdapter);
+                spinner.setOnItemSelectedListener(
+                        new SpinnerSelectedListener(spinner, 0));
+                break;
+
+            case 1:
+
+                String value = MyApplication.parent.get(parentList.get(0));
+                if (MyApplication.gameMapList == null || MyApplication.gameMapList.size() == 0) {
+                    gameList.add("暂无");
+                } else {
+                    Map<String, String> childMap = MyApplication.gameMapList.get(value);
+                    Iterator<String> it1 = childMap.keySet().iterator();
+                    while (it1.hasNext()) {
+                        String next = it1.next();
+                        gameList.add(next);
+                    }
+                }
+                arrayAdapter = new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(),
+                        android.R.layout.simple_spinner_dropdown_item, gameList);
+                arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(arrayAdapter);
+                spinner.setOnItemSelectedListener(
+                        new SpinnerSelectedListener(spinner, 1));
+                break;
+        }
+
         return spinner;
     }
 
@@ -144,23 +187,58 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         Spinner spinner;
         String[] content;
         String[] contentID;
+        int type;
 
         public SpinnerSelectedListener(Spinner spinners, String[] content) {
             this.spinner = spinners;
             this.content = content;
         }
 
-        public SpinnerSelectedListener(Spinner spinners, String[] content, String[] contentID) {
+        public SpinnerSelectedListener(Spinner spinners, int type) {
             this.spinner = spinners;
-            this.content = content;
-            this.contentID = contentID;
+            this.type = type;
         }
 
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             if (contentID != null) {
                 spinner.setTag(contentID[arg2]);
-            } else {
+            } else if (content != null) {
                 spinner.setTag(content[arg2]);
+            } else {
+                switch (type) {
+                    case 0:
+                        String key = parentList.get(arg2);
+                        if (!key.equals("暂无")) {
+                            String value = MyApplication.parent.get(key);
+                            spinner_parent.setTag(value);
+                            Map<String, String> childMap = MyApplication.gameMapList.get(value);
+                            gameList.clear();
+                            Iterator<String> it = childMap.keySet().iterator();
+                            while (it.hasNext()) {
+                                String next = it.next();
+                                gameList.add(next);
+                            }
+                        }
+                        else {
+                            spinner_parent.setTag("暂无");
+                        }
+                        spinner_games.setAdapter(new ArrayAdapter<String>(BuildTeamFragment.this.getActivity(),
+                                android.R.layout.simple_spinner_dropdown_item, gameList));
+                        break;
+
+                    case 1:
+                        String tag = (String) spinner_parent.getTag();
+                        String id;
+                        if (tag.equals("暂无")){
+                            id = "暂无";
+                        }
+                        else {
+                            Map<String, String> map = MyApplication.gameMapList.get(tag);
+                            id = map.get(gameList.get(arg2));
+                        }
+                        spinner_games.setTag(id);
+                        break;
+                }
             }
         }
 
@@ -209,10 +287,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
                                 Message message = new Message();
                                 Bundle bundle = new Bundle();
                                 try {
-                                    //取得上传文件的名称
                                     File uploadFile = new File(photo_path + "/" + headerImgname + ".jpg");
-                                    //文件上传JavaBean ，通过New调用构造方法（此处是调用第二个构造函数，以输入、输出流上传），audio/mpeg为Mp3文件的内容类型
-                                    //如果不知道上传文件的内容类型，可以在IE浏览器上传一个文件测试，在后台观察源码（通过HttpWatch）
                                     FormFile formfile = new FormFile(headerImgname + ".jpg", uploadFile, "file", "image/jpeg");
                                     boolean flag = SocketHttpRequester.post(NetCore.upLoadInfoAddr, params, formfile);
                                     if (flag) {
@@ -252,10 +327,10 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         } else if (text_introduction.getText().toString().trim().length() == 0) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "队伍简介不能为空！");
             return false;
-        } else if (spinner_parent.getTag().equals("-1")) {
+        } else if (spinner_parent.getTag() == null || spinner_parent.getTag().equals("暂无")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属分类不能为空！");
             return false;
-        } else if (spinner_games.getTag().equals("-1")) {
+        } else if (spinner_games.getTag() == null || spinner_games.getTag().equals("暂无")) {
             AndTools.showToast(BuildTeamFragment.this.getActivity(), "所属比赛不能为空！");
             return false;
         } else if (spinner_year.getTag().equals("年")) {
@@ -284,7 +359,8 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
                                  // 团队介绍， 团队分类ID
                                  String teamIntroduce, String teamCategoryID,
                                  // 日志是否可见， 是否需要审核
-                                 String logVisible, String teamVerify, String imgPath) {
+                                 String logVisible, String teamVerify, String imgPath,
+                                 String allowComment) {
             user = new User();
             user.setTeamName(teamName);
             user.setTeamCategoryID(teamCategoryID);
@@ -300,9 +376,13 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
         public void run() {
 
             try {
-                String jsonData = new NetCore().buildTeam(user);
+                String jsonData = "";
                 Bundle bundle = new Bundle();
                 Message message = new Message();
+                if (BuildTeamFragment.this.getActivity() == MainActivity.mainActivity) {
+                    jsonData = new NetCore().aboutTeam(NetCore.buildTeamAddr, user);
+                }
+
                 if (jsonData == null) {
                     bundle.putInt("code", 1);
                     message.setData(bundle);
@@ -393,7 +473,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
     // 建立头像文件夹功能
     public File makeDir() {
         // ////////////////////////////////////////////////////////////////
-        // 照片的命名，目标文件夹下，以当前时间数字串为名称，即可确保每张照片名称不相同。网上流传的其他Demo这里的照片名称都写死了，
+        // 照片的命名，目标文件夹下，以当前时间数字串为名称，即可确保每张照片名称不相同。
         // 则会发生无论拍照多少张，后一张总会把前一张照片覆盖。细心的同学还可以设置这个字符串，比如加上“ＩＭＧ”字样等；然后就会发现
         // sd卡中myimage这个文件夹下，会保存刚刚调用相机拍出来的照片，照片名称不会重复。
 
@@ -502,15 +582,20 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
                     String imgPath = bundle.getString("imgPath");
                     String teamName = text_teamname.getText().toString();
                     String maxNum = (String) spinner_number.getTag();
-                    String teamEndTime = (String) spinner_year.getTag() + spinner_month.getTag() + spinner_day.getTag();
+                    int year = Integer.parseInt((String) spinner_year.getTag());
+                    int month = Integer.parseInt((String) spinner_month.getTag());
+                    int day = Integer.parseInt((String) spinner_day.getTag());
+                    Date date = new Date(year - 1900, month - 1, day);
+                    String teamEndTime = date.getTime() + "";
                     String teamIntroduce = text_introduction.getText().toString();
                     String teamCategoryID = (String) spinner_games.getTag();
                     String logVisible = switchButton2.isChecked() ? "1" : "0";
                     String teamVerify = switchButton1.isChecked() ? "1" : "0";
+                    String allowComment = switchButton3.isChecked() ? "1" : "0";
                     new Thread(new BuildTeamRunnable(teamName, maxNum,
                             teamEndTime, teamIntroduce,
                             teamCategoryID, logVisible,
-                            teamVerify, imgPath)).start();
+                            teamVerify, imgPath, allowComment)).start();
                     break;
 
                 case BUILD_SECCESS:
@@ -530,7 +615,7 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
                     if (dialog != null) {
                         dialog.dismiss();
                     }
-                    Toast.makeText(MainActivity.mainActivity, "上传失败！", Toast.LENGTH_LONG).show();
+                    Toast.makeText(BuildTeamFragment.this.getActivity(), "上传失败！", Toast.LENGTH_LONG).show();
                     break;
 
                 default:
@@ -540,7 +625,6 @@ public class BuildTeamFragment extends Fragment implements View.OnClickListener 
                     AndTools.showToast(BuildTeamFragment.this.getActivity(), bundle.getString("msg"));
                     break;
             }
-            super.handleMessage(msg);
         }
 
     };

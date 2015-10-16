@@ -1,4 +1,4 @@
-package cn.sdu.online.findteam.aliwukong.widget;
+package cn.sdu.online.findteam.view;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -7,6 +7,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+
+import cn.sdu.online.findteam.aliwukong.widget.TextWatcherAdapter;
 
 /**
  * Created by wn on 2015/8/19.

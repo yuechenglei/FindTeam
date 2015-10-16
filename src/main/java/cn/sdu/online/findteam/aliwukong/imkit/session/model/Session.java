@@ -23,8 +23,8 @@ import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
 /**
  * Created by wn on 2015/8/14.
  */
-public abstract class Session extends ProxySession implements DisplayListItem<ViewHolder>{
-/* ItemMenuAdapter.onMenuListener, ListItemDelete*/
+public abstract class Session extends ProxySession implements DisplayListItem<ViewHolder>
+        , ItemMenuAdapter.onMenuListener, ListItemDelete {
 
     public static final String DOMAIN_CATEGORY = "session_list";
 
@@ -32,7 +32,11 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
 
     public static final int CONTEXT_TOP_OPERATION = Menu.FIRST + 2;
 
+    public static final int CONTEXT_CANCELTOP_OPERATION = Menu.FIRST + 3;
+
     public static final String SESSION_INTENT_KEY = "session_conversation";
+
+    public static final String IMG_URL = "img_url";
 
     protected transient SessionServiceFacade mServiceFacade;
 
@@ -70,6 +74,8 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
      * @param contentView
      */
     public abstract void setSessionContent(TextView contentView);
+
+    public abstract void setSessionContent(TextView name, TextView con, TextView team);
 
     public boolean hasDraft() {
         return !TextUtils.isEmpty(draftMessage());
@@ -110,6 +116,19 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
         }
     }
 
+    @Override
+    public void onAddShow(Context context, ViewHolder viewHolder, String tag) {
+        if (TextUtils.isEmpty((tag))) {
+
+            refreshAll(context, (AddFriendViewHolder) viewHolder);
+
+        } else if ("unread".equals(tag)) {
+            refreshUnreadCount((AddFriendViewHolder) viewHolder);
+        } else if ("content".equals(tag)) {
+            refreshContent((AddFriendViewHolder) viewHolder);
+        }
+    }
+
     private void refreshAll(Context context, JoinViewHolder viewHolder) {
         refreshTime(viewHolder);
         refreshUnreadCount(viewHolder);
@@ -147,13 +166,60 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
             viewHolder.mMessageStatus.setVisibility(View.GONE);
         }
 //            viewHolder.sessionContentTxt.setText(getContent());
-        setSessionContent(viewHolder.sessionContentTxt);
+        setSessionContent(viewHolder.sessionContentName, viewHolder.sessionContentTxt,
+                viewHolder.sessionContentTeam);
     }
 
     protected void refreshAvatar(Context context, JoinViewHolder viewHolder) {
 /*        int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
         viewHolder.sessionIconView.setVisibility(iconVisibility);
         showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));*/
+    }
+
+    private void refreshAll(Context context, AddFriendViewHolder viewHolder) {
+        refreshTime(viewHolder);
+        refreshUnreadCount(viewHolder);
+        refreshSilence(viewHolder);
+        refreshContent(viewHolder);
+        refreshAvatar(context, viewHolder);
+    }
+
+    protected void refreshTime(AddFriendViewHolder viewHolder) {
+        viewHolder.showTime(getLastMessageCreateTime());
+    }
+
+    protected void refreshSilence(AddFriendViewHolder viewHolder) {
+        int silenceImgVisibility = isNotificationEnabled() ? View.GONE : View.VISIBLE;
+        viewHolder.sessionSilenceImgView.setVisibility(silenceImgVisibility);
+    }
+
+    protected void refreshUnreadCount(AddFriendViewHolder viewHolder) {
+        viewHolder.showSessionUnread(unreadMessageCount());
+    }
+
+    protected void refreshContent(AddFriendViewHolder viewHolder) {
+        if (latestMessage() == null || latestMessage().messageContent() == null) {
+            viewHolder.sessionTitleName.setText("");
+            return;
+        }
+        //显示状态之前应该处理一下是否是发送中的消息
+        Message msg = latestMessage();
+        // 发送状态
+        if (msg.status() == Message.MessageStatus.OFFLINE) {
+            viewHolder.showSessionStatusFail();
+        } else if (msg.status() == Message.MessageStatus.SENDING) {
+            viewHolder.showSessionStatusSending();
+        } else {
+            viewHolder.mMessageStatus.setVisibility(View.GONE);
+        }
+//            viewHolder.sessionContentTxt.setText(getContent());
+        setSessionContent(viewHolder.sessionTitleName);
+    }
+
+    protected void refreshAvatar(Context context, AddFriendViewHolder viewHolder) {
+        int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
+        viewHolder.mHeader.setVisibility(iconVisibility);
+        showAvatar(context, icon(), viewHolder.mHeader, (ListView) (viewHolder.parentView));
     }
 
     private void refreshAll(Context context, SessionViewHolder viewHolder) {
@@ -212,35 +278,35 @@ public abstract class Session extends ProxySession implements DisplayListItem<Vi
         int iconVisibility = TextUtils.isEmpty(icon()) ? View.GONE : View.VISIBLE;
         viewHolder.sessionIconView.setVisibility(iconVisibility);
         showAvatar(context, icon(), viewHolder.sessionIconView, (ListView) (viewHolder.parentView));
-
     }
 
     public abstract void showAvatar(Context context, String mediaIds, View view, ListView itemParent);
 
-/*    @Override
     public void onCreateMenu(Context context, ContextMenu menu) {
-        menu.setHeaderTitle(title());
+/*        menu.setHeaderTitle(title());*/
         menu.add(0, CONTEXT_DELETE_ID, 0, "删除会话");
         menu.add(0, CONTEXT_TOP_OPERATION, 0, "会话置顶");
-    }*/
+        menu.add(0, CONTEXT_CANCELTOP_OPERATION, 0, "取消置顶");
+    }
 
-/*    @Override
     public boolean onMenuItemSelected(Context context, int itemId) {
         switch (itemId) {
             case CONTEXT_DELETE_ID:     //删除会话
-*//*                this.onDelete(context); // 直接删除，不再弹确认框*//*
+                this.onDelete(context); // 直接删除，不再弹确认框
                 break;
             case CONTEXT_TOP_OPERATION: //会话置顶
-*//*                stayOnTop(true, null);*//*
+                stayOnTop(true, null);
+                break;
+            case CONTEXT_CANCELTOP_OPERATION:
+                stayOnTop(false, null);
                 break;
         }
         return false;
-    }*/
+    }
 
-/*    @Override
     public void onDelete(Context context) {
         mServiceFacade.remove(getId());
-    }*/
+    }
 
     @Override
     public int compareTo(Conversation another) {

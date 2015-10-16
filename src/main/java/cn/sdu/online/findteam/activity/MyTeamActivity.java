@@ -32,7 +32,7 @@ import cn.sdu.online.findteam.util.AndTools;
 /**
  * Created by wn on 2015/8/29.
  */
-public class MyTeamActivity extends Activity {
+public class MyTeamActivity extends BaseActivity {
 
     private List<List<MyTeamListItem>> list;
     private static MyTeamActivity instance;
@@ -113,12 +113,15 @@ public class MyTeamActivity extends Activity {
                     String imgPath = teamJson.getString("imgPath");
                     JSONObject category = new JSONObject(teamJson.getString("category"));
                     String parentName = category.getString("name");
+                    String teamUser = teamJson.getString("user");
+                    JSONObject UserObj = new JSONObject(teamUser);
+                    Long openId = UserObj.getLong("openId");
                     if (status.equals(NetCore.HAS_ENTERED)) {
-                        hasEnteredList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
+                        hasEnteredList.add(new MyTeamListItem(openId, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     } else if (status.equals(NetCore.HAS_OFFERED)) {
-                        hasOfferedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
+                        hasOfferedList.add(new MyTeamListItem(openId, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     } else if (status.equals(NetCore.HAS_REFUSED)) {
-                        hasRefusedList.add(new MyTeamListItem(R.drawable.singlecompetition_itemimg, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
+                        hasRefusedList.add(new MyTeamListItem(openId, name, introduce, parentName, teamID, imgPath != null ? imgPath : ""));
                     }
                 }
                 loadTeamHandler.sendEmptyMessage(0);
@@ -140,19 +143,4 @@ public class MyTeamActivity extends Activity {
             MyTeamActivity.this.setContentView(contentView);
         }
     };
-
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
-        }
-    }
 }

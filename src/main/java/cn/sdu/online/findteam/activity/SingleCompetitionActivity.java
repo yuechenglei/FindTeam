@@ -34,12 +34,12 @@ import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
-import cn.sdu.online.findteam.util.BitmapCache;
+import cn.sdu.online.findteam.view.RoundImageView;
 
 /**
  * 具体的单个比赛信息界面
  */
-public class SingleCompetitionActivity extends Activity implements View.OnClickListener {
+public class SingleCompetitionActivity extends BaseActivity implements View.OnClickListener {
 
     public static Context SingleCompetitionContext;
     private ListView singlelistView;
@@ -64,6 +64,7 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setActionBarLayout(R.layout.singlecompetition_actionbar_layout);
+        SingleCompetitionContext = SingleCompetitionActivity.this;
         dialog = DialogDefine.createLoadingDialog(this,
                 "加载中...");
         dialog.show();
@@ -77,7 +78,7 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
         }
 
         initView();
-        initListView();
+        initList();
         setIntentData();
 
         Thread thread = new Thread(new loadGamesTeam());
@@ -86,7 +87,6 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
 
     private void initView() {
         contentView = View.inflate(SingleCompetitionActivity.this, R.layout.singlecompetition_layout, null);
-        SingleCompetitionContext = SingleCompetitionActivity.this;
         introduce = (TextView) contentView.findViewById(R.id.singleGame_introduce);
         singlelistView = (ListView) contentView.findViewById(R.id.singlecplist);
         gameName_tv = (TextView) contentView.findViewById(R.id.competition_name);
@@ -97,10 +97,16 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
         detail.setOnClickListener(this);
     }
 
-    public void initListView() {
-        listItems = new ArrayList<SingleCompetitionListItem>();
-        Adapter = new SingleCompetitionListAdapter(SingleCompetitionActivity.this,
+    public void initList() {
+        listItems = new ArrayList<>();
+/*        Adapter = new SingleCompetitionListAdapter(SingleCompetitionActivity.this,
                 listItems);
+        singlelistView.setAdapter(Adapter);*/
+    }
+
+    private void initListView(){
+        Adapter = new SingleCompetitionListAdapter(SingleCompetitionActivity.this,
+                listItems, singlelistView);
         singlelistView.setAdapter(Adapter);
     }
 
@@ -127,20 +133,22 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
                 String teamInfo = new NetCore().getGamesTeam(gameID);
                 JSONArray teamlist = new JSONArray(teamInfo);
                 for (int i = 0; i < teamlist.length(); i++) {
-                    JSONObject team = (JSONObject) teamlist.get(i);
+                    JSONObject team = teamlist.getJSONObject(i);
                     int maxNum = team.getInt("maxNum");
                     int currentNum = team.getInt("currentNum");
                     String teamName = team.getString("name");
                     String introduction = team.getString("introduce");
                     String teamID = team.getString("id");
                     String imgPath = team.getString("imgPath");
-                    JSONObject teamUser = new JSONObject(team.getString("user"));
-                    long userOpenId = teamUser.getLong("openId");
+                    String teamOne = team.getString("user");
+                    JSONObject teamUser = new JSONObject(teamOne);
+                    String userOpenId = teamUser.getString("openId");
+                    Long openId = Long.parseLong(userOpenId);
                     listItems.add(new SingleCompetitionListItem(R.id.singlecp_item_img, teamName,
                             maxNum, R.id.singlecp_item_line1,
                             introduction, R.id.singlecp_item_line2,
                             R.id.singlecp_item_look, R.id.singlecp_item_join,
-                            teamID, userOpenId, currentNum, imgPath));
+                            teamID, openId, currentNum, imgPath));
                 }
                 getGamesInfo.sendEmptyMessage(0);
             } catch (IOException e) {
@@ -151,10 +159,10 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
         }
     }
 
-    Handler getGamesInfo = new Handler(){
+    Handler getGamesInfo = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
+            switch (msg.what) {
                 case -1:
                     if (dialog != null) {
                         dialog.dismiss();
@@ -164,30 +172,16 @@ public class SingleCompetitionActivity extends Activity implements View.OnClickL
                     break;
 
                 case 0:
+                    initListView();
                     setContentView(contentView);
-                    Adapter.notifyDataSetChanged();
-                    if (dialog != null){
+/*                    Adapter.notifyDataSetChanged();*/
+                    if (dialog != null) {
                         dialog.dismiss();
                     }
                     break;
             }
         }
     };
-
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
-        }
-    }
 
     public static Context getContext() {
         return SingleCompetitionContext;

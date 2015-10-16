@@ -4,8 +4,6 @@ package cn.sdu.online.findteam.aliwukong.imkit.route;
  * Created by wn on 2015/8/14.
  */
 
-import android.util.Log;
-
 import java.util.HashMap;
 import java.util.Map;
 

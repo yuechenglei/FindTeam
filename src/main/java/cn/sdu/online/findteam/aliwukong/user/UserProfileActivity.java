@@ -29,7 +29,7 @@ public class UserProfileActivity extends FragmentActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_user_profile);
 
-        mOpenId = getIntent().getLongExtra("user_open_id",0);
+        mOpenId = getIntent().getLongExtra("user_open_id", 0);
         mMobilePhone = getIntent().getStringExtra("user_mobile_id");
 
         mUserFragment = UserProfileFragment.newInstance();
@@ -65,15 +65,15 @@ public class UserProfileActivity extends FragmentActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        return isMyOwn()?true:false;
+        return isMyOwn() ? true : false;
     }
 
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_edit_profile:
                 Intent intent = new Intent(this, EditProfileActivity.class);
-                intent.putExtra("user_profile", ((UserProfileFragment)mUserFragment).getUserProfile());
+                intent.putExtra("user_profile", ((UserProfileFragment) mUserFragment).getUserProfile());
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivityForResult(intent, EDIT_PROFILE_CODE);
                 break;
@@ -86,13 +86,13 @@ public class UserProfileActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == EDIT_PROFILE_CODE){
-            ((UserProfileFragment)mUserFragment).updateProfileData();
+        if (requestCode == EDIT_PROFILE_CODE) {
+            ((UserProfileFragment) mUserFragment).updateProfileData();
         }
     }
 
     private boolean isMyOwn() {
-        if(mOpenId == DemoUtil.currentOpenId()) {
+        if (mOpenId == DemoUtil.currentOpenId()) {
             return true;
         }
         return false;

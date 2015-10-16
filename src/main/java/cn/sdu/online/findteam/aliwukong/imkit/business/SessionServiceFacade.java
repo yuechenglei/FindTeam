@@ -1,8 +1,6 @@
 package cn.sdu.online.findteam.aliwukong.imkit.business;
 
-import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.Conversation;
@@ -20,12 +18,12 @@ import javax.inject.Singleton;
 import cn.sdu.online.findteam.aliwukong.imkit.base.Functional;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.model.ChatMessage;
 import cn.sdu.online.findteam.aliwukong.imkit.listener.ConversationUpdateListener;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.AddFriendSession;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.GroupSession;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.SingleSession;
-import cn.sdu.online.findteam.aliwukong.imkit.session.model.UnKownSession;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinSession;
 import cn.sdu.online.findteam.share.DemoUtil;
-import cn.sdu.online.findteam.share.MyApplication;
 
 /**
  * Created by wn on 2015/8/14.
@@ -66,7 +64,10 @@ public class SessionServiceFacade {
                 break;
             case Conversation.ConversationType.GROUP:
                 if (source.title() != null && source.title().startsWith("<#$_*/ + join + /*_$#>")) {
-                    result = new UnKownSession(source);
+                    result = new JoinSession(source);
+                } else if (source.title() != null && source.title().
+                        startsWith("<#$_*/ + addFriend + /*_$#>")) {
+                    result = new AddFriendSession(source);
                 } else {
                     result = new GroupSession(source);
                 }

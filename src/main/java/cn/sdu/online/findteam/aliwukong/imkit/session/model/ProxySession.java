@@ -6,8 +6,14 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.Conversation;
 import com.alibaba.wukong.im.Message;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import cn.sdu.online.findteam.net.NetCore;
 
 /**
  * Created by wn on 2015/8/14.
@@ -16,8 +22,12 @@ public class ProxySession implements Conversation {
 
     public Conversation mConversation;
 
+    boolean first = true;
+    String data;
+    String imgPath;
+
     public ProxySession(Conversation conversation) {
-        if(conversation==null){
+        if (conversation == null) {
             throw new NullPointerException(" conversation is null");
         }
         mConversation = conversation;
@@ -60,12 +70,43 @@ public class ProxySession implements Conversation {
 
     @Override
     public void updateTitle(String s, Message message, Callback<Void> voidCallback) {
-        mConversation.updateTitle(s,message,voidCallback);
+        mConversation.updateTitle(s, message, voidCallback);
     }
 
     @Override
     public String icon() {
-        return mConversation.icon();
+        if (first) {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        data = new NetCore().getUserInfo(mConversation.icon());
+                        JSONObject jsonObject = new JSONObject(data);
+                        imgPath = jsonObject.getString("imgPath");
+                        if (imgPath.trim().length() == 0) {
+                            imgPath += "-1";
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            first = false;
+        }
+
+        if (imgPath == null) {
+            return "-1";
+        } else {
+            return imgPath;
+        }
     }
 
     @Override
@@ -131,7 +172,7 @@ public class ProxySession implements Conversation {
 
     @Override
     public void updateExtension(String s, String s2) {
-        mConversation.updateExtension(s,s2);
+        mConversation.updateExtension(s, s2);
     }
 
     @Override
@@ -181,7 +222,7 @@ public class ProxySession implements Conversation {
 
     @Override
     public void quit(Message message, Callback<Void> voidCallback) {
-        mConversation.quit(message,voidCallback);
+        mConversation.quit(message, voidCallback);
     }
 
     @Override
@@ -211,13 +252,13 @@ public class ProxySession implements Conversation {
     @Override
     public void listNextLocalMessages(Message message, int count, int contentType, boolean include,
                                       Callback<List<Message>> listCallback) {
-        mConversation.listNextLocalMessages(message,count,contentType,include,listCallback);
+        mConversation.listNextLocalMessages(message, count, contentType, include, listCallback);
     }
 
     @Override
     public void listPreviousLocalMessages(Message message, int count, int contentType, boolean include,
                                           Callback<List<Message>> listCallback) {
-        mConversation.listPreviousLocalMessages(message,count,contentType,include,listCallback);
+        mConversation.listPreviousLocalMessages(message, count, contentType, include, listCallback);
     }
 
     @Override

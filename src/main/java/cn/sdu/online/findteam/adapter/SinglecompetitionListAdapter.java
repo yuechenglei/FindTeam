@@ -3,6 +3,8 @@ package cn.sdu.online.findteam.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,8 +12,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.wukong.im.Conversation;
@@ -47,16 +51,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.NetworkImageView;
+import com.laiwang.idl.service.SRemote;
 
-public class SingleCompetitionListAdapter extends BaseAdapter {
+public class SingleCompetitionListAdapter extends BaseAdapter /*implements AbsListView.OnScrollListener */ {
 
     LayoutInflater inflater;
     List<SingleCompetitionListItem> listItems;
-    long currentID;
+    long[] currentID;
+    Conversation mConversation;
 
-    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems) {
+    public SingleCompetitionListAdapter(Context mContext, List<SingleCompetitionListItem> listItems, ListView listView) {
         inflater = LayoutInflater.from(mContext);
         this.listItems = listItems;
+        currentID = new long[listItems.size()];
     }
 
     @Override
@@ -76,34 +84,33 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;/*
-        if (convertView == null) {*/
-        viewHolder = new ViewHolder();
-        convertView = inflater.inflate(R.layout.singlecompetition_item_layout, null);
-        viewHolder.imageView = (RoundImageView) convertView.findViewById(R.id.singlecp_item_img);
-        viewHolder.teamname = (TextView) convertView.findViewById(R.id.singlecp_item_teamname);
-        viewHolder.personnum = (TextView) convertView.findViewById(R.id.singlecp_item_personnum);
-        viewHolder.line1 = convertView.findViewById(R.id.singlecp_item_line1);
-        viewHolder.content = (TextView) convertView.findViewById(R.id.singlecp_item_content);
-        viewHolder.line2 = convertView.findViewById(R.id.singlecp_item_line2);
-        viewHolder.look = (Button) convertView.findViewById(R.id.singlecp_item_look);
-        viewHolder.join = (Button) convertView.findViewById(R.id.singlecp_item_join);
-/*
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+
+            convertView = inflater.inflate(R.layout.singlecompetition_item_layout, null);
+
+            viewHolder.teamname = (TextView) convertView.findViewById(R.id.singlecp_item_teamname);
+            viewHolder.personnum = (TextView) convertView.findViewById(R.id.singlecp_item_personnum);
+            viewHolder.line1 = convertView.findViewById(R.id.singlecp_item_line1);
+            viewHolder.content = (TextView) convertView.findViewById(R.id.singlecp_item_content);
+            viewHolder.line2 = convertView.findViewById(R.id.singlecp_item_line2);
+            viewHolder.look = (Button) convertView.findViewById(R.id.singlecp_item_look);
+            viewHolder.join = (Button) convertView.findViewById(R.id.singlecp_item_join);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-        }*/
+        }
+        viewHolder.imageView = (RoundImageView) convertView.findViewById(R.id.singlecp_item_img);
+        viewHolder.imageView.setImageResource(R.drawable.head_moren);
         viewHolder.teamname.setText(listItems.get(position).teamname);
         viewHolder.personnum.setText("缺" + (listItems.get(position).maxNum - listItems.get(position).currentNum) + "人");
         viewHolder.content.setText(listItems.get(position).content);
-        if (listItems.get(position).imgPath.trim().length() != 0) {
-            loadBitmap(viewHolder.imageView, listItems.get(position).imgPath);
-        }
 
-        viewHolder.look.setTag(position);
-        viewHolder.join.setTag(position);
+        String imgUrl = listItems.get(position).imgPath;
+        loadBitmap(viewHolder.imageView, imgUrl);
 
-        currentID = listItems.get(position).userOpenID;
+        currentID[position] = listItems.get(position).userOpenID;
         viewHolder.look.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -159,6 +166,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                             }
                             bundle.putString("msg", "游客");
                             bundle.putString("teamID", listItems.get(position).teamID);
+                            bundle.putInt("position", position);
                             message.setData(bundle);
                             loadteamHander.sendMessage(message);
                         } catch (IOException e) {
@@ -197,6 +205,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                             bundle.putString("msg", jsonObject.getString("msg"));
                             bundle.putString("name", listItems.get(position).teamname);
                             bundle.putString("teamID", listItems.get(position).teamID);
+                            bundle.putInt("position", position);
                             Message message = new Message();
                             message.setData(bundle);
                             loadteamHander.sendMessage(message);
@@ -226,22 +235,10 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
     }
 
     private void loadBitmap(final RoundImageView imageView, String imgPath) {
-/*        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-            }
-        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        });
-        MyApplication.getQueues().add(request);*/
         ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
         ImageLoader.ImageListener imageListener = imageLoader.getImageListener(imageView, R.drawable.head_moren,
                 R.drawable.head_moren);
-        imageLoader.get(imgPath, imageListener);
+        MyApplication.imageLoader.get(imgPath, imageListener);
     }
 
     Handler loadteamHander = new Handler() {
@@ -255,6 +252,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     SingleCompetitionActivity.dialog.dismiss();
                 }
             } else if (jsonMsg.equals("您的请求已申请")) {
+                int position = bundle.getInt("position");
                 String name = bundle.getString("name");
                 String teamID = bundle.getString("teamID");
                 String sysMsg = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("loginName", "");
@@ -267,8 +265,8 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(Conversation conversation) {
                         //ToDo 在这处理创建成功的会话： conversation
+                        mConversation = conversation;
                         message.sendTo(conversation, backMsg);
-                        conversation.removeAndClearMessage();
                     }
 
                     @Override
@@ -280,7 +278,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                     public void onProgress(Conversation data, int progress) {
                         // Do Nothing
                     }
-                }, "<#$_*/ + join + /*_$#>" + teamID, null, message, Conversation.ConversationType.GROUP, currentID);
+                }, "<#$_*/ + join + /*_$#>" + teamID, null, message, Conversation.ConversationType.GROUP, currentID[position]);
 
             } else if (jsonMsg.equals("队员")) {
                 String teamID = bundle.getString("teamID");
@@ -294,10 +292,11 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
                 SingleCompetitionActivity.getContext().startActivity(intent);
             } else if (jsonMsg.equals("游客")) {
                 String teamID = bundle.getString("teamID");
+                int position = bundle.getInt("position");
                 Intent intent = new Intent();
                 intent.setClass(SingleCompetitionActivity.getContext(), OtherTeamActivity.class);
                 intent.putExtra("teamID", teamID);
-                intent.putExtra("userOpenId", currentID);
+                intent.putExtra("userOpenId", currentID[position]);
                 MyApplication.IDENTITY = "游客";
                 if (SingleCompetitionActivity.dialog != null) {
                     SingleCompetitionActivity.dialog.dismiss();
@@ -310,8 +309,7 @@ public class SingleCompetitionListAdapter extends BaseAdapter {
     Callback<com.alibaba.wukong.im.Message> backMsg = new Callback<com.alibaba.wukong.im.Message>() {
         @Override
         public void onSuccess(com.alibaba.wukong.im.Message message) {
-            MessageContent msgContent = message.messageContent();
-            Log.v("TAG12313212313", "消息内容：" + msgContent.toString());
+            mConversation.removeAndClearMessage();
             if (SingleCompetitionActivity.dialog != null) {
                 SingleCompetitionActivity.dialog.dismiss();
             }

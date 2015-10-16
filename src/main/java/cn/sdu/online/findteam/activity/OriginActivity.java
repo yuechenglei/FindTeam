@@ -187,8 +187,6 @@ public class OriginActivity extends Activity {
                 }, nickname);
                 Intent intent = new Intent();
                 intent.setClass(OriginActivity.this, MainActivity.class);
-/*                intent.putExtra("loginIdentity", "<##用户##>" + myUser.getName());
-                intent.putExtra("loginID", preferences.getLong("loginID", 0));*/
                 MyApplication.USER_OR_NOT = 1;
                 AndTools.showToast(OriginActivity.this, "登陆成功");
                 startActivity(intent);

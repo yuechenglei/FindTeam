@@ -4,13 +4,16 @@ import android.content.Context;
 import android.view.View;
 
 import com.alibaba.wukong.im.Conversation;
+import com.android.volley.toolbox.ImageLoader;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.imkit.base.ViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.chat.controller.SingleChatActivity;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.ChatViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.chat.viewholder.SendViewHolder;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
 import cn.sdu.online.findteam.share.DemoUtil;
+import cn.sdu.online.findteam.share.MyApplication;
 
 public class SendMessage extends ChatMessage {
 
@@ -26,7 +29,17 @@ public class SendMessage extends ChatMessage {
      * @param viewHolder
      */
     public void showForSendMessageStatus(final Context context, SendViewHolder viewHolder) {
-        viewHolder.sendChatting_avatar.setImageResource(R.drawable.headphoto);
+        String url = MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getString("Header_Url", "-1");
+        if (!url.equals("-1")) {
+            ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+            ImageLoader.ImageListener imageListener = imageLoader.getImageListener(viewHolder.sendChatting_avatar,
+                    R.drawable.head_moren, R.drawable.head_moren);
+            imageLoader.get(url, imageListener);
+        }
+        else {
+            viewHolder.sendChatting_avatar.setImageResource(R.drawable.head_moren);
+        }
+/*        viewHolder.sendChatting_avatar.setImageResource(R.drawable.headphoto);*/
         switch (mMessage.status()) {
             case OFFLINE:
                 sendAgain(context, viewHolder);
@@ -106,6 +119,11 @@ public class SendMessage extends ChatMessage {
 
     @Override
     public void onJoinShow(Context context, ChatViewHolder viewHolder, String tag) {
+
+    }
+
+    @Override
+    public void onAddShow(Context context, ChatViewHolder viewHolder, String tag) {
 
     }
 }

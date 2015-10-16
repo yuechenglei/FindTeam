@@ -34,17 +34,19 @@ public class SingleChatActivity extends BaseFragmentActivity implements View.OnC
     Button back, setting;
     TextView title;
 
+    private static String img_Url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.chat_layout);
         mConversation = (Conversation) getIntent().getSerializableExtra(Session.SESSION_INTENT_KEY);
+        img_Url = getIntent().getStringExtra(Session.IMG_URL) == null ? "" : getIntent().getStringExtra(Session.IMG_URL);
         mConversation.sync();
         mSessionType = mConversation.type();
         Log.e("DemoLog", "mSessionType1=" + mSessionType);
         initSystemStatusBar(); //高版本上statusbar一体化
-//        initActionBar(conversation.title());
         setUpActionBar(mConversation);
         chat = (ChatFragment) getSupportFragmentManager().findFragmentById(R.id.chat_fragment);
         chat.setCurrentConversation(mConversation);
@@ -121,5 +123,9 @@ public class SingleChatActivity extends BaseFragmentActivity implements View.OnC
                 finish();
                 break;
         }
+    }
+
+    public static String getImg_Url(){
+        return img_Url;
     }
 }

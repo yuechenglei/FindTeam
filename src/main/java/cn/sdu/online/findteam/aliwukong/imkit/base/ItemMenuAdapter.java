@@ -46,7 +46,6 @@ public class ItemMenuAdapter implements AdapterView.OnItemLongClickListener, Vie
         if (mCurrentSelectedItem == null) {
             return;
         }
-
         if (mCurrentSelectedItem instanceof onMenuListener) {
             ((onMenuListener) mCurrentSelectedItem).onCreateMenu(mContext, menu);
         }

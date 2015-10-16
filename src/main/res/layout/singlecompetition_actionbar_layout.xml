@@ -18,7 +18,6 @@
         android:id="@+id/singleGame_actionbar_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="优衣库服装设计大赛"
         android:textSize="18sp"
         android:textColor="@color/white_color"
         android:layout_centerVertical="true"

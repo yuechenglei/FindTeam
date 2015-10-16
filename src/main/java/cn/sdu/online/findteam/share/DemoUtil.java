@@ -121,7 +121,7 @@ public class DemoUtil {
             NotificationManager notificationManager = (NotificationManager) ctx
                     .getSystemService(Service.NOTIFICATION_SERVICE);
             mNotification = new Notification();
-            mNotification.icon = R.drawable.discuss_head_icon; // 设置图标，公用图标
+            mNotification.icon = R.drawable.icon; // 设置图标，公用图标
             mNotification.tickerText = ctx.getString(R.string.app_name);
             mNotification.defaults = Notification.DEFAULT_ALL;   // 提示音
 

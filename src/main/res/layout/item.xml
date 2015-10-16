@@ -15,39 +15,39 @@
         android:paddingTop="10dp">
 
         <ImageView
-            android:id="@+id/img"
+            android:id="@+id/friend_icon_img"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:layout_marginRight="12dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="12dp"
             android:src="@drawable/frienda" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginRight="100dp"
                 android:gravity="center_vertical"
-                android:orientation="vertical"
-                android:layout_marginRight="100dp">
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv"
+                    android:id="@+id/friend_name_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
-                    android:text="你好  world"
-                    android:maxLines="1"
                     android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="你好  world"
                     android:textColor="#000000"
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/info"
+                    android:id="@+id/friend_info_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -57,20 +57,11 @@
                     android:textColor="@color/textcolor_gray"
                     android:textSize="14sp" />
             </LinearLayout>
-
-            <cn.sdu.online.findteam.view.BadgeView
-                android:id="@+id/chat_num"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone"/>
         </RelativeLayout>
     </LinearLayout>
 
     <View
-        android:id="@+id/invite_list_spacing"
         android:layout_width="match_parent"
-        android:layout_height="7dp"
+        android:layout_height="3dp"
         android:background="@color/underline1_gray" />
 </LinearLayout>

@@ -227,8 +227,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     MainActivity.mainActivity.finish();
                 }
                 intent.setClass(RegisterActivity.this, MainActivity.class);
-/*                intent.putExtra("loginIdentity", "<##用户##>" + user.getName());
-                intent.putExtra("loginID", preferences.getLong("loginID", 0));*/
                 MyApplication.USER_OR_NOT = 1;
                 if (dialog != null) {
                     dialog.dismiss();

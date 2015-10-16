@@ -103,6 +103,7 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
 
     RoundImageView imageView;
     RelativeLayout relativeLayout;
+    private String introduce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +120,6 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
             return;
         }
         contentView = View.inflate(this, R.layout.otherteam_layout, null);
-/*        setContentView(R.layout.otherteam_layout);*/
         mContext = OtherTeamActivity.this;
         teamID = OtherTeamActivity.this.getIntent().
                 getExtras().getString("teamID");
@@ -139,8 +139,10 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
                     JSONObject jsonObject = new JSONObject(jsonData);
                     name = jsonObject.getString("name");
                     imgPath = jsonObject.getString("imgPath");
-/*                    int maxNum = jsonObject.getInt("maxNum");
-                    int currentNum = jsonObject.getInt("currentNum");*/
+                    String maxNum = jsonObject.getInt("maxNum") + "";
+                    String currentNum = jsonObject.getInt("currentNum") + "";
+                    introduce = "最大人数:  " + maxNum +
+                            "人" + "\n" + "当前人数:  " + currentNum + "人";
                     if (name.length() != 0) {
                         loadTeam.sendEmptyMessage(0);
                     }
@@ -169,7 +171,7 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
             super.handleMessage(msg);
             mTeamName.setText(name);
             loadBitmap(imgPath);
-/*            mTeamIntroduce.setText();*/
+            mTeamIntroduce.setText(introduce);
             if (dialog != null) {
                 dialog.dismiss();
             }
@@ -357,10 +359,10 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
                 dialog = DialogDefine.createLoadingDialog(OtherTeamActivity.this, "");
                 dialog.show();
 
-                new Thread(){
+                new Thread() {
                     @Override
                     public void run() {
-                        String jsonData = null;
+                        String jsonData;
                         try {
                             jsonData = new NetCore().joinTeam(teamID);
                             JSONObject jsonObject = new JSONObject(jsonData);
@@ -368,7 +370,7 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
                             bundle.putString("msg", jsonObject.getString("msg"));
                             Message message = new Message();
                             message.setData(bundle);
-                            jointeamHander.sendMessage(message);
+                            joinTeamHandler.sendMessage(message);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } catch (JSONException e) {
@@ -396,7 +398,7 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
         }
     }
 
-    Handler jointeamHander = new Handler() {
+    Handler joinTeamHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Bundle bundle = msg.getData();
@@ -424,7 +426,6 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
                     public void onSuccess(Conversation conversation) {
                         //ToDo 在这处理创建成功的会话： conversation
                         message.sendTo(conversation, backMsg);
-                        conversation.removeAndClearMessage();
                     }
 
                     @Override
@@ -436,9 +437,8 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
                     public void onProgress(Conversation data, int progress) {
                         // Do Nothing
                     }
-                }, "<#$_*/ + join + /*_$#>"+teamID, null, message, Conversation.ConversationType.GROUP, userOpenID);
-            }
-            else {
+                }, "<#$_*/ + join + /*_$#>" + teamID, null, message, Conversation.ConversationType.GROUP, userOpenID);
+            } else {
                 if (dialog != null) {
                     dialog.dismiss();
                 }
@@ -450,8 +450,7 @@ public class OtherTeamActivity extends FragmentActivity implements View.OnClickL
     Callback<com.alibaba.wukong.im.Message> backMsg = new Callback<com.alibaba.wukong.im.Message>() {
         @Override
         public void onSuccess(com.alibaba.wukong.im.Message message) {
-            MessageContent msgContent = message.messageContent();
-            Log.v("TAG12313212313", "消息内容：" + msgContent.toString());
+            message.conversation().removeAndClearMessage();
             if (dialog != null) {
                 dialog.dismiss();
             }

@@ -25,7 +25,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.ChatActivityListItem;
 import cn.sdu.online.findteam.view.RoundImageView;
 
-public class ChatActivity extends Activity implements View.OnClickListener,View.OnTouchListener {
+public class ChatActivity extends BaseActivity implements View.OnClickListener,View.OnTouchListener {
     private ListView mListView;
     private List<ChatActivityListItem> list;
     private int TYPE_COUNT = 2;
@@ -166,21 +166,6 @@ public class ChatActivity extends Activity implements View.OnClickListener,View.
             RoundImageView img;
             TextView message;
             ImageView arrow;
-        }
-    }
-
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
         }
     }
 }

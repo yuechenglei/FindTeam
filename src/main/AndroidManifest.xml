@@ -78,6 +78,10 @@
             android:theme="@style/trans_style" />
 
         <activity
+            android:name=".activity.InfoOtherActivity"
+            android:theme="@style/trans_style" />
+
+        <activity
             android:name=".activity.SingleCompetitionActivity"
             android:theme="@style/trans_style" />
 
@@ -155,5 +159,14 @@
 
         <activity android:name=".activity.MyTeamActivity"
             android:theme="@style/trans_style"/>
+
+        <activity android:name=".activity.ChangePassActivity"
+            android:theme="@style/trans_style"
+            android:windowSoftInputMode="stateHidden"/>
+
+        <activity android:name=".activity.AddFriendActivity"
+            android:theme="@style/trans_style"
+            android:windowSoftInputMode="stateHidden"/>
+
     </application>
 </manifest>

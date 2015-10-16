@@ -32,15 +32,13 @@ import cn.sdu.online.findteam.util.AndTools;
 /**
  * Created by wn on 2015/8/19.
  */
-public class NewChatActivity extends Activity {
+public class NewChatActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.newchat_layout);
-
-        /*initActionBar(null);*/
 
         final EditText mIdsText = (EditText) findViewById(R.id.et_create_chat);
         Button mOkButton = (Button) findViewById(R.id.btn_create_chat);

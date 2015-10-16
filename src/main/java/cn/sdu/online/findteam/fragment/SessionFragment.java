@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.wukong.Callback;
+import com.alibaba.wukong.im.Conversation;
 
 import javax.inject.Inject;
 
@@ -34,7 +35,7 @@ public class SessionFragment extends ListFragment {
     SessionServiceFacade mService;
 
     private TextView mListEmptyView;
-    private SessionAdapter mSessionAdapter;
+    public static SessionAdapter mSessionAdapter;
 
     @Override
     public int getLayoutResId() {

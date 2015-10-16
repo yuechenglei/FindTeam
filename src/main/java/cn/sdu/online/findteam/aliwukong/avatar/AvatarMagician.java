@@ -56,6 +56,7 @@ public interface AvatarMagician {
 
     public void setConversationAvatar(final Map<Long,ImageView> viewMap,AbsListView listView);
 
+    public void setConversationAvatar(CustomGridView gridView,String icon,AbsListView listView);
     /**
      * 设置Avatar的形状，设置完成后，应用内所有头像将使用该形状。
      * @param shape 形状类型，{@link #CIRCLE_AVATAR_SHAPE}圆形，

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="原密码"
+        android:textColor="@color/textcolor_gray"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/oldPass_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:padding="8dp"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="新密码"
+        android:textColor="@color/textcolor_gray"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/newPass_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:padding="8dp"
+        android:textSize="15sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="新密码"
+        android:textColor="@color/textcolor_gray"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/surePass_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:inputType="textPassword"
+        android:padding="8dp"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/changePass_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:layout_margin="15dp"
+        android:background="@drawable/simplecompetition_button_bg"
+        android:text="确认修改"
+        android:textSize="18sp"
+        android:textColor="@color/singlecompetiton_buttontext_bg" />
+</LinearLayout>

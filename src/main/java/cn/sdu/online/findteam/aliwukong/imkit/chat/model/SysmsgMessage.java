@@ -32,4 +32,9 @@ public class SysmsgMessage extends ChatMessage {
     public void onJoinShow(Context context, ChatViewHolder viewHolder, String tag) {
 
     }
+
+    @Override
+    public void onAddShow(Context context, ChatViewHolder viewHolder, String tag) {
+
+    }
 }

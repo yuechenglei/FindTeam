@@ -1,11 +1,13 @@
 package cn.sdu.online.findteam.activity;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,11 +15,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,12 +51,11 @@ import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.view.RoundImageView;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
-import cn.sdu.online.findteam.view.TeamPopWindow;
 
-public class MySingleTeamActivity extends FragmentActivity implements View.OnClickListener{
-    public static Context mContext;
+public class MySingleTeamActivity extends FragmentActivity implements View.OnClickListener {
+    private static MySingleTeamActivity mContext;
 
-    private List<Fragment> mFragmentList = new ArrayList<Fragment>();
+    private List<Fragment> mFragmentList;
     private OtherTeamFragmentAdapter mFragmentAdapter;
 
     private ViewPager mPageVp;
@@ -99,10 +103,11 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
      */
     private Button teamsetting;
 
-    private TextView mTeamName;
+    private TextView mTeamName, mTeamIntro;
 
     Dialog dialog;
-    String name, imgPath;
+    String name, imgPath, introduce, teamID, verify, logVisible, allowComment,
+            maxNum;
     View contentView;
 
     RoundImageView imageView;
@@ -117,23 +122,30 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         dialog.show();
         if (!AndTools.isNetworkAvailable(MyApplication.getInstance())) {
             AndTools.showToast(this, "当前网络不可用！");
-            if (dialog != null){
+            if (dialog != null) {
                 dialog.dismiss();
             }
             return;
         }
-
         contentView = View.inflate(this, R.layout.otherteam_layout, null);
-
         mContext = MySingleTeamActivity.this;
         findById();
+        upLoad();
+    }
 
-        final String teamID = MySingleTeamActivity.this.getIntent().
+    private void upLoad() {
+        loadData();
+        init();
+        initTabLineWidth();
+        setCurrentPage();
+    }
+
+    private void loadData() {
+        teamID = MySingleTeamActivity.this.getIntent().
                 getExtras().getString("teamID");
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
-                super.run();
 
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("team.id", teamID));
@@ -141,10 +153,15 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
                     String jsonData = new NetCore().getResultWithCookies(NetCore.getOneTeamAddr,
                             params);
                     JSONObject jsonObject = new JSONObject(jsonData);
+                    verify = jsonObject.getString("verify").equals("true") ? "1" : "0";
+                    logVisible = jsonObject.getString("logVisible").equals("true") ? "1" : "0";
+                    allowComment = jsonObject.getString("allowComment").equals("true") ? "1" : "0";
                     name = jsonObject.getString("name");
                     imgPath = jsonObject.getString("imgPath");
-/*                    int maxNum = jsonObject.getInt("maxNum");
-                    int currentNum = jsonObject.getInt("currentNum");*/
+                    maxNum = jsonObject.getInt("maxNum") + "";
+                    String currentNum = jsonObject.getInt("currentNum") + "";
+                    introduce = "最大人数:  " + maxNum +
+                            "人" + "\n" + "当前人数:  " + currentNum + "人";
                     if (name.length() != 0) {
                         Bundle bundle = new Bundle();
                         Message message = new Message();
@@ -158,28 +175,26 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
                 }
             }
         }.start();
+    }
 
-        init();
-        initTabLineWidth();
-        if (MyApplication.myTeam_CurrentPage == 0){
+    private void setCurrentPage() {
+        if (MyApplication.myTeam_CurrentPage == 0) {
             mPageVp.setCurrentItem(0);
-        }
-        else if (MyApplication.myTeam_CurrentPage == 1){
+        } else if (MyApplication.myTeam_CurrentPage == 1) {
             mPageVp.setCurrentItem(1);
-        }
-        else {
+        } else {
             mPageVp.setCurrentItem(2);
         }
     }
 
-    Handler loadTeam = new Handler(){
+    Handler loadTeam = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             mTeamName.setText(name);
+            mTeamIntro.setText(introduce);
             loadBitmap(imgPath);
-/*            mTeamIntroduce.setText();*/
-            if (dialog != null){
+            if (dialog != null) {
                 dialog.dismiss();
             }
             MySingleTeamActivity.this.setContentView(contentView);
@@ -212,11 +227,13 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         join = (Button) contentView.findViewById(R.id.join_otherteam);
         teamsetting = (Button) contentView.findViewById(R.id.team_setting_bt);
         mTeamName = (TextView) contentView.findViewById(R.id.team_name);
+        mTeamIntro = (TextView) contentView.findViewById(R.id.team_introduce);
         imageView = (RoundImageView) contentView.findViewById(R.id.imageView);
         relativeLayout = (RelativeLayout) contentView.findViewById(R.id.otherteam_head_background);
     }
 
     private void init() {
+        mFragmentList = new ArrayList<>();
         mTeamMemFg = new TeamMemberFragment();
         mTeamLogFg = new TeamLogFragment();
         mTeamInfoFg = new TeamInformationFragment();
@@ -324,10 +341,9 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mTabLineIv
                 .getLayoutParams();
         lp.width = screenWidth / 3;
-        if (MyApplication.myTeam_CurrentPage == 1){
+        if (MyApplication.myTeam_CurrentPage == 1) {
             lp.setMargins(screenWidth / 3, 0, 0, 0);
-        }
-        else if (MyApplication.myTeam_CurrentPage == 2){
+        } else if (MyApplication.myTeam_CurrentPage == 2) {
             lp.setMargins((screenWidth / 3) * 2, 0, 0, 0);
         }
         mTabLineIv.setLayoutParams(lp);
@@ -368,7 +384,7 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
         });
     }
 
-    public static Context getContext() {
+    public static MySingleTeamActivity getInstance() {
         return mContext;
     }
 
@@ -389,8 +405,20 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
                 break;
 
             case 2:
-                if (data.getExtras() != null){
-                    mTeamLogFg.loadLog();
+                if (data.getExtras() != null) {
+                    Thread thread = new Thread() {
+                        @Override
+                        public void run() {
+                            mTeamLogFg.loadLog();
+                        }
+                    };
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
                     Toast.makeText(MySingleTeamActivity.this, "日志填写成功！", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -402,7 +430,7 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.otherteam_back_img:
                 MySingleTeamActivity.this.finish();
                 break;
@@ -411,6 +439,76 @@ public class MySingleTeamActivity extends FragmentActivity implements View.OnCli
                 TeamPopWindow teamPopWindow = new TeamPopWindow(MySingleTeamActivity.this);
                 teamPopWindow.showPopupWindow(teamsetting);
                 break;
+        }
+    }
+
+
+    class TeamPopWindow extends PopupWindow implements View.OnClickListener {
+        private View contentView;
+        private LinearLayout search, edit;
+        private Activity context;
+
+        public TeamPopWindow(final Activity context) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            this.context = context;
+            contentView = inflater.inflate(R.layout.teampopup_dialog, null);
+            search = (LinearLayout) contentView.findViewById(R.id.exit_team);
+            search.setOnClickListener(this);
+            edit = (LinearLayout) contentView.findViewById(R.id.edit_team_setting);
+            edit.setOnClickListener(this);
+
+            int w = context.getWindowManager().getDefaultDisplay().getWidth();
+            // 设置SelectPicPopupWindow的View
+            this.setContentView(contentView);
+            // 设置SelectPicPopupWindow弹出窗体的宽
+            this.setWidth(w / 3);
+            // 设置SelectPicPopupWindow弹出窗体的高
+            this.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            // 设置SelectPicPopupWindow弹出窗体可点击
+            this.setFocusable(true);
+            this.setOutsideTouchable(true);
+            // 刷新状态
+            this.update();
+            // 实例化一个ColorDrawable颜色为半透明
+            ColorDrawable dw = new ColorDrawable(996699);
+            // 点back键和其他地方使其消失,设置了这个才能触发OnDismisslistener ，设置其他控件变化等操作
+            this.setBackgroundDrawable(new BitmapDrawable());
+            // mPopupWindow.setAnimationStyle(android.R.style.Animation_Dialog);
+            // 设置SelectPicPopupWindow弹出窗体动画效果
+            this.setAnimationStyle(R.style.AnimationPreview);
+
+        }
+
+        public void showPopupWindow(View parent) {
+            if (!this.isShowing()) {
+                this.showAsDropDown(parent, parent.getLayoutParams().width / 2, 10);
+            } else {
+                this.dismiss();
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            // TODO Auto-generated method stub
+            switch (v.getId()) {
+                case R.id.exit_team:
+                    this.dismiss();
+                    upLoad();
+                    break;
+
+                case R.id.edit_team_setting:
+                    this.dismiss();
+                    Intent intent = new Intent(context, EditTeamSettingActivity.class);
+                    intent.putExtra("teamInfo.id", teamID);
+                    intent.putExtra("teamInfo.verify", verify);
+
+                    context.startActivity(intent);
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

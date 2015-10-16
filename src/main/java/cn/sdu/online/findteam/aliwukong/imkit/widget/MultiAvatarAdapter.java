@@ -1,5 +1,6 @@
 package cn.sdu.online.findteam.aliwukong.imkit.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -27,11 +28,12 @@ import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
+import cn.sdu.online.findteam.view.RoundImageView;
 
 /**
  * Created by wn on 2015/8/14.
  */
-public class MultiAvatarAdapter extends CustomGridAdapter<String>{
+public class MultiAvatarAdapter extends CustomGridAdapter<String> {
     private AbsListView parent;
     private AbsListView mListView;
     private ImageDecoder mImageDecoder;
@@ -42,10 +44,10 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
     private static final String VALUE_NIL = "NIL";
     private static final String TAG = "AvatarMagician";
 
-    String imgPath;
+    String imgPath = "";
     ImageView item;
 
-    public MultiAvatarAdapter(Context context, AbsListView parent){
+    public MultiAvatarAdapter(Context context, AbsListView parent) {
         super(context);
         this.parent = parent;
 
@@ -70,30 +72,30 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
         this.mImageMagician = imageMagician;
     }
 
-    public void setListView(AbsListView listView){
+    public void setListView(AbsListView listView) {
         mListView = listView;
     }
 
     @Override
     public void setColumnNum(int num) {
         super.setColumnNum(num);
-        if(1 == num) {
+        if (1 == num) {
             setBlockSize(AndTools.dp2px(mContext, 50), AndTools.dp2px(mContext, 50));
-        }else if (2 == num) {
+        } else if (2 == num) {
             setBlockSize(AndTools.dp2px(mContext, 24), AndTools.dp2px(mContext, 24));
-        }else{
+        } else {
             setBlockSize(AndTools.dp2px(mContext, 16), AndTools.dp2px(mContext, 16));
         }
     }
 
     @Override
     public void setList(List<String> itemlist) {
-        if(itemlist == null){
+        if (itemlist == null) {
             return;
         }
-        if(mList != null){
+        if (mList != null) {
             mList.clear();
-        }else{
+        } else {
             mList = new ArrayList<String>();
         }
 
@@ -103,53 +105,25 @@ public class MultiAvatarAdapter extends CustomGridAdapter<String>{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         item = (ImageView) convertView;
-        if(item == null){
+        if (item == null) {
             item = new ImageView(mContext);
 
-            if(mImageDecoder != null) {
+            if (mImageDecoder != null) {
                 item.setTag(AvatarMagicianImpl.KEY_TAG, TAG);//用于在url2key中区别其他地方的view
                 // TODO WKNEW
                 item.setTag(AvatarImageDecoder.SELFDECODERTAG, mImageDecoder);
             }
         }
 
-        final String url = getItem(position);
-        String urlTag = (String)item.getTag(KEY_URL);
-        item.setImageBitmap(mDefaultAvatar);
-        new Thread(){
-            @Override
-            public void run() {
-                try {
-                    String data = new NetCore().getUserInfo(url);
-                    JSONObject jsonObject = new JSONObject(data);
-                    imgPath = jsonObject.getString("imgPath");
-                    handler.sendEmptyMessage(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-//        if(TextUtils.isEmpty(url) && (TextUtils.isEmpty(urlTag))){
-//            item.setImageBitmap(mDefaultAvatar);
-//            item.setTag(KEY_URL, VALUE_NIL);
-//        }else if(!TextUtils.isEmpty(url) && !url.equals(urlTag)){
-//            mImageMagician.setImageDrawable(item, url, mListView);
-//            item.setTag(KEY_URL, url);
-//        }
-
-        return item;
-    }
-
-    Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
+        item.setImageResource(R.drawable.head_moren);
+        imgPath = getItem(position);
+/*        String urlTag = (String) item.getTag(KEY_URL);*/
+        if (!imgPath.equals("-1")) {
             ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
-            ImageLoader.ImageListener imageListener = imageLoader.getImageListener(item, R.drawable.teammember_header,
-                    R.drawable.teammember_header);
+            ImageLoader.ImageListener imageListener = imageLoader.getImageListener(item, R.drawable.head_moren,
+                    R.drawable.head_moren);
             imageLoader.get(imgPath, imageListener);
         }
-    };
+        return item;
+    }
 }

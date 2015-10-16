@@ -45,7 +45,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.fragment.SessionFragment;
 
 
-public class MyMessageActivity extends FragmentActivity implements View.OnClickListener {
+public class MyMessageActivity extends BaseFragmentActivity implements View.OnClickListener {
     private ViewPager mViewPager;
     private FragmentPagerAdapter mAdapter;
     private List<Fragment> mDatas;
@@ -71,11 +71,8 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
 
     private static Context instance;
 
-/*    private static Bundle savedInstanceState;*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-/*        this.savedInstanceState = savedInstanceState;*/
         super.onCreate(savedInstanceState);
         instance = this;
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
@@ -241,26 +238,10 @@ public class MyMessageActivity extends FragmentActivity implements View.OnClickL
                 break;
 
             case R.id.newaction_chat:
-                Intent intent = new Intent(this, NewChatActivity.class);
+                Intent intent = new Intent(this, AddFriendActivity.class);
                 startActivity(intent);
                 break;
 
-        }
-    }
-
-    /**
-     * @param layoutId 布局Id
-     **/
-
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
         }
     }
 

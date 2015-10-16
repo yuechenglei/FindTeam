@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.ChangePassActivity;
 import cn.sdu.online.findteam.activity.MainActivity;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
@@ -101,8 +103,8 @@ public class FragmentSetting extends Fragment implements OnClickListener {
                 break;
             }
             case R.id.ll_modify_pwd: {
-//			Intent intent = new Intent(getActivity(), ActivityModifyPwd.class);
-//			startActivity(intent);
+                Intent intent = new Intent(FragmentSetting.this.getActivity(), ChangePassActivity.class);
+                FragmentSetting.this.getActivity().startActivity(intent);
                 break;
             }
 

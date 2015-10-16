@@ -78,6 +78,20 @@ public class NetCore {
     public final static String createTeamLogAddr = ServerAddr + "teamlog/create";
     // 获取队伍日志
     public final static String getTeamLogAddr = ServerAddr + "teamlog/listTeam";
+    // 删除队伍日志
+    public final static String deleteTeamLogAddr = ServerAddr + "teamlog/delete";
+    // 获取第一级分类列表
+    public final static String getTopListAddr = ServerAddr + "category/listTop";
+    // 获取一级分类下的子比赛列表
+    public final static String getChildAddr = ServerAddr + "category/listChildren";
+    // 申请加好友
+    public final static String addFriendAddr = ServerAddr + "friends/request";
+    // 同意别人的好友申请
+    public final static String acceptFriendAddr = ServerAddr + "friends/acceptRequest";
+    // 拒绝别人的好友申请
+    public final static String refuseFriendAddr = ServerAddr + "friends/denyRequest";
+    // 获取好友列表
+    public final static String getFriendListAddr = ServerAddr + "friends/getList";
 
     // 获取到的有用cookie
     public static String jsessionid;
@@ -250,7 +264,6 @@ public class NetCore {
      * 通过openID获取用户信息
      */
     public String getUserInfo(String userId) throws IOException {
-/*        HttpPost httpPost = new HttpPost(getUserInfoAddr);*/
         HttpPost httpPost = new HttpPost(getopenIDInfoAddr);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
         Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
@@ -431,7 +444,7 @@ public class NetCore {
         return jsonData;
     }
 
-    public String buildTeam(User user) throws IOException {
+    public String aboutTeam(String url, User user) throws IOException {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("teamInfo.name", user.getTeamName()));
         params.add(new BasicNameValuePair("teamInfo.num", user.getTeamNum()));
@@ -442,7 +455,7 @@ public class NetCore {
         params.add(new BasicNameValuePair("teamInfo.verify", user.getTeamVerify()));
         params.add(new BasicNameValuePair("teamInfo.imgPath", user.getImgPath()));
 
-        HttpPost httpRequest = new HttpPost(buildTeamAddr);
+        HttpPost httpRequest = new HttpPost(url);
         jsessionid = MyApplication.getInstance().getSharedPreferences("jsessionid", Context.MODE_PRIVATE).getString("jsessionid", "");
         Cookie cookie = new BasicClientCookie("JSESSIONID", jsessionid);
         CookieSpecBase cookieSpecBase = new BrowserCompatSpec();

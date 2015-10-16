@@ -8,11 +8,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+
 import java.util.List;
 import java.util.Map;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.ChatListItem;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.view.BadgeView;
 
 public class MyMessageListViewAdapter extends BaseAdapter {
@@ -40,42 +43,35 @@ public class MyMessageListViewAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        //Get the row id associated with the specified position in the list.
-        //获取在列表中与指定索引对应的行id
         return position;
     }
 
-    //Get a View that displays the data at the specified position in the data set.
-    //获取一个在数据集中指定索引的视图来显示数据
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+        ViewHolder holder;
         //如果缓存convertView为空，则需要创建View
-        /*if (convertView == null) {*/
-        holder = new ViewHolder();
-        //根据自定义的Item布局加载布局
-        convertView = mInflater.inflate(R.layout.item, null);
-        holder.img = (ImageView) convertView.findViewById(R.id.img);
-        holder.title = (TextView) convertView.findViewById(R.id.tv);
-        holder.info = (TextView) convertView.findViewById(R.id.info);
-        holder.view = convertView.findViewById(R.id.invite_list_spacing);
-        holder.badgeView = (BadgeView) convertView.findViewById(R.id.chat_num);
+        if (convertView == null) {
+            holder = new ViewHolder();
+            //根据自定义的Item布局加载布局
+            convertView = mInflater.inflate(R.layout.item, null);
+            holder.img = (ImageView) convertView.findViewById(R.id.friend_icon_img);
+            holder.title = (TextView) convertView.findViewById(R.id.friend_name_tv);
+            holder.info = (TextView) convertView.findViewById(R.id.friend_info_tv);
 
-        //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
-        convertView.setTag(holder);
-        /*} else {
+            //将设置好的布局保存到缓存中，并将其设置在Tag里，以便后面方便取出Tag
+            convertView.setTag(holder);
+        } else {
             holder = (ViewHolder) convertView.getTag();
-        }*/
-
-        holder.img.setBackgroundResource(data.get(position).img);
-        holder.title.setText(data.get(position).title);
-        holder.info.setText(data.get(position).info);
-
-        if (data.get(position).getSeeornot()) {
-            holder.badgeView.setVisibility(View.VISIBLE);
-            holder.badgeView.setBackgroundResource(R.drawable.badgeview_bg);
-            holder.badgeView.setBadgeCount(data.get(position).getNum());
         }
+
+        holder.img.setImageResource(R.drawable.head_moren);
+        holder.title.setText(data.get(position).name);
+        holder.info.setText(data.get(position).info);
+        String imgPath = data.get(position).imgPath;
+        ImageLoader.ImageListener imageListener = MyApplication.imageLoader.getImageListener(
+                holder.img, R.drawable.head_moren, R.drawable.head_moren
+        );
+        MyApplication.imageLoader.get(imgPath, imageListener);
 
         return convertView;
     }
@@ -84,7 +80,5 @@ public class MyMessageListViewAdapter extends BaseAdapter {
         public ImageView img;
         public TextView title;
         public TextView info;
-        public View view;
-        public BadgeView badgeView;
     }
 }

@@ -20,12 +20,12 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.mob.TeamMemberListItem;
 import cn.sdu.online.findteam.share.MyApplication;
 
-public class TeamMemberListViewAdapter extends BaseAdapter{
+public class TeamMemberListViewAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
     List<TeamMemberListItem> listItems;
 
-    public TeamMemberListViewAdapter(Context mContext, List<TeamMemberListItem> listItems){
+    public TeamMemberListViewAdapter(Context mContext, List<TeamMemberListItem> listItems) {
         inflater = LayoutInflater.from(mContext);
         this.listItems = listItems;
     }
@@ -49,16 +49,15 @@ public class TeamMemberListViewAdapter extends BaseAdapter{
     public View getView(int position,
                         View convertView, ViewGroup parent) {
         Viewholder viewholder;
-        if (convertView == null){
+        if (convertView == null) {
             viewholder = new Viewholder();
-            convertView = inflater.inflate(R.layout.teammember_listitem_layout,null);
+            convertView = inflater.inflate(R.layout.teammember_listitem_layout, null);
             viewholder.headerbmp = (ImageView) convertView.findViewById(R.id.teammem_listview_headbmp);
             viewholder.nametv = (TextView) convertView.findViewById(R.id.teammember_name);
             viewholder.introductiontv = (TextView) convertView.findViewById(R.id.teammember_introduction);
 
             convertView.setTag(viewholder);
-        }
-        else {
+        } else {
             viewholder = (Viewholder) convertView.getTag();
         }
         viewholder.nametv.setText(listItems.get(position).name);
@@ -87,7 +86,7 @@ public class TeamMemberListViewAdapter extends BaseAdapter{
         imageLoader.get(imgPath, imageListener);
     }
 
-    public class Viewholder{
+    public class Viewholder {
         TextView nametv;
         TextView introductiontv;
         ImageView headerbmp;

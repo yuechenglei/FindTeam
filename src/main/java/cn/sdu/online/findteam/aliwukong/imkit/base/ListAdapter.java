@@ -6,6 +6,7 @@ package cn.sdu.online.findteam.aliwukong.imkit.base;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -31,15 +32,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.sdu.online.findteam.R;
+import cn.sdu.online.findteam.activity.InfoOtherActivity;
 import cn.sdu.online.findteam.activity.MyMessageActivity;
+import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.aliwukong.imkit.route.RouteProcessor;
-import cn.sdu.online.findteam.aliwukong.imkit.session.SessionViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.AddFriendSession;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.AddFriendViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.AddRunable;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinRunable;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinViewHolder;
+import cn.sdu.online.findteam.aliwukong.imkit.session.model.JoinSession;
 import cn.sdu.online.findteam.aliwukong.imkit.session.model.Session;
-import cn.sdu.online.findteam.aliwukong.imkit.session.model.UnKownSession;
 import cn.sdu.online.findteam.net.NetCore;
 import cn.sdu.online.findteam.resource.DialogDefine;
+import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
 /**
@@ -61,6 +67,7 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
     public static final int ERROR = 0;
     public static final int SUCCESS = 1;
 
+
     public ListAdapter(Context context) {
         mContext = context;
         viewHolderMap = new HashMap<String, ViewHolder>();
@@ -76,6 +83,7 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
         if (list != null) {
             this.mList.addAll(list);
         }
+
         notifyDataSetChanged();
     }
 
@@ -110,8 +118,8 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        if (item.getClass() == UnKownSession.class) {
-            final UnKownSession item1 = (UnKownSession) item;
+        if (item.getClass() == JoinSession.class) {
+            final JoinSession item1 = (JoinSession) item;
 
             JoinViewHolder joinViewHolder = (JoinViewHolder) viewHolder;
             String conversationId = item1.mConversation.conversationId();
@@ -124,8 +132,15 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
                 @Override
                 public void onSuccess(List<Member> data) {
                     //ToDo 获取群成员
-/*                    openID = data.get(0).user().openId() + "";*/
-                    map.put(position, data.get(0).user().openId() + "");
+                    long current = MyApplication.getInstance()
+                            .getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0);
+                    if (data.size() > 1) {
+                        long openId = data.get(0).user().openId() == current ?
+                                data.get(1).user().openId() : data.get(0).user().openId();
+                        map.put(position, openId + "");
+                    } else {
+                        map.put(position, data.get(0).user().openId() + "");
+                    }
                 }
 
                 @Override
@@ -144,7 +159,7 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
                     openID = map.get(position);
                     teamID = mConversation.title().substring(22);
 
-                    new Thread(new runnable(openID, NetCore.allowJoinAddr)).start();
+                    new Thread(new JoinRunable(openID, NetCore.allowJoinAddr, teamID, handler)).start();
                 }
             });
 
@@ -158,10 +173,96 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
                     openID = map.get(position);
                     teamID = mConversation.title().substring(22);
 
-                    new Thread(new runnable(openID, NetCore.refuseJoinAddr)).start();
+                    new Thread(new JoinRunable(openID, NetCore.refuseJoinAddr, teamID, handler)).start();
+                }
+            });
+            joinViewHolder.sessionContentName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MyMessageActivity.getInstance(), InfoOtherActivity.class);
+                    intent.putExtra("openId", map.get(position));
+                    MyMessageActivity.getInstance().startActivity(intent);
                 }
             });
 
+            joinViewHolder.sessionContentTeam.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MyMessageActivity.getInstance(), OtherTeamActivity.class);
+                    MyApplication.IDENTITY = "";
+                    mConversation = item1.mConversation;
+                    teamID = mConversation.title().substring(22);
+                    intent.putExtra("teamID", teamID);
+                    MyMessageActivity.getInstance().startActivity(intent);
+                }
+            });
+
+        } else if (item.getClass() == AddFriendSession.class) {
+            final AddFriendSession item1 = (AddFriendSession) item;
+
+            AddFriendViewHolder joinViewHolder = (AddFriendViewHolder) viewHolder;
+            String conversationId = item1.mConversation.conversationId();
+            IMEngine.getIMService(ConversationService.class).listMembers(new Callback<List<Member>>() {
+                @Override
+                public void onProgress(List<Member> data, int progress) {
+                    //Nothing to do
+                }
+
+                @Override
+                public void onSuccess(List<Member> data) {
+                    //ToDo 获取群成员
+                    long current = MyApplication.getInstance()
+                            .getSharedPreferences("loginmessage", Context.MODE_PRIVATE).getLong("loginID", 0);
+                    if (data.size() > 1) {
+                        long openId = data.get(0).user().openId() == current ?
+                                data.get(1).user().openId() : data.get(0).user().openId();
+                        map.put(position, openId + "");
+                    } else {
+                        map.put(position, data.get(0).user().openId() + "");
+                    }
+
+                }
+
+                @Override
+                public void onException(String code, String reason) {
+                    //异常处理
+                }
+            }, conversationId, 0, 1);
+
+            joinViewHolder.agree.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog = DialogDefine.createLoadingDialog(MyMessageActivity.getInstance(),
+                            "");
+                    dialog.show();
+                    mConversation = item1.mConversation;
+                    String userId = mConversation.title().substring(27);
+
+                    new Thread(new AddRunable(userId, NetCore.acceptFriendAddr, handler)).start();
+                }
+            });
+
+            joinViewHolder.refuse.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog = DialogDefine.createLoadingDialog(MyMessageActivity.getInstance(),
+                            "");
+                    dialog.show();
+                    mConversation = item1.mConversation;
+                    String userId = mConversation.title().substring(27);
+
+                    new Thread(new AddRunable(userId, NetCore.refuseFriendAddr, handler)).start();
+                }
+            });
+
+            joinViewHolder.sessionTitleName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MyMessageActivity.getInstance(), InfoOtherActivity.class);
+                    intent.putExtra("openId", map.get(position));
+                    MyMessageActivity.getInstance().startActivity(intent);
+                }
+            });
         }
         removeOldViewHolder(viewHolder);
         viewHolder.parentView = parent;
@@ -169,64 +270,6 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
         onBindView(viewHolder, item, position);
         return convertView;
     }
-
-
-    class runnable implements Runnable {
-
-        String openID, url;
-
-        public runnable(String openID, String url) {
-            this.openID = openID;
-            this.url = url;
-        }
-
-        @Override
-        public void run() {
-            try {
-                NetCore netCore = new NetCore();
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                // 必填
-                params.add(new BasicNameValuePair("usr.openId", openID));
-                String jsonData = netCore.getResultWithCookies(NetCore.getopenIDInfoAddr,
-                        params);
-                Message message = new Message();
-                Bundle bundle = new Bundle();
-                if (jsonData != null) {
-                    String userId = new JSONObject(jsonData).getString("id");
-                    params.clear();
-                    params.add(new BasicNameValuePair("team.id", teamID));
-                    params.add(new BasicNameValuePair("user.id", userId));
-                    String result = netCore.getResultWithCookies(url, params);
-                    if (result != null) {
-                        Log.v("UploadUtil", result);
-                        JSONObject jsonObject = new JSONObject(result);
-                        int resultCode = jsonObject.getInt("code");
-                        String resultMsg = jsonObject.getString("msg");
-                        bundle.putInt("code", SUCCESS);
-                        bundle.putInt("resultCode", resultCode);
-                        bundle.putString("message", resultMsg);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-                    } else {
-                        bundle.putInt("code", ERROR);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-                    }
-
-                } else {
-                    bundle.putInt("code", ERROR);
-                    message.setData(bundle);
-                    handler.sendMessage(message);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    ;
 
     Handler handler = new Handler() {
         @Override
@@ -251,7 +294,7 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
                             dialog.dismiss();
                         }
                         AndTools.showToast(MyMessageActivity.getInstance(), resultMsg);
-                        mConversation.remove();
+                        mConversation.removeAndClearMessage();
                     } else {
                         if (dialog != null) {
                             dialog.dismiss();
@@ -277,8 +320,10 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
 
     protected void onBindView(ViewHolder viewHolder, T item, int position) {
         viewHolder.position = position;
-        if (item.getClass() == UnKownSession.class) {
+        if (item.getClass() == JoinSession.class) {
             item.onJoinShow(mContext, viewHolder, null);
+        } else if (item.getClass() == AddFriendSession.class) {
+            item.onAddShow(mContext, viewHolder, null);
         } else {
             item.onShow(mContext, viewHolder, null);
         }
@@ -293,7 +338,7 @@ public abstract class ListAdapter<T extends DisplayListItem> extends BaseAdapter
         }
         ViewHolder viewHolder = viewHolderMap.get(item.getId());
         if (viewHolder != null && viewHolder.tag.equals(item.getId())) {
-            if (item.getClass() == UnKownSession.class) {
+            if (item.getClass() == JoinSession.class) {
                 item.onJoinShow(mContext, viewHolder, tag);
             } else {
                 item.onShow(mContext, viewHolder, tag);

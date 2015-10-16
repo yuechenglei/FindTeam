@@ -311,7 +311,6 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                     dialog = DialogDefine.createLoadingDialog(InfoPersonActivity.this, "");
                     dialog.show();
                     if (bmpName != null) {
-                        Log.v("UploadUtil1", bmpName);
                         new Thread() {
                             @Override
                             public void run() {
@@ -325,13 +324,11 @@ public class InfoPersonActivity extends Activity implements View.OnClickListener
                                     FormFile formfile = new FormFile(bmpName + ".jpg", uploadFile, "file", "image/jpeg");
                                     boolean flag = SocketHttpRequester.post(NetCore.upLoadInfoAddr, params, formfile);
                                     if (flag) {
-                                        Log.v("UploadUtil122", flag + "");
                                         bundle.putInt("code", UPLOAD_SUCCESS);
                                         bundle.putString("filename", bmpName + ".jpg");
                                         message.setData(bundle);
                                         modifyHandler.sendMessage(message);
                                     } else {
-                                        Log.v("UploadUtil122", "错！！");
                                         bundle.putInt("code", UPLOAD_ERROR);
                                         message.setData(bundle);
                                         modifyHandler.sendMessage(message);

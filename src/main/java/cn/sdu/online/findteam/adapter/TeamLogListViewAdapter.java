@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class TeamLogListViewAdapter extends BaseAdapter {
     LayoutInflater layoutInflater;
     List<TeamLogListViewItem> listViewItems;
 
-    public TeamLogListViewAdapter(Context context, List<TeamLogListViewItem> listViewItems){
+    public TeamLogListViewAdapter(Context context, List<TeamLogListViewItem> listViewItems) {
         layoutInflater = LayoutInflater.from(context);
         this.listViewItems = listViewItems;
     }
@@ -51,9 +52,9 @@ public class TeamLogListViewAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;
-        if (convertView == null){
+        if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = layoutInflater.inflate(R.layout.teamlog_list_item,null);
+            convertView = layoutInflater.inflate(R.layout.teamlog_list_item, null);
 
             viewHolder.headbmp = (ImageView) convertView.findViewById(R.id.teamlog_headbmp);
             viewHolder.name = (TextView) convertView.findViewById(R.id.teamlog_name);
@@ -62,10 +63,10 @@ public class TeamLogListViewAdapter extends BaseAdapter {
             viewHolder.view = convertView.findViewById(R.id.teamlog_spacing_view);
 
             convertView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+        viewHolder.headbmp.setImageResource(R.drawable.head_moren);
         loadBitmap(viewHolder.headbmp, listViewItems.get(position).imgPath);
         viewHolder.name.setText(listViewItems.get(position).name);
         viewHolder.time.setText(listViewItems.get(position).time);
@@ -75,21 +76,12 @@ public class TeamLogListViewAdapter extends BaseAdapter {
     }
 
     private void loadBitmap(final ImageView imageView, String imgPath) {
-        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-            }
-        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        });
-        MyApplication.getQueues().add(request);
+        ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+        ImageLoader.ImageListener imageListener = imageLoader.getImageListener(imageView, R.drawable.head_moren, R.drawable.head_moren);
+        imageLoader.get(imgPath, imageListener);
     }
 
-    public class ViewHolder{
+    public class ViewHolder {
         public ImageView headbmp;
         public TextView name;
         public TextView time;

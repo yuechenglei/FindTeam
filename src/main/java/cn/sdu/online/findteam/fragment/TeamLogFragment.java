@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,8 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 
-import com.laiwang.idl.service.SRemote;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -27,12 +26,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.sdu.online.findteam.R;
-import cn.sdu.online.findteam.activity.MySingleTeamActivity;
-import cn.sdu.online.findteam.activity.OtherTeamActivity;
 import cn.sdu.online.findteam.activity.TeamLogActivity;
 import cn.sdu.online.findteam.activity.WriteActivity;
 import cn.sdu.online.findteam.adapter.TeamLogListViewAdapter;
@@ -47,11 +46,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
     private View view;
     List<TeamLogListViewItem> listViewItems;
     ListView listView;
-    String name[];
-    String time[];
-    String content;
     TeamLogListViewAdapter teamLogListViewAdapter;
-    private Button writelog;
+    private Button writeLog;
     private PopupWindow popupWindow;
     Dialog dialog;
 
@@ -88,52 +84,70 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
             teamID = TeamLogFragment.this.getActivity().getIntent().
                     getExtras().getString("teamID");
-            loadLog();
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    loadLog();
+                }
+            };
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         return view;
     }
 
-    public void loadLog(){
-        new Thread() {
-            @Override
-            public void run() {
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("log.team.id", teamID));
-                params.add(new BasicNameValuePair("page", "1"));
-                params.add(new BasicNameValuePair("pagelistnum", "30"));
-                try {
-                    String jsonData = new NetCore().getResultWithCookies(NetCore.getTeamLogAddr,
-                            params);
-                    if (jsonData.trim().length() != 0) {
-                        JSONArray jsonArray = new JSONArray(jsonData);
-                        for (int i = 0;i<jsonArray.length();i++){
-                            JSONObject jsonObject = jsonArray.getJSONObject(i);
-                            JSONObject userObj = new JSONObject(jsonObject.getString("user"));
-                            String name = userObj.getString("username");
-                            String imgPath = userObj.getString("imgPath");
-                            String content = jsonObject.getString("content");
-                            String time = jsonObject.getString("time");
-                            addListItem(name, time, content, imgPath);
-                        }
-                        handler.sendEmptyMessage(0);
-                    }
-                    else {
-                        handler.sendEmptyMessage(1);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+    public void loadLog() {
+        if (listViewItems == null) {
+            listViewItems = new ArrayList<>();
+        } else {
+            listViewItems.clear();
+        }
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("log.team.id", teamID));
+        params.add(new BasicNameValuePair("page", "1"));
+        params.add(new BasicNameValuePair("pagelistnum", "0"));
+        try {
+            String jsonData = new NetCore().getResultWithCookies(NetCore.getTeamLogAddr,
+                    params);
+            if (jsonData.trim().length() != 0) {
+                JSONArray jsonArray = new JSONArray(jsonData);
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    String userStr = jsonObject.getString("user");
+                    JSONObject userObj = new JSONObject(userStr);
+                    String name = userObj.getString("userName");
+                    String imgPath = userObj.getString("imgPath");
+                    String content = jsonObject.getString("content");
+                    String id = jsonObject.getString("id");
+                    String time = jsonObject.getString("time");
+                    JSONObject timeObj = new JSONObject(time);
+                    long totalTime = timeObj.getLong("time");
+                    Date date = new Date(totalTime);
+                    time = date.toLocaleString();
+                    addListItem(name, time, content, imgPath, id);
                 }
+                handler.sendEmptyMessage(0);
+            } else {
+                handler.sendEmptyMessage(1);
             }
-        }.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
-    Handler handler = new Handler(){
+
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
                     if (dialog != null) {
                         dialog.dismiss();
@@ -159,6 +173,10 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
+                intent.putExtra("imgPath", listViewItems.get(position).imgPath);
+                intent.putExtra("name", listViewItems.get(position).name);
+                intent.putExtra("content", listViewItems.get(position).content);
+                intent.putExtra("time", listViewItems.get(position).time);
                 intent.setClass(TeamLogFragment.this.getActivity(), TeamLogActivity.class);
                 TeamLogFragment.this.getActivity().startActivity(intent);
             }
@@ -172,6 +190,7 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
                 Intent intent = new Intent();
                 intent.setClass(TeamLogFragment.this.getActivity(), WriteActivity.class);
                 intent.putExtra("sign", "写日志");
+                intent.putExtra("teamId", teamID);
                 TeamLogFragment.this.getActivity().startActivityForResult(intent, 2);
                 break;
         }
@@ -189,8 +208,8 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
      * 队员来的时候调用
      */
     private void teamMemLog() {
-        writelog = (Button) view.findViewById(R.id.teammem_writelog);
-        writelog.setOnClickListener(TeamLogFragment.this);
+        writeLog = (Button) view.findViewById(R.id.teammem_writelog);
+        writeLog.setOnClickListener(TeamLogFragment.this);
         listView = (ListView) view.findViewById(R.id.teammem_log_list);
         initListView(listView);
     }
@@ -199,21 +218,21 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
      * 队长来的时候调用
      */
     private void teamHeaderLog() {
-        writelog = (Button) view.findViewById(R.id.teammem_writelog);
-        writelog.setOnClickListener(TeamLogFragment.this);
+        writeLog = (Button) view.findViewById(R.id.teammem_writelog);
+        writeLog.setOnClickListener(TeamLogFragment.this);
         listView = (ListView) view.findViewById(R.id.teammem_log_list);
         initListView(listView);
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showPopupWindow(position, view);
+                showPopupWindow(position);
                 return false;
             }
         });
     }
 
-    private void showPopupWindow(final int position, View view) {
+    private void showPopupWindow(final int position) {
 
         // 一个自定义的布局，作为显示的内容
         View contentView = LayoutInflater.from(TeamLogFragment.this.getActivity()).inflate(
@@ -233,9 +252,39 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listViewItems.remove(position);
-                teamLogListViewAdapter.notifyDataSetChanged();
                 popupWindow.dismiss();
+                dialog = DialogDefine.createLoadingDialog(TeamLogFragment.this.getActivity(),
+                        "");
+                dialog.show();
+                Thread thread = new Thread() {
+                    @Override
+                    public void run() {
+                        List<NameValuePair> params = new ArrayList<NameValuePair>();
+                        params.add(new BasicNameValuePair("log.id", listViewItems.get(position).id));
+
+                        try {
+                            String data = new NetCore().getResultWithCookies(NetCore.deleteTeamLogAddr,
+                                    params);
+                            JSONObject jsonObject = new JSONObject(data);
+                            String msg = jsonObject.getString("msg");
+                            int code = jsonObject.getInt("code");
+                            Bundle bundle = new Bundle();
+                            Message message = new Message();
+                            bundle.putInt("code", code);
+                            if (code == 1) {
+                                bundle.putInt("position", position);
+                            }
+                            bundle.putString("msg", msg);
+                            message.setData(bundle);
+                            deleteHandler.sendMessage(message);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                thread.start();
             }
         });
 
@@ -257,6 +306,31 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
         popupWindow.showAtLocation(TeamLogFragment.this.getView(), Gravity.CENTER, 0, 0);
     }
 
+    Handler deleteHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            Bundle bundle = message.getData();
+            int code = bundle.getInt("code");
+            String msg = bundle.getString("msg");
+            if (dialog != null) {
+                dialog.dismiss();
+            }
+            switch (code) {
+                case 1:
+                    AndTools.showToast(TeamLogFragment.this.getActivity(), msg);
+                    int position = bundle.getInt("position");
+                    listViewItems.remove(position);
+                    teamLogListViewAdapter.notifyDataSetChanged();
+
+                    break;
+
+                default:
+                    AndTools.showToast(TeamLogFragment.this.getActivity(), msg);
+                    break;
+            }
+        }
+    };
+
     /**
      * 设置添加屏幕的背景透明度
      */
@@ -275,14 +349,12 @@ public class TeamLogFragment extends Fragment implements View.OnClickListener {
 
         @Override
         public void onDismiss() {
-            // TODO Auto-generated method stub
-            //Log.v("List_noteTypeActivity:", "我是关闭事件");
             backgroundAlpha(1f);
         }
     }
 
-    public void addListItem(String name, String time, String content, String imgPath) {
-        listViewItems.add(new TeamLogListViewItem(name, time, content, imgPath));
+    public void addListItem(String name, String time, String content, String imgPath, String id) {
+        listViewItems.add(new TeamLogListViewItem(name, time, content, imgPath, id));
     }
 }
 

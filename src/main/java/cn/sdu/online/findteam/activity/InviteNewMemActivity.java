@@ -19,7 +19,7 @@ import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.adapter.InviteMemListAdapter;
 import cn.sdu.online.findteam.mob.InviteMemListItem;
 
-public class InviteNewMemActivity extends Activity implements View.OnClickListener{
+public class InviteNewMemActivity extends BaseActivity implements View.OnClickListener{
 
     private ListView inviteMemList;
     private Button finish, action_search, search_Btn, back_Btn;
@@ -70,21 +70,6 @@ public class InviteNewMemActivity extends Activity implements View.OnClickListen
                 inviteMemListAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    /**
-     * @param layoutId 布局Id
-     */
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
-        }
     }
 
     @Override

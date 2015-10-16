@@ -15,20 +15,6 @@ import com.alibaba.wukong.Callback;
 import com.alibaba.wukong.im.Conversation;
 import com.alibaba.wukong.im.User;
 import com.alibaba.wukong.im.utils.Utils;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageLoader;
-
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.aliwukong.avatar.AvatarMagicianImpl;
@@ -53,15 +39,20 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
         super(conversation);
     }
 
+    String url;
+
     @Override
     public void showAvatar(Context context, String mediaIds, View view, ListView itemParent) {
-        List<Long> openId = new ArrayList<Long>(1);
+/*        List<Long> openId = new ArrayList<Long>(1);
         try {
             openId.add(Long.parseLong(mediaIds));
         } catch (NumberFormatException e) {
             Log.e("SingleSession", "NumberFormatException");
         }
-        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);
+        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);*/
+        url = mediaIds;
+        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, mediaIds, itemParent);
+
     }
 
     @Override
@@ -69,6 +60,7 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
         resetUnreadCount();
         Intent intent = new Intent(sender, SingleChatActivity.class);
         intent.putExtra(SESSION_INTENT_KEY, this);
+        intent.putExtra(IMG_URL, url);
         sender.startActivity(intent);
     }
 
@@ -101,5 +93,10 @@ public class SingleSession extends Session implements ItemClick.OnItemClickListe
             String text = mServiceFacade.getSessionContent(this);
             contentView.setText(text);
         }
+    }
+
+    @Override
+    public void setSessionContent(TextView name, TextView con, TextView team) {
+
     }
 }

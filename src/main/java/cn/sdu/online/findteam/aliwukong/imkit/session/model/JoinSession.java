@@ -27,10 +27,15 @@ import cn.sdu.online.findteam.resource.DialogDefine;
  */
 
 @Router({JoinViewHolder.class})
-public class UnKownSession extends Session implements ItemClick.OnItemClickListener {
+public class JoinSession extends Session implements ItemClick.OnItemClickListener {
 
-    public UnKownSession(Conversation conversation) {
+    public JoinSession(Conversation conversation) {
         super(conversation);
+    }
+
+    @Override
+    public void setSessionContent(TextView contentView) {
+
     }
 
     @Override
@@ -38,26 +43,29 @@ public class UnKownSession extends Session implements ItemClick.OnItemClickListe
     }
 
     @Override
-    public void setSessionContent(TextView contentView) {
+    public void setSessionContent(TextView name, TextView con, TextView team) {
         Message message = latestMessage();
 
         if (message == null) {
-            contentView.setText("");
+            con.setText("");
         } else {
             String text = mServiceFacade.getSessionContent(this);
-            contentView.setText(text);
+            String a[] = text.split("  ");
+            name.setText(a[0]);
+            con.setText("  " + a[1] + "  ");
+            team.setText(a[2]);
         }
     }
 
     @Override
     public void showAvatar(Context context, String mediaIds, View view, ListView itemParent) {
-        List<Long> openId = new ArrayList<Long>(1);
+/*        List<Long> openId = new ArrayList<Long>(1);
         try {
             openId.add(Long.parseLong(mediaIds));
         } catch (NumberFormatException e) {
             Log.e("SingleSession", "NumberFormatException");
         }
 
-        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);
+        AvatarMagicianImpl.getInstance().setConversationAvatar((CustomGridView) view, openId, itemParent);*/
     }
 }

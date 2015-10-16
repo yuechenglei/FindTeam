@@ -1,42 +1,15 @@
 package cn.sdu.online.findteam.mob;
 
 public class ChatListItem {
-    public String title;
+    public String name;
     public String info;
-    public int img;
-    public boolean seeornot;
-    public int num;
+    public String imgPath;
+    public String openId;
 
-    public ChatListItem(String title, String info, int img,
-                        boolean seeornot, int num) {
-        this.title = title;
+    public ChatListItem(String title, String info, String imgPath, String openId) {
+        this.name = title;
         this.info = info;
-        this.img = img;
-        this.seeornot = seeornot;
-        this.num = num;
-    }
-
-    public String getTitle(){
-        return title;
-    }
-
-    public void setTitle(String title){
-        this.title = title;
-    }
-
-    public boolean getSeeornot() {
-        return seeornot;
-    }
-
-    public void setSeeornot(boolean seeornot) {
-        this.seeornot = seeornot;
-    }
-
-    public void setNum(int num) {
-        this.num = num;
-    }
-
-    public int getNum() {
-        return num;
+        this.imgPath = imgPath;
+        this.openId = openId;
     }
 }

@@ -76,9 +76,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private View view_actionbar;
 
     private LinearLayout mVisitorDrawerLayout;
-    // 获取intent传入的字符串和长整型ID
-/*    private String intentString;
-    private Long intentID;*/
     // 侧边栏用户名
     private TextView tv_text, tv_id;
     EditText search_edit;
@@ -171,6 +168,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
+            if (imgPath.trim().length() != 0) {
+                MyApplication.getInstance().getSharedPreferences("loginmessage", Context.MODE_PRIVATE)
+                        .edit().putString("Header_Url", imgPath)
+                        .apply();
+            }
             loadBitmap(imgPath);
         }
     };
@@ -630,6 +632,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        setActionBarTest("热门赛事");
                         MyApplication.currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数
@@ -646,6 +649,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         fragmentManager.beginTransaction().hide(fragmentList.get(currentFragment))
                                 .show(fragmentList.get(MAIN_FRAGMENT)).commit();
                         currentFragment = MAIN_FRAGMENT;
+                        setActionBarTest("热门赛事");
                         MyApplication.currentFragment = MAIN_FRAGMENT;
                     } else {
                         onBackPressed(); // 调用双击退出函数

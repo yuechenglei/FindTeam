@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 
 import java.util.List;
@@ -85,7 +86,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         MyViewHolder myViewHolder;
-        if (convertView == null){
+        if (convertView == null) {
             myViewHolder = new MyViewHolder();
             convertView = inflater.inflate(R.layout.myteam_list_item, null);
             myViewHolder.teamName = (TextView) convertView.findViewById(R.id.myteam_teamName);
@@ -94,8 +95,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
             myViewHolder.teamIntroduce = (TextView) convertView.findViewById(R.id.myteam_teamIntroduce);
             myViewHolder.parentLayout = (LinearLayout) convertView.findViewById(R.id.myteam_parent_layout);
             convertView.setTag(myViewHolder);
-        }
-        else {
+        } else {
             myViewHolder = (MyViewHolder) convertView.getTag();
         }
         myViewHolder.teamIntroduce.setText(listItems.get(groupPosition).get(childPosition).introduce);
@@ -103,7 +103,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
         myViewHolder.teamHeader.setImageResource(R.drawable.head_moren);
         myViewHolder.parentName.setText(listItems.get(groupPosition).get(childPosition).parent);
         loadBitmap(listItems.get(groupPosition).get(childPosition).imgPath, myViewHolder.teamHeader);
-        switch (childPosition % 4){
+        switch (childPosition % 4) {
             case 0:
                 myViewHolder.parentLayout.setBackgroundColor(Color.parseColor("#f3a1ab"));
                 break;
@@ -130,6 +130,7 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
                     Intent intent = new Intent(MyTeamActivity.getInstance(), OtherTeamActivity.class);
                     MyApplication.IDENTITY = "游客";
                     intent.putExtra("teamID", listItems.get(groupPosition).get(childPosition).teamID);
+                    intent.putExtra("userOpenId", listItems.get(groupPosition).get(childPosition).openId);
                     MyTeamActivity.getInstance().startActivity(intent);
                 }
             }
@@ -138,21 +139,13 @@ public class MyTeamListAdapter extends BaseExpandableListAdapter {
     }
 
     private void loadBitmap(String imgPath, final RoundImageView imageView) {
-        ImageRequest request = new ImageRequest(imgPath, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
-            }
-        }, 0, 0, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-
-            }
-        });
-        MyApplication.getQueues().add(request);
+        ImageLoader imageLoader = new ImageLoader(MyApplication.getQueues(), MyApplication.bitmapCache);
+        ImageLoader.ImageListener imageListener = imageLoader.getImageListener(imageView,
+                R.drawable.head_moren, R.drawable.head_moren);
+        imageLoader.get(imgPath, imageListener);
     }
 
-    class MyViewHolder{
+    class MyViewHolder {
         public TextView teamName;
         public TextView teamIntroduce;
         public RoundImageView teamHeader;

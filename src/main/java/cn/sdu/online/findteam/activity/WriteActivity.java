@@ -1,7 +1,5 @@
 package cn.sdu.online.findteam.activity;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -35,7 +33,7 @@ import cn.sdu.online.findteam.resource.DialogDefine;
 import cn.sdu.online.findteam.share.MyApplication;
 import cn.sdu.online.findteam.util.AndTools;
 
-public class WriteActivity extends Activity implements View.OnClickListener {
+public class WriteActivity extends BaseActivity implements View.OnClickListener {
 
     private String getsign;
     private TextView titleTv;
@@ -71,18 +69,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
         back.setOnClickListener(this);
         finishBtn.setOnClickListener(this);
-    }
-
-    public void setActionBarLayout(int layoutId) {
-        ActionBar actionBar = getActionBar();
-        if (null != actionBar) {
-            actionBar.setDisplayShowHomeEnabled(false);
-            actionBar.setDisplayShowCustomEnabled(true);
-            LayoutInflater inflator = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = inflator.inflate(layoutId, null);
-            ActionBar.LayoutParams layout = new ActionBar.LayoutParams(ActionMenuView.LayoutParams.FILL_PARENT, ActionMenuView.LayoutParams.FILL_PARENT);
-            actionBar.setCustomView(v, layout);
-        }
     }
 
     private void handle() {
@@ -126,6 +112,7 @@ public class WriteActivity extends Activity implements View.OnClickListener {
             allowComment = allowComment.equals("true") ? "1" : "0";
             logVisible = logVisible.equals("true") ? "1" : "0";
             teamId = intent.getExtras().getString("teamId");
+
             new Thread(runnable).start();
         } else {
             Toast.makeText(WriteActivity.this, "。您还未填写队伍信息！", Toast.LENGTH_SHORT).show();

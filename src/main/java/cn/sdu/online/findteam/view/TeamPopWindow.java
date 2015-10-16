@@ -13,6 +13,7 @@ import android.widget.PopupWindow;
 
 import cn.sdu.online.findteam.R;
 import cn.sdu.online.findteam.activity.EditTeamSettingActivity;
+import cn.sdu.online.findteam.activity.MySingleTeamActivity;
 
 public class TeamPopWindow extends PopupWindow implements View.OnClickListener {
     private View contentView;
@@ -64,8 +65,9 @@ public class TeamPopWindow extends PopupWindow implements View.OnClickListener {
         // TODO Auto-generated method stub
         switch (v.getId()) {
             case R.id.exit_team:
-
                 this.dismiss();
+                Intent intent1 = new Intent(context, MySingleTeamActivity.class);
+                context.startActivity(intent1);
                 break;
 
             case R.id.edit_team_setting:
